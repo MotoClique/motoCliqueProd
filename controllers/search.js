@@ -130,17 +130,17 @@ module.exports.search = function(req,res){//Fetch
 									//query['current_bid_amount'] = {"$gte": result_filter[i].filter_value};
 									//query['start_from_amount'] = {"$gte": result_filter[i].filter_value};
 									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
-									for(var i=0; i<price_fields.length; i++){
+									for(var j=0; j<price_fields.length; j++){
 										var terms = [];
-										if(user_filter[price_fields[i]]){//If filter field already defined
-											terms = user_filter[price_fields[i]]['$and'];
+										if(user_filter[price_fields[j]]){//If filter field already defined
+											terms = user_filter[price_fields[j]]['$and'];
 											terms.push({"$gte": result_filter[i].filter_value});
-											user_filter[price_fields[i]] = {'$and': terms};
+											user_filter[price_fields[j]] = {'$and': terms};
 										}
 										else{
 											terms = [];
 											terms.push({"$gte": result_filter[i].filter_value});
-											user_filter[price_fields[i]] = {'$and': terms};								
+											user_filter[price_fields[j]] = {'$and': terms};								
 										}
 									}
 									
@@ -150,17 +150,17 @@ module.exports.search = function(req,res){//Fetch
 									//query['current_bid_amount'] = {"$lte": result_filter[i].filter_value};
 									//query['start_from_amount'] = {"$lte": result_filter[i].filter_value};
 									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
-									for(var i=0; i<price_fields.length; i++){
+									for(var j=0; j<price_fields.length; j++){
 										var terms = [];
-										if(user_filter[price_fields[i]]){//If filter field already defined
-											terms = user_filter[price_fields[i]]['$and'];
+										if(user_filter[price_fields[j]]){//If filter field already defined
+											terms = user_filter[price_fields[j]]['$and'];
 											terms.push({"$lte": result_filter[i].filter_value});
-											user_filter[price_fields[i]] = {'$and': terms};
+											user_filter[price_fields[j]] = {'$and': terms};
 										}
 										else{
 											terms = [];
 											terms.push({"$lte": result_filter[i].filter_value});
-											user_filter[price_fields[i]] = {'$and': terms};								
+											user_filter[price_fields[j]] = {'$and': terms};								
 										}
 									}
 								}
@@ -512,17 +512,17 @@ module.exports.getTransactions = function(req,res){//Fetch
 								//query['current_bid_amount'] = {"$gte": result_filter[i].filter_value};
 								//query['start_from_amount'] = {"$gte": result_filter[i].filter_value};
 								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
-								for(var i=0; i<price_fields.length; i++){
+								for(var j=0; j<price_fields.length; j++){
 									var terms = [];
-									if(query[price_fields[i]]){//If filter field already defined
-										terms = query[price_fields[i]]['$and'];
+									if(query[price_fields[j]]){//If filter field already defined
+										terms = query[price_fields[j]]['$and'];
 										terms.push({"$gte": result_filter[i].filter_value});
-										query[price_fields[i]] = {'$and': terms};
+										query[price_fields[j]] = {'$and': terms};
 									}
 									else{
 										terms = [];
 										terms.push({"$gte": result_filter[i].filter_value});
-										query[price_fields[i]] = {'$and': terms};								
+										query[price_fields[j]] = {'$and': terms};								
 									}
 								}
 								
@@ -532,17 +532,17 @@ module.exports.getTransactions = function(req,res){//Fetch
 								//query['current_bid_amount'] = {"$lte": result_filter[i].filter_value};
 								//query['start_from_amount'] = {"$lte": result_filter[i].filter_value};
 								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
-								for(var i=0; i<price_fields.length; i++){
+								for(var j=0; j<price_fields.length; j++){
 									var terms = [];
-									if(query[price_fields[i]]){//If filter field already defined
-										terms = query[price_fields[i]]['$and'];
+									if(query[price_fields[j]]){//If filter field already defined
+										terms = query[price_fields[j]]['$and'];
 										terms.push({"$lte": result_filter[i].filter_value});
-										query[price_fields[i]] = {'$and': terms};
+										query[price_fields[j]] = {'$and': terms};
 									}
 									else{
 										terms = [];
 										terms.push({"$lte": result_filter[i].filter_value});
-										query[price_fields[i]] = {'$and': terms};								
+										query[price_fields[j]] = {'$and': terms};								
 									}
 								}
 							}
