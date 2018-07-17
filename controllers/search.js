@@ -384,8 +384,13 @@ module.exports.getTransactions = function(req,res){//Fetch
 									.exec(function(err, result) {
 										//result.forEach(function(item, index, arr) {
 										for(var i=0; i<result.length; i++){
-											var split = (result[i].bid_valid_to).split('/');
-											var validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
+											var split = [];
+											var validTo = new Date();
+											
+											if(result[i].bid_valid_to){
+												split = (result[i].bid_valid_to).split('/');
+												validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
+											}
 											
 											if(validTo >= (new Date())){
 												var clone = JSON.parse(JSON.stringify(result[i]));
@@ -497,8 +502,14 @@ module.exports.getTransactions = function(req,res){//Fetch
 																		Bid.find(bid_query).sort({"index_count":-1}).skip(skip_rec_bid).limit(limit_rec_bid)
 																			.exec(function(err, bids) {
 																				for(var i=0; i<bids.length; i++){
-																					var split = (bids[i].bid_valid_to).split('/');
-																					var validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
+																					var split = [];
+																					var validTo = new Date();
+																					
+																					if(bids[i].bid_valid_to){
+																						split = (bids[i].bid_valid_to).split('/');
+																						validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
+																					}
+																					
 																					if(validTo >= (new Date())){
 																						var clone = JSON.parse(JSON.stringify(bids[i]));
 																						//clone.text = bids[i].product_type_name +" "+ bids[i].brand_name +" "+ bids[i].model +" "+ bids[i].variant ;
