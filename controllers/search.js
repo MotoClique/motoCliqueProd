@@ -59,7 +59,7 @@ module.exports.search = function(req,res){//Fetch
 						var user_filter = {};
 						for(var i=0; i<result_filter.length; i++){
 							if(result_filter[i].filter_value && result_filter[i].filter_field){//If Filter Value & Field is there
-								var terms = [];
+								/*var terms = [];
 								if(user_filter[result_filter[i].filter_field]){//If filter field already defined
 									terms = user_filter[result_filter[i].filter_field]['$in'];
 									terms.push(result_filter[i].filter_value);
@@ -69,6 +69,141 @@ module.exports.search = function(req,res){//Fetch
 									terms = [];
 									terms.push(result_filter[i].filter_value);
 									user_filter[result_filter[i].filter_field] = {'$in': terms};								
+								}*/
+								
+								if(result_filter[i].filter_field === 'km_run_from'){
+									var terms = [];
+									if(user_filter['km_done']){//If filter field already defined
+										terms = user_filter['km_done']['$and'];
+										terms.push({"$gte": result_filter[i].filter_value});
+										user_filter['km_done'] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$gte": result_filter[i].filter_value});
+										user_filter['km_done'] = {'$and': terms};								
+									}
+								}
+								else if(result_filter[i].filter_field === 'km_run_to'){
+									var terms = [];
+									if(user_filter['km_done']){//If filter field already defined
+										terms = user_filter['km_done']['$and'];
+										terms.push({"$lte": result_filter[i].filter_value});
+										user_filter['km_done'] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$lte": result_filter[i].filter_value});
+										user_filter['km_done'] = {'$and': terms};								
+									}
+								}
+								else if(result_filter[i].filter_field === 'year_reg_from'){
+									//query['year_of_reg'] = {"$gte": result_filter[i].filter_value};
+									var terms = [];
+									if(user_filter['year_of_reg']){//If filter field already defined
+										terms = user_filter['year_of_reg']['$and'];
+										terms.push({"$gte": result_filter[i].filter_value});
+										user_filter['year_of_reg'] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$gte": result_filter[i].filter_value});
+										user_filter['year_of_reg'] = {'$and': terms};								
+									}
+								}
+								else if(result_filter[i].filter_field === 'year_reg_to'){
+									//query['year_of_reg'] = {"$lte": result_filter[i].filter_value};
+									var terms = [];
+									if(user_filter['year_of_reg']){//If filter field already defined
+										terms = user_filter['year_of_reg']['$and'];
+										terms.push({"$lte": result_filter[i].filter_value});
+										user_filter['year_of_reg'] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$lte": result_filter[i].filter_value});
+										user_filter['year_of_reg'] = {'$and': terms};								
+									}
+								}
+								else if(result_filter[i].filter_field === 'price_from'){
+									//query['net_price'] = {"$gte": result_filter[i].filter_value};
+									//query['current_bid_amount'] = {"$gte": result_filter[i].filter_value};
+									//query['start_from_amount'] = {"$gte": result_filter[i].filter_value};
+									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
+									for(var i=0; i<price_fields.length; i++){
+										var terms = [];
+										if(user_filter[price_fields[i]]){//If filter field already defined
+											terms = user_filter[price_fields[i]]['$and'];
+											terms.push({"$gte": result_filter[i].filter_value});
+											user_filter[price_fields[i]] = {'$and': terms};
+										}
+										else{
+											terms = [];
+											terms.push({"$gte": result_filter[i].filter_value});
+											user_filter[price_fields[i]] = {'$and': terms};								
+										}
+									}
+									
+								}
+								else if(result_filter[i].filter_field === 'price_to'){
+									//query['net_price'] = {"$lte": result_filter[i].filter_value};
+									//query['current_bid_amount'] = {"$lte": result_filter[i].filter_value};
+									//query['start_from_amount'] = {"$lte": result_filter[i].filter_value};
+									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
+									for(var i=0; i<price_fields.length; i++){
+										var terms = [];
+										if(user_filter[price_fields[i]]){//If filter field already defined
+											terms = user_filter[price_fields[i]]['$and'];
+											terms.push({"$lte": result_filter[i].filter_value});
+											user_filter[price_fields[i]] = {'$and': terms};
+										}
+										else{
+											terms = [];
+											terms.push({"$lte": result_filter[i].filter_value});
+											user_filter[price_fields[i]] = {'$and': terms};								
+										}
+									}
+								}
+								else if(result_filter[i].filter_field === 'discount_from'){
+									//query['discount'] = {"$gte": result_filter[i].filter_value};
+									var terms = [];
+									if(user_filter['discount']){//If filter field already defined
+										terms = user_filter['discount']['$and'];
+										terms.push({"$gte": result_filter[i].filter_value});
+										user_filter['discount'] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$gte": result_filter[i].filter_value});
+										user_filter['discount'] = {'$and': terms};								
+									}
+								}
+								else if(result_filter[i].filter_field === 'discount_to'){
+									//query['discount'] = {"$lte": result_filter[i].filter_value};
+									var terms = [];
+									if(user_filter['discount']){//If filter field already defined
+										terms = user_filter['discount']['$and'];
+										terms.push({"$lte": result_filter[i].filter_value});
+										user_filter['discount'] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$lte": result_filter[i].filter_value});
+										user_filter['discount'] = {'$and': terms};								
+									}
+								}
+								else{
+									var terms = [];
+									if(user_filter[result_filter[i].filter_field]){//If filter field already defined
+										terms = user_filter[result_filter[i].filter_field]['$in'];
+										terms.push(result_filter[i].filter_value);
+										user_filter[result_filter[i].filter_field] = {'$in': terms};
+									}
+									else{
+										terms = [];
+										terms.push(result_filter[i].filter_value);
+										user_filter[result_filter[i].filter_field] = {'$in': terms};								
+									}
 								}
 								
 							}
@@ -80,7 +215,10 @@ module.exports.search = function(req,res){//Fetch
 						var type = req.query.type;
 						var results = [];
 						if(type === "Sale"){
-							Sell.find(query).limit(6)
+							var sell_query = JSON.parse(JSON.stringify(query));
+							delete sell_query.current_bid_amount;
+							delete sell_query.start_from_amount;
+							Sell.find(sell_query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -100,7 +238,11 @@ module.exports.search = function(req,res){//Fetch
 							});
 						}
 						else if(type === "Buy"){
-							Buy.find(query).limit(6)
+							var buy_query = JSON.parse(JSON.stringify(query));
+							delete buy_query.discount;
+							delete buy_query.current_bid_amount;
+							delete buy_query.start_from_amount;
+							Buy.find(buy_query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -120,7 +262,11 @@ module.exports.search = function(req,res){//Fetch
 							});
 						}
 						else if (type === "Bid"){
-							Bid.find(query).limit(6)
+							var bid_query = JSON.parse(JSON.stringify(query));
+							delete bid_query.discount;
+							delete bid_query.net_price;
+							delete bid_query.start_from_amount;
+							Bid.find(bid_query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -140,7 +286,13 @@ module.exports.search = function(req,res){//Fetch
 							});
 						}
 						else if(type === "Service"){
-							Service.find(query).limit(6)
+							var service_query = JSON.parse(JSON.stringify(query));
+							delete service_query.discount;
+							delete service_query.net_price;
+							delete service_query.current_bid_amount;
+							delete service_query.year_of_reg;
+							delete service_query.km_done;
+							Service.find(service_query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -159,8 +311,11 @@ module.exports.search = function(req,res){//Fetch
 									res.status(200).json({results: results, error: err});
 							});
 						}
-						else{			
-							Sell.find(query).limit(2)
+						else{
+							var sell_query = JSON.parse(JSON.stringify(query));
+							delete sell_query.current_bid_amount;
+							delete sell_query.start_from_amount;
+							Sell.find(sell_query).limit(2)
 								.exec(function(err, sales) {
 									for(var i=0; i<sales.length; i++){
 										var clone = JSON.parse(JSON.stringify(sales[i]));
@@ -177,7 +332,11 @@ module.exports.search = function(req,res){//Fetch
 											results.push(clone);
 									}
 									//res.status(200).json({results: result, error: err});
-									Buy.find(query).limit(2)
+									var buy_query = JSON.parse(JSON.stringify(query));
+									delete buy_query.discount;
+									delete buy_query.current_bid_amount;
+									delete buy_query.start_from_amount;
+									Buy.find(buy_query).limit(2)
 										.exec(function(err, buy) {
 											for(var i=0; i<buy.length; i++){
 												var clone = JSON.parse(JSON.stringify(buy[i]));
@@ -194,7 +353,11 @@ module.exports.search = function(req,res){//Fetch
 													results.push(clone);
 											}
 											//res.status(200).json({results: result, error: err});
-											Bid.find(query).limit(2)
+											var bid_query = JSON.parse(JSON.stringify(query));
+											delete bid_query.discount;
+											delete bid_query.net_price;
+											delete bid_query.start_from_amount;
+											Bid.find(bid_query).limit(2)
 												.exec(function(err, bids) {
 													for(var i=0; i<bids.length; i++){
 														var clone = JSON.parse(JSON.stringify(bids[i]));
@@ -211,7 +374,13 @@ module.exports.search = function(req,res){//Fetch
 															results.push(clone);
 													}
 													//res.status(200).json({results: results, error: err});
-													Service.find(query).limit(2)
+													var service_query = JSON.parse(JSON.stringify(query));
+													delete service_query.discount;
+													delete service_query.net_price;
+													delete service_query.current_bid_amount;
+													delete service_query.year_of_reg;
+													delete service_query.km_done;
+													Service.find(service_query).limit(2)
 														.exec(function(err, services) {
 															for(var i=0; i<services.length; i++){
 																var clone = JSON.parse(JSON.stringify(services[i]));
@@ -284,18 +453,140 @@ module.exports.getTransactions = function(req,res){//Fetch
 		Filter.find(query_filter,function(err_filter, result_filter){
 					for(var i=0; i<result_filter.length; i++){
 						if(result_filter[i].filter_value && result_filter[i].filter_field){//If Filter Value & Field is there
-							var terms = [];
-							if(query[result_filter[i].filter_field]){//If filter field already defined
-								terms = query[result_filter[i].filter_field]['$in'];
-								terms.push(result_filter[i].filter_value);
-								query[result_filter[i].filter_field] = {'$in': terms};
+							if(result_filter[i].filter_field === 'km_run_from'){
+								var terms = [];
+								if(query['km_done']){//If filter field already defined
+									terms = query['km_done']['$and'];
+									terms.push({"$gte": result_filter[i].filter_value});
+									query['km_done'] = {'$and': terms};
+								}
+								else{
+									terms = [];
+									terms.push({"$gte": result_filter[i].filter_value});
+									query['km_done'] = {'$and': terms};								
+								}
+							}
+							else if(result_filter[i].filter_field === 'km_run_to'){
+								var terms = [];
+								if(query['km_done']){//If filter field already defined
+									terms = query['km_done']['$and'];
+									terms.push({"$lte": result_filter[i].filter_value});
+									query['km_done'] = {'$and': terms};
+								}
+								else{
+									terms = [];
+									terms.push({"$lte": result_filter[i].filter_value});
+									query['km_done'] = {'$and': terms};								
+								}
+							}
+							else if(result_filter[i].filter_field === 'year_reg_from'){
+								//query['year_of_reg'] = {"$gte": result_filter[i].filter_value};
+								var terms = [];
+								if(query['year_of_reg']){//If filter field already defined
+									terms = query['year_of_reg']['$and'];
+									terms.push({"$gte": result_filter[i].filter_value});
+									query['year_of_reg'] = {'$and': terms};
+								}
+								else{
+									terms = [];
+									terms.push({"$gte": result_filter[i].filter_value});
+									query['year_of_reg'] = {'$and': terms};								
+								}
+							}
+							else if(result_filter[i].filter_field === 'year_reg_to'){
+								//query['year_of_reg'] = {"$lte": result_filter[i].filter_value};
+								var terms = [];
+								if(query['year_of_reg']){//If filter field already defined
+									terms = query['year_of_reg']['$and'];
+									terms.push({"$lte": result_filter[i].filter_value});
+									query['year_of_reg'] = {'$and': terms};
+								}
+								else{
+									terms = [];
+									terms.push({"$lte": result_filter[i].filter_value});
+									query['year_of_reg'] = {'$and': terms};								
+								}
+							}
+							else if(result_filter[i].filter_field === 'price_from'){
+								//query['net_price'] = {"$gte": result_filter[i].filter_value};
+								//query['current_bid_amount'] = {"$gte": result_filter[i].filter_value};
+								//query['start_from_amount'] = {"$gte": result_filter[i].filter_value};
+								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
+								for(var i=0; i<price_fields.length; i++){
+									var terms = [];
+									if(query[price_fields[i]]){//If filter field already defined
+										terms = query[price_fields[i]]['$and'];
+										terms.push({"$gte": result_filter[i].filter_value});
+										query[price_fields[i]] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$gte": result_filter[i].filter_value});
+										query[price_fields[i]] = {'$and': terms};								
+									}
+								}
+								
+							}
+							else if(result_filter[i].filter_field === 'price_to'){
+								//query['net_price'] = {"$lte": result_filter[i].filter_value};
+								//query['current_bid_amount'] = {"$lte": result_filter[i].filter_value};
+								//query['start_from_amount'] = {"$lte": result_filter[i].filter_value};
+								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
+								for(var i=0; i<price_fields.length; i++){
+									var terms = [];
+									if(query[price_fields[i]]){//If filter field already defined
+										terms = query[price_fields[i]]['$and'];
+										terms.push({"$lte": result_filter[i].filter_value});
+										query[price_fields[i]] = {'$and': terms};
+									}
+									else{
+										terms = [];
+										terms.push({"$lte": result_filter[i].filter_value});
+										query[price_fields[i]] = {'$and': terms};								
+									}
+								}
+							}
+							else if(result_filter[i].filter_field === 'discount_from'){
+								//query['discount'] = {"$gte": result_filter[i].filter_value};
+								var terms = [];
+								if(query['discount']){//If filter field already defined
+									terms = query['discount']['$and'];
+									terms.push({"$gte": result_filter[i].filter_value});
+									query['discount'] = {'$and': terms};
+								}
+								else{
+									terms = [];
+									terms.push({"$gte": result_filter[i].filter_value});
+									query['discount'] = {'$and': terms};								
+								}
+							}
+							else if(result_filter[i].filter_field === 'discount_to'){
+								//query['discount'] = {"$lte": result_filter[i].filter_value};
+								var terms = [];
+								if(query['discount']){//If filter field already defined
+									terms = query['discount']['$and'];
+									terms.push({"$lte": result_filter[i].filter_value});
+									query['discount'] = {'$and': terms};
+								}
+								else{
+									terms = [];
+									terms.push({"$lte": result_filter[i].filter_value});
+									query['discount'] = {'$and': terms};								
+								}
 							}
 							else{
-								terms = [];
-								terms.push(result_filter[i].filter_value);
-								query[result_filter[i].filter_field] = {'$in': terms};								
+								var terms = [];
+								if(query[result_filter[i].filter_field]){//If filter field already defined
+									terms = query[result_filter[i].filter_field]['$in'];
+									terms.push(result_filter[i].filter_value);
+									query[result_filter[i].filter_field] = {'$in': terms};
+								}
+								else{
+									terms = [];
+									terms.push(result_filter[i].filter_value);
+									query[result_filter[i].filter_field] = {'$in': terms};								
+								}
 							}
-							
 						}
 					}
 		
@@ -307,6 +598,8 @@ module.exports.getTransactions = function(req,res){//Fetch
 						if(req.body.sale.count)
 							count_sale = req.body.sale.count;
 						
+						delete query.current_bid_amount;
+						delete query.start_from_amount;
 						Sell.count(query,function(err_sell_count,res_sell_count){
 							if(err_sell_count){
 								res.status(401).json({statusCode:"F", results: null, error: err_sell_count});
@@ -338,6 +631,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 						var count_buy = null;
 						if(req.body.buy.count)
 							count_buy = req.body.buy.count;
+						
+						delete query.discount;
+						delete query.current_bid_amount;
+						delete query.start_from_amount;
 						Buy.count(query,function(err_buy_count,res_buy_count){
 							if(err_buy_count){
 								res.status(401).json({statusCode:"F", results: null, error: err_buy_count});
@@ -369,6 +666,9 @@ module.exports.getTransactions = function(req,res){//Fetch
 						if(req.body.bid.count)
 							count_bid = req.body.bid.count;
 						delete query.active;
+						delete query.discount;
+						delete query.net_price;
+						delete query.start_from_amount;
 						Bid.count(query,function(err_bid_count,res_bid_count){
 							if(err_bid_count){
 								res.status(401).json({statusCode:"F", results:null, error:err_bid_count});
@@ -423,6 +723,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 						var count_service = null;
 						if(req.body.service.count)
 							count_service = req.body.service.count;
+						
+						delete query.discount;
+						delete query.current_bid_amount;
+						delete query.net_price;
+						delete query.year_of_reg;
+						delete query.km_done;
 						Service.count(query,function(err_service_count,res_service_count){
 							if(err_service_count){
 								res.status(401).json({statusCode:"F", results:null, error:err_service_count});
@@ -452,14 +758,18 @@ module.exports.getTransactions = function(req,res){//Fetch
 						var count_sale = null;
 						if(req.body.sale.count)
 							count_sale = req.body.sale.count;
-						Sell.count(query,function(err_sell_count,res_sell_count){
+						
+						var sell_query = JSON.parse(JSON.stringify(query));
+						delete sell_query.current_bid_amount;		
+						delete sell_query.start_from_amount;	
+						Sell.count(sell_query,function(err_sell_count,res_sell_count){
 									var skip_rec_sale = (req.body.sale.skip)?req.body.sale.skip:0;
 									if(count_sale && res_sell_count>count_sale && req.body.sale.skip)
 										skip_rec_sale = (res_sell_count - count_sale) - (- req.body.sale.skip);
 									if(!count_sale)
 										count_sale = res_sell_count;
 									var limit_rec_sale = (req.body.sale.limit)?req.body.sale.limit:10;					
-									Sell.find(query).sort({"index_count":-1}).skip(skip_rec_sale).limit(limit_rec_sale)
+									Sell.find(sell_query).sort({"index_count":-1}).skip(skip_rec_sale).limit(limit_rec_sale)
 										.exec(function(err, sales) {
 											for(var i=0; i<sales.length; i++){
 												var clone = JSON.parse(JSON.stringify(sales[i]));
@@ -471,14 +781,19 @@ module.exports.getTransactions = function(req,res){//Fetch
 											var count_buy = null;
 											if(req.body.buy.count)
 												count_buy = req.body.buy.count;
-											Buy.count(query,function(err_buy_count,res_buy_count){
+											
+											var buy_query = JSON.parse(JSON.stringify(query));
+											delete buy_query.discount;
+											delete buy_query.current_bid_amount;		
+											delete buy_query.start_from_amount;		
+											Buy.count(buy_query,function(err_buy_count,res_buy_count){
 													var skip_rec_buy = (req.body.buy.skip)?req.body.buy.skip:0;
 													if(count_buy && res_buy_count>count_buy && req.body.buy.skip)
 														skip_rec_buy = (res_buy_count - count_buy) - (- req.body.buy.skip);
 													if(!count_buy)
 														count_buy = res_buy_count;
 													var limit_rec_buy = (req.body.buy.limit)?req.body.buy.limit:10;
-													Buy.find(query).sort({"index_count":-1}).skip(skip_rec_buy).limit(limit_rec_buy)
+													Buy.find(buy_query).sort({"index_count":-1}).skip(skip_rec_buy).limit(limit_rec_buy)
 														.exec(function(err, buy) {
 															for(var i=0; i<buy.length; i++){
 																var clone = JSON.parse(JSON.stringify(buy[i]));
@@ -492,6 +807,9 @@ module.exports.getTransactions = function(req,res){//Fetch
 															
 															var bid_query = JSON.parse(JSON.stringify(query));
 															delete bid_query.active;
+															delete bid_query.discount;
+															delete bid_query.net_price;
+															delete bid_query.start_from_amount;
 															Bid.count(bid_query,function(err_bid_count,res_bid_count){
 																		var skip_rec_bid = (req.body.bid.skip)?req.body.bid.skip:0;
 																		if(count_bid && res_bid_count>count_bid && req.body.bid.skip)
@@ -533,14 +851,21 @@ module.exports.getTransactions = function(req,res){//Fetch
 																				var count_service = null;
 																				if(req.body.service.count)
 																					count_service = req.body.service.count;
-																				Service.count(query,function(err_service_count,res_service_count){
+																				
+																				var service_query = JSON.parse(JSON.stringify(query));
+																				delete service_query.discount;
+																				delete service_query.current_bid_amount;
+																				delete service_query.net_price;
+																				delete service_query.year_of_reg;
+																				delete service_query.km_done;
+																				Service.count(service_query,function(err_service_count,res_service_count){
 																						var skip_rec_service = (req.body.service.skip)?req.body.service.skip:0;
 																						if(count_service && res_service_count>count_service && req.body.service.skip)
 																							skip_rec_service = (res_service_count - count_service) - (- req.body.service.skip);
 																						if(!count_service)
 																							count_service = res_service_count;
 																						var limit_rec_service = (req.body.service.limit)?req.body.service.limit:10;
-																						Service.find(query).sort({"index_count":-1}).skip(skip_rec_service).limit(limit_rec_service)
+																						Service.find(service_query).sort({"index_count":-1}).skip(skip_rec_service).limit(limit_rec_service)
 																							.exec(function(err, services) {
 																								for(var i=0; i<services.length; i++){
 																									var clone = JSON.parse(JSON.stringify(services[i]));
