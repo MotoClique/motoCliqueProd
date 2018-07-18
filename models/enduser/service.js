@@ -41,7 +41,7 @@ var ServiceSchema = new mongoose.Schema({
 		type: String 
 	},
 	start_from_amount:{
-		type: String 
+		type: Number 
 	},
 	display_amount:{
 		type: String
