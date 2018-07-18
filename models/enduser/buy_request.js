@@ -86,13 +86,13 @@ var BuyRequestSchema = new mongoose.Schema({
 		type: String 
 	},
 	year_of_reg:{
-		type: String 
+		type: Number 
 	},
 	km_done:{
-		type: String 
+		type: Number 
 	},
 	net_price:{
-		type: String
+		type: Number
 	},
 	display_amount:{
 		type: String
