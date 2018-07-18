@@ -761,8 +761,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 						
 						var sell_query = JSON.parse(JSON.stringify(query));
 						delete sell_query.current_bid_amount;		
-						delete sell_query.start_from_amount;	
+						delete sell_query.start_from_amount;
+						console.log(sell_query);
 						Sell.count(sell_query,function(err_sell_count,res_sell_count){
+							console.log(err_sell_count);
+							console.log(res_sell_count);
 									var skip_rec_sale = (req.body.sale.skip)?req.body.sale.skip:0;
 									if(count_sale && res_sell_count>count_sale && req.body.sale.skip)
 										skip_rec_sale = (res_sell_count - count_sale) - (- req.body.sale.skip);
