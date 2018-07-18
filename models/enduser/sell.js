@@ -86,19 +86,19 @@ var SellSchema = new mongoose.Schema({
 		type: String 
 	},
 	year_of_reg:{
-		type: String 
+		type: Number 
 	},
 	km_done:{
-		type: String 
+		type: Number 
 	},
 	list_price:{
-		type: String 
+		type: Number 
 	},
 	discount:{
-		type: String 
+		type: Number 
 	},
 	tax:{
-		type: String
+		type: Number
 	},
 	delivery:{
 		type: String
@@ -107,7 +107,7 @@ var SellSchema = new mongoose.Schema({
 		type: String
 	},
 	net_price:{
-		type: String
+		type: Number
 	},
 	display_amount:{
 		type: String
