@@ -73,36 +73,36 @@ module.exports.search = function(req,res){//Fetch
 								
 								if(result_filter[i].filter_field === 'km_run_from'){									
 									if(user_filter['km_done']){//If filter field already defined
-										user_filter['km_done']['$gte'] = result_filter[i].filter_value;									
+										user_filter['km_done']['$gte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										user_filter['km_done'] = {"$gte": result_filter[i].filter_value};								
+										user_filter['km_done'] = {"$gte": Number(result_filter[i].filter_value)};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'km_run_to'){
 									if(user_filter['km_done']){//If filter field already defined
-										user_filter['km_done']['$lte'] = result_filter[i].filter_value;									
+										user_filter['km_done']['$lte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										user_filter['km_done'] = {"$lte": result_filter[i].filter_value};								
+										user_filter['km_done'] = {"$lte": Number(result_filter[i].filter_value)};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'year_reg_from'){
 									//query['year_of_reg'] = {"$gte": result_filter[i].filter_value};
 									if(user_filter['year_of_reg']){//If filter field already defined
-										user_filter['year_of_reg']['$gte'] = result_filter[i].filter_value;									
+										user_filter['year_of_reg']['$gte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										user_filter['year_of_reg'] = {"$gte": result_filter[i].filter_value};								
+										user_filter['year_of_reg'] = {"$gte": Number(result_filter[i].filter_value)};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'year_reg_to'){
 									//query['year_of_reg'] = {"$lte": result_filter[i].filter_value};
 									if(user_filter['year_of_reg']){//If filter field already defined
-										user_filter['year_of_reg']['$lte'] = result_filter[i].filter_value;									
+										user_filter['year_of_reg']['$lte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										user_filter['year_of_reg'] = {"$lte": result_filter[i].filter_value};								
+										user_filter['year_of_reg'] = {"$lte": Number(result_filter[i].filter_value)};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'price_from'){
@@ -112,10 +112,10 @@ module.exports.search = function(req,res){//Fetch
 									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
 									for(var j=0; j<price_fields.length; j++){										
 										if(user_filter[price_fields[j]]){//If filter field already defined
-											user_filter[price_fields[j]]['$gte'] = result_filter[i].filter_value;									
+											user_filter[price_fields[j]]['$gte'] = Number(result_filter[i].filter_value);									
 										}
 										else{
-											user_filter[price_fields[j]] = {"$gte": result_filter[i].filter_value};								
+											user_filter[price_fields[j]] = {"$gte": Number(result_filter[i].filter_value)};								
 										}
 									}
 									
@@ -127,29 +127,29 @@ module.exports.search = function(req,res){//Fetch
 									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
 									for(var j=0; j<price_fields.length; j++){
 										if(user_filter[price_fields[j]]){//If filter field already defined
-											user_filter[price_fields[j]]['$lte'] = result_filter[i].filter_value;									
+											user_filter[price_fields[j]]['$lte'] = Number(result_filter[i].filter_value);									
 										}
 										else{
-											user_filter[price_fields[j]] = {"$lte": result_filter[i].filter_value};								
+											user_filter[price_fields[j]] = {"$lte": Number(result_filter[i].filter_value)};								
 										}
 									}
 								}
 								else if(result_filter[i].filter_field === 'discount_from'){
 									//query['discount'] = {"$gte": result_filter[i].filter_value};
 									if(user_filter['discount']){//If filter field already defined
-										user_filter['discount']['$gte'] = result_filter[i].filter_value;									
+										user_filter['discount']['$gte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										user_filter['discount'] = {"$gte": result_filter[i].filter_value};								
+										user_filter['discount'] = {"$gte": Number(result_filter[i].filter_value)};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'discount_to'){
 									//query['discount'] = {"$lte": result_filter[i].filter_value};
 									if(user_filter['discount']){//If filter field already defined
-										user_filter['discount']['$lte'] = result_filter[i].filter_value;									
+										user_filter['discount']['$lte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										user_filter['discount'] = {"$lte": result_filter[i].filter_value};								
+										user_filter['discount'] = {"$lte": Number(result_filter[i].filter_value)};								
 									}
 								}
 								else{
@@ -415,36 +415,36 @@ module.exports.getTransactions = function(req,res){//Fetch
 						if(result_filter[i].filter_value && result_filter[i].filter_field){//If Filter Value & Field is there
 							if(result_filter[i].filter_field === 'km_run_from'){
 								if(query['km_done']){//If filter field already defined
-									query['km_done']['$gte'] = result_filter[i].filter_value;									
+									query['km_done']['$gte'] = Number(result_filter[i].filter_value);									
 								}
 								else{
-									query['km_done'] = {"$gte": result_filter[i].filter_value};								
+									query['km_done'] = {"$gte": Number(result_filter[i].filter_value)};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'km_run_to'){
 								if(query['km_done']){//If filter field already defined
-									query['km_done']['$lte'] = result_filter[i].filter_value;									
+									query['km_done']['$lte'] = Number(result_filter[i].filter_value);									
 								}
 								else{
-									query['km_done'] = {"lgte": result_filter[i].filter_value};								
+									query['km_done'] = {"lgte": Number(result_filter[i].filter_value)};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'year_reg_from'){
 								//query['year_of_reg'] = {"$gte": result_filter[i].filter_value};
 								if(query['year_of_reg']){//If filter field already defined
-									query['year_of_reg']['$gte'] = result_filter[i].filter_value;									
+									query['year_of_reg']['$gte'] = Number(result_filter[i].filter_value);									
 								}
 								else{
-									query['year_of_reg'] = {"$gte": result_filter[i].filter_value};								
+									query['year_of_reg'] = {"$gte": Number(result_filter[i].filter_value)};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'year_reg_to'){
 								//query['year_of_reg'] = {"$lte": result_filter[i].filter_value};
 								if(query['year_of_reg']){//If filter field already defined
-									query['year_of_reg']['$lte'] = result_filter[i].filter_value;									
+									query['year_of_reg']['$lte'] = Number(result_filter[i].filter_value);									
 								}
 								else{
-									query['year_of_reg'] = {"$lte": result_filter[i].filter_value};								
+									query['year_of_reg'] = {"$lte": Number(result_filter[i].filter_value)};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'price_from'){
@@ -454,10 +454,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
 								for(var j=0; j<price_fields.length; j++){
 									if(query[price_fields[j]]){//If filter field already defined
-										query[price_fields[j]]['$gte'] = result_filter[i].filter_value;									
+										query[price_fields[j]]['$gte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										query[price_fields[j]] = {"$gte": result_filter[i].filter_value};								
+										query[price_fields[j]] = {"$gte": Number(result_filter[i].filter_value)};								
 									}
 								}
 								
@@ -469,29 +469,29 @@ module.exports.getTransactions = function(req,res){//Fetch
 								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
 								for(var j=0; j<price_fields.length; j++){
 									if(query[price_fields[j]]){//If filter field already defined
-										query[price_fields[j]]['$lte'] = result_filter[i].filter_value;									
+										query[price_fields[j]]['$lte'] = Number(result_filter[i].filter_value);									
 									}
 									else{
-										query[price_fields[j]] = {"$lte": result_filter[i].filter_value};								
+										query[price_fields[j]] = {"$lte": Number(result_filter[i].filter_value)};								
 									}
 								}
 							}
 							else if(result_filter[i].filter_field === 'discount_from'){
 								//query['discount'] = {"$gte": result_filter[i].filter_value};
 								if(query['discount']){//If filter field already defined
-									query['discount']['$gte'] = result_filter[i].filter_value;									
+									query['discount']['$gte'] = Number(result_filter[i].filter_value);									
 								}
 								else{
-									query['discount'] = {"$gte": result_filter[i].filter_value};								
+									query['discount'] = {"$gte": Number(result_filter[i].filter_value)};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'discount_to'){
 								//query['discount'] = {"$lte": result_filter[i].filter_value};
 								if(query['discount']){//If filter field already defined
-									query['discount']['$lte'] = result_filter[i].filter_value;									
+									query['discount']['$lte'] = Number(result_filter[i].filter_value);									
 								}
 								else{
-									query['discount'] = {"$lte": result_filter[i].filter_value};								
+									query['discount'] = {"$lte": Number(result_filter[i].filter_value)};								
 								}
 							}
 							else{
