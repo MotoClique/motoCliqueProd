@@ -71,58 +71,38 @@ module.exports.search = function(req,res){//Fetch
 									user_filter[result_filter[i].filter_field] = {'$in': terms};								
 								}*/
 								
-								if(result_filter[i].filter_field === 'km_run_from'){
-									var terms = [];
+								if(result_filter[i].filter_field === 'km_run_from'){									
 									if(user_filter['km_done']){//If filter field already defined
-										terms = user_filter['km_done']['$and'];
-										terms.push({"$gte": result_filter[i].filter_value});
-										user_filter['km_done'] = {'$and': terms};
+										user_filter['km_done']['$gte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$gte": result_filter[i].filter_value});
-										user_filter['km_done'] = {'$and': terms};								
+										user_filter['km_done'] = {"$gte": result_filter[i].filter_value};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'km_run_to'){
-									var terms = [];
 									if(user_filter['km_done']){//If filter field already defined
-										terms = user_filter['km_done']['$and'];
-										terms.push({"$lte": result_filter[i].filter_value});
-										user_filter['km_done'] = {'$and': terms};
+										user_filter['km_done']['$lte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$lte": result_filter[i].filter_value});
-										user_filter['km_done'] = {'$and': terms};								
+										user_filter['km_done'] = {"$lte": result_filter[i].filter_value};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'year_reg_from'){
 									//query['year_of_reg'] = {"$gte": result_filter[i].filter_value};
-									var terms = [];
 									if(user_filter['year_of_reg']){//If filter field already defined
-										terms = user_filter['year_of_reg']['$and'];
-										terms.push({"$gte": result_filter[i].filter_value});
-										user_filter['year_of_reg'] = {'$and': terms};
+										user_filter['year_of_reg']['$gte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$gte": result_filter[i].filter_value});
-										user_filter['year_of_reg'] = {'$and': terms};								
+										user_filter['year_of_reg'] = {"$gte": result_filter[i].filter_value};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'year_reg_to'){
 									//query['year_of_reg'] = {"$lte": result_filter[i].filter_value};
-									var terms = [];
 									if(user_filter['year_of_reg']){//If filter field already defined
-										terms = user_filter['year_of_reg']['$and'];
-										terms.push({"$lte": result_filter[i].filter_value});
-										user_filter['year_of_reg'] = {'$and': terms};
+										user_filter['year_of_reg']['$lte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$lte": result_filter[i].filter_value});
-										user_filter['year_of_reg'] = {'$and': terms};								
+										user_filter['year_of_reg'] = {"$lte": result_filter[i].filter_value};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'price_from'){
@@ -130,17 +110,12 @@ module.exports.search = function(req,res){//Fetch
 									//query['current_bid_amount'] = {"$gte": result_filter[i].filter_value};
 									//query['start_from_amount'] = {"$gte": result_filter[i].filter_value};
 									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
-									for(var j=0; j<price_fields.length; j++){
-										var terms = [];
+									for(var j=0; j<price_fields.length; j++){										
 										if(user_filter[price_fields[j]]){//If filter field already defined
-											terms = user_filter[price_fields[j]]['$and'];
-											terms.push({"$gte": result_filter[i].filter_value});
-											user_filter[price_fields[j]] = {'$and': terms};
+											user_filter[price_fields[j]]['$gte'] = result_filter[i].filter_value;									
 										}
 										else{
-											terms = [];
-											terms.push({"$gte": result_filter[i].filter_value});
-											user_filter[price_fields[j]] = {'$and': terms};								
+											user_filter[price_fields[j]] = {"$gte": result_filter[i].filter_value};								
 										}
 									}
 									
@@ -151,45 +126,30 @@ module.exports.search = function(req,res){//Fetch
 									//query['start_from_amount'] = {"$lte": result_filter[i].filter_value};
 									var price_fields = ['net_price','current_bid_amount','start_from_amount'];
 									for(var j=0; j<price_fields.length; j++){
-										var terms = [];
 										if(user_filter[price_fields[j]]){//If filter field already defined
-											terms = user_filter[price_fields[j]]['$and'];
-											terms.push({"$lte": result_filter[i].filter_value});
-											user_filter[price_fields[j]] = {'$and': terms};
+											user_filter[price_fields[j]]['$lte'] = result_filter[i].filter_value;									
 										}
 										else{
-											terms = [];
-											terms.push({"$lte": result_filter[i].filter_value});
-											user_filter[price_fields[j]] = {'$and': terms};								
+											user_filter[price_fields[j]] = {"$lte": result_filter[i].filter_value};								
 										}
 									}
 								}
 								else if(result_filter[i].filter_field === 'discount_from'){
 									//query['discount'] = {"$gte": result_filter[i].filter_value};
-									var terms = [];
 									if(user_filter['discount']){//If filter field already defined
-										terms = user_filter['discount']['$and'];
-										terms.push({"$gte": result_filter[i].filter_value});
-										user_filter['discount'] = {'$and': terms};
+										user_filter['discount']['$gte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$gte": result_filter[i].filter_value});
-										user_filter['discount'] = {'$and': terms};								
+										user_filter['discount'] = {"$gte": result_filter[i].filter_value};								
 									}
 								}
 								else if(result_filter[i].filter_field === 'discount_to'){
 									//query['discount'] = {"$lte": result_filter[i].filter_value};
-									var terms = [];
 									if(user_filter['discount']){//If filter field already defined
-										terms = user_filter['discount']['$and'];
-										terms.push({"$lte": result_filter[i].filter_value});
-										user_filter['discount'] = {'$and': terms};
+										user_filter['discount']['$lte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$lte": result_filter[i].filter_value});
-										user_filter['discount'] = {'$and': terms};								
+										user_filter['discount'] = {"$lte": result_filter[i].filter_value};								
 									}
 								}
 								else{
@@ -454,57 +414,37 @@ module.exports.getTransactions = function(req,res){//Fetch
 					for(var i=0; i<result_filter.length; i++){
 						if(result_filter[i].filter_value && result_filter[i].filter_field){//If Filter Value & Field is there
 							if(result_filter[i].filter_field === 'km_run_from'){
-								var terms = [];
 								if(query['km_done']){//If filter field already defined
-									terms = query['km_done']['$and'];
-									terms.push({"$gte": result_filter[i].filter_value});
-									query['km_done'] = {'$and': terms};
+									query['km_done']['$gte'] = result_filter[i].filter_value;									
 								}
 								else{
-									terms = [];
-									terms.push({"$gte": result_filter[i].filter_value});
-									query['km_done'] = {'$and': terms};								
+									query['km_done'] = {"$gte": result_filter[i].filter_value};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'km_run_to'){
-								var terms = [];
 								if(query['km_done']){//If filter field already defined
-									terms = query['km_done']['$and'];
-									terms.push({"$lte": result_filter[i].filter_value});
-									query['km_done'] = {'$and': terms};
+									query['km_done']['$lte'] = result_filter[i].filter_value;									
 								}
 								else{
-									terms = [];
-									terms.push({"$lte": result_filter[i].filter_value});
-									query['km_done'] = {'$and': terms};								
+									query['km_done'] = {"lgte": result_filter[i].filter_value};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'year_reg_from'){
 								//query['year_of_reg'] = {"$gte": result_filter[i].filter_value};
-								var terms = [];
 								if(query['year_of_reg']){//If filter field already defined
-									terms = query['year_of_reg']['$and'];
-									terms.push({"$gte": result_filter[i].filter_value});
-									query['year_of_reg'] = {'$and': terms};
+									query['year_of_reg']['$gte'] = result_filter[i].filter_value;									
 								}
 								else{
-									terms = [];
-									terms.push({"$gte": result_filter[i].filter_value});
-									query['year_of_reg'] = {'$and': terms};								
+									query['year_of_reg'] = {"$gte": result_filter[i].filter_value};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'year_reg_to'){
 								//query['year_of_reg'] = {"$lte": result_filter[i].filter_value};
-								var terms = [];
 								if(query['year_of_reg']){//If filter field already defined
-									terms = query['year_of_reg']['$and'];
-									terms.push({"$lte": result_filter[i].filter_value});
-									query['year_of_reg'] = {'$and': terms};
+									query['year_of_reg']['$lte'] = result_filter[i].filter_value;									
 								}
 								else{
-									terms = [];
-									terms.push({"$lte": result_filter[i].filter_value});
-									query['year_of_reg'] = {'$and': terms};								
+									query['year_of_reg'] = {"$lte": result_filter[i].filter_value};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'price_from'){
@@ -513,16 +453,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 								//query['start_from_amount'] = {"$gte": result_filter[i].filter_value};
 								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
 								for(var j=0; j<price_fields.length; j++){
-									var terms = [];
 									if(query[price_fields[j]]){//If filter field already defined
-										terms = query[price_fields[j]]['$and'];
-										terms.push({"$gte": result_filter[i].filter_value});
-										query[price_fields[j]] = {'$and': terms};
+										query[price_fields[j]]['$gte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$gte": result_filter[i].filter_value});
-										query[price_fields[j]] = {'$and': terms};								
+										query[price_fields[j]] = {"$gte": result_filter[i].filter_value};								
 									}
 								}
 								
@@ -533,45 +468,30 @@ module.exports.getTransactions = function(req,res){//Fetch
 								//query['start_from_amount'] = {"$lte": result_filter[i].filter_value};
 								var price_fields = ['net_price','current_bid_amount','start_from_amount'];
 								for(var j=0; j<price_fields.length; j++){
-									var terms = [];
 									if(query[price_fields[j]]){//If filter field already defined
-										terms = query[price_fields[j]]['$and'];
-										terms.push({"$lte": result_filter[i].filter_value});
-										query[price_fields[j]] = {'$and': terms};
+										query[price_fields[j]]['$lte'] = result_filter[i].filter_value;									
 									}
 									else{
-										terms = [];
-										terms.push({"$lte": result_filter[i].filter_value});
-										query[price_fields[j]] = {'$and': terms};								
+										query[price_fields[j]] = {"$lte": result_filter[i].filter_value};								
 									}
 								}
 							}
 							else if(result_filter[i].filter_field === 'discount_from'){
 								//query['discount'] = {"$gte": result_filter[i].filter_value};
-								var terms = [];
 								if(query['discount']){//If filter field already defined
-									terms = query['discount']['$and'];
-									terms.push({"$gte": result_filter[i].filter_value});
-									query['discount'] = {'$and': terms};
+									query['discount']['$gte'] = result_filter[i].filter_value;									
 								}
 								else{
-									terms = [];
-									terms.push({"$gte": result_filter[i].filter_value});
-									query['discount'] = {'$and': terms};								
+									query['discount'] = {"$gte": result_filter[i].filter_value};								
 								}
 							}
 							else if(result_filter[i].filter_field === 'discount_to'){
 								//query['discount'] = {"$lte": result_filter[i].filter_value};
-								var terms = [];
 								if(query['discount']){//If filter field already defined
-									terms = query['discount']['$and'];
-									terms.push({"$lte": result_filter[i].filter_value});
-									query['discount'] = {'$and': terms};
+									query['discount']['$lte'] = result_filter[i].filter_value;									
 								}
 								else{
-									terms = [];
-									terms.push({"$lte": result_filter[i].filter_value});
-									query['discount'] = {'$and': terms};								
+									query['discount'] = {"$lte": result_filter[i].filter_value};								
 								}
 							}
 							else{
@@ -763,9 +683,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 						delete sell_query.current_bid_amount;		
 						delete sell_query.start_from_amount;
 						console.log(sell_query);
-						Sell.count(sell_query,function(err_sell_count,res_sell_count){
-							console.log(err_sell_count);
-							console.log(res_sell_count);
+						Sell.count(sell_query,function(err_sell_count,res_sell_count){							
 									var skip_rec_sale = (req.body.sale.skip)?req.body.sale.skip:0;
 									if(count_sale && res_sell_count>count_sale && req.body.sale.skip)
 										skip_rec_sale = (res_sell_count - count_sale) - (- req.body.sale.skip);
