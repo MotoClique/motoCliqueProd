@@ -31,7 +31,8 @@
 		 {"name": ""},
 		 {"name": "Input"},
 		 {"name": "Select"},
-		 {"name": "Checkbox"}
+		 {"name": "Checkbox"},
+		 {"name": "DateTime"}
 	 ],
 	 
 	 "categories":[

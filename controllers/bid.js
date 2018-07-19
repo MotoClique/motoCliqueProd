@@ -50,8 +50,24 @@ module.exports.getBid = function(req,res){//Fetch
 					else{
 						var results = [];
 						for(var i=0; i<result.length; i++){
-							var split = (result[i].bid_valid_to).split('/');
-							var validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
+							var date_split = [];
+							var time_split = [];
+							var validTo = new Date();
+										
+							if(result[i].bid_valid_to){
+								var date_part = ((result[i].bid_valid_to).split('T'))[0];
+								var time_part = ((result[i].bid_valid_to).split('T'))[1];
+								if(date_part)
+									date_split = (date_part).split('/');
+								if(time_part)
+									time_split = (time_part).split(':');
+									
+								if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
+									validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+							}
+							
+							//var split = (result[i].bid_valid_to).split('/');
+							//var validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
 											
 							if(validTo >= (new Date())){
 								var clone = JSON.parse(JSON.stringify(result[i]));
@@ -83,8 +99,25 @@ module.exports.getBid = function(req,res){//Fetch
 			Bid.find(query,function(err, result){
 				var results = [];
 				for(var i=0; i<result.length; i++){
-					var split = (result[i].bid_valid_to).split('/');
-					var validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
+					var date_split = [];
+					var time_split = [];
+					var validTo = new Date();
+										
+					if(result[i].bid_valid_to){
+						var date_part = ((result[i].bid_valid_to).split('T'))[0];
+						var time_part = ((result[i].bid_valid_to).split('T'))[1];
+						if(date_part)
+							date_split = (date_part).split('/');
+						if(time_part)
+							time_split = (time_part).split(':');
+							
+						if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
+							validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+					}
+					
+										
+					//var split = (result[i].bid_valid_to).split('/');
+					//var validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
 										
 					if(validTo >= (new Date())){
 						var clone = JSON.parse(JSON.stringify(result[i]));
@@ -200,7 +233,7 @@ module.exports.addBid = function(req,res){//Add New
 						doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear();*/
 						if(!(doc.bid_valid_to) && doc.bid_status === 'Active'){
 							var d = new Date();							
-							doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear();
+							doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +'T00:00:00';
 						}
 						
 						let newBid = new Bid(doc);
@@ -261,7 +294,7 @@ module.exports.updateBid = function(req,res){//Update
 		
 	if(doc.msg === 'D'){
 		d.setDate(d.getDate()-1);
-		doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear();
+		doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +"T00:00:00";
 		doc.active = "";
 	}
 		
