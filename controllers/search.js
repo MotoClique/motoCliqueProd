@@ -56,9 +56,15 @@ module.exports.search = function(req,res){//Fetch
 			query_filter.user_id = {"$eq":req.payload.user_id};
 			query_filter.deleted = {"$ne": true};			
 			Filter.find(query_filter,function(err_filter, result_filter){
-						var user_filter = {};
+						
 						for(var i=0; i<result_filter.length; i++){
-							if(result_filter[i].filter_value && result_filter[i].filter_field && result_filter[i].filter_value !== 'All'){//If Filter Value & Field is there
+							if(result_filter[i].filter_value
+							   && result_filter[i].filter_value !== 'All'
+							   && result_filter[i].filter_field 
+							   && result_filter[i].filter_field !== 'product_type_name'
+							  && result_filter[i].filter_field !== 'brand_name'
+							  && result_filter[i].filter_field !== 'model'
+							  && result_filter[i].filter_field !== 'variant'){//If Filter Value & Field is there
 								/*var terms = [];
 								if(user_filter[result_filter[i].filter_field]){//If filter field already defined
 									terms = user_filter[result_filter[i].filter_field]['$in'];
@@ -70,7 +76,7 @@ module.exports.search = function(req,res){//Fetch
 									terms.push(result_filter[i].filter_value);
 									user_filter[result_filter[i].filter_field] = {'$in': terms};								
 								}*/
-								
+								var user_filter = {};
 								if(result_filter[i].filter_field === 'km_run_from'){									
 									if(user_filter['km_done']){//If filter field already defined
 										user_filter['km_done']['$gte'] = Number(result_filter[i].filter_value);									
@@ -165,20 +171,25 @@ module.exports.search = function(req,res){//Fetch
 										user_filter[result_filter[i].filter_field] = {'$in': terms};								
 									}
 								}
+								ands.push(user_filter);
 								
 							}
 							
 						}
-						ands.push(user_filter);
-						var query = {$and: ands};
+						
+						var query = {$and: []};
 															  
 						var type = req.query.type;
 						var results = [];
 						if(type === "Sale"){
-							var sell_query = JSON.parse(JSON.stringify(query));
-							delete sell_query.current_bid_amount;
-							delete sell_query.start_from_amount;
-							Sell.find(sell_query).limit(6)
+							var sell_query = [];
+							ands.forEach(function(item, index, arr) {
+								if(!(item.current_bid_amount) && !(item.start_from_amount)){
+								   sell_query.push(item);
+								}
+							});
+							query = {$and: sell_query};
+							Sell.find(query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -198,11 +209,14 @@ module.exports.search = function(req,res){//Fetch
 							});
 						}
 						else if(type === "Buy"){
-							var buy_query = JSON.parse(JSON.stringify(query));
-							delete buy_query.discount;
-							delete buy_query.current_bid_amount;
-							delete buy_query.start_from_amount;
-							Buy.find(buy_query).limit(6)
+							var buy_query = [];
+							ands.forEach(function(item, index, arr) {
+								if(!(item.discount) && !(item.current_bid_amount) && !(item.start_from_amount)){
+								   buy_query.push(item);
+								}
+							});
+							query = {$and: buy_query};
+							Buy.find(query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -222,11 +236,14 @@ module.exports.search = function(req,res){//Fetch
 							});
 						}
 						else if (type === "Bid"){
-							var bid_query = JSON.parse(JSON.stringify(query));
-							delete bid_query.discount;
-							delete bid_query.net_price;
-							delete bid_query.start_from_amount;
-							Bid.find(bid_query).limit(6)
+							var bid_query = [];
+							ands.forEach(function(item, index, arr) {
+								if(!(item.discount) && !(item.net_price) && !(item.start_from_amount)){
+								   bid_query.push(item);
+								}
+							});
+							query = {$and: bid_query};							
+							Bid.find(query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -246,13 +263,18 @@ module.exports.search = function(req,res){//Fetch
 							});
 						}
 						else if(type === "Service"){
-							var service_query = JSON.parse(JSON.stringify(query));
-							delete service_query.discount;
-							delete service_query.net_price;
-							delete service_query.current_bid_amount;
-							delete service_query.year_of_reg;
-							delete service_query.km_done;
-							Service.find(service_query).limit(6)
+							var service_query = [];
+							ands.forEach(function(item, index, arr) {
+								if(!(item.discount) 
+								   && !(item.net_price) 
+								   && !(item.current_bid_amount) 
+								   && !(item.year_of_reg)
+								   && !(item.km_done)){
+								   service_query.push(item);
+								}
+							});
+							query = {$and: service_query};							
+							Service.find(query).limit(6)
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
@@ -272,11 +294,16 @@ module.exports.search = function(req,res){//Fetch
 							});
 						}
 						else{
-							var sell_query = JSON.parse(JSON.stringify(query));
-							delete sell_query.current_bid_amount;
-							delete sell_query.start_from_amount;
-							console.log(sell_query);
-							Sell.find(sell_query).limit(2)
+							var sell_query = [];
+							ands.forEach(function(item, index, arr) {
+								if(!(item.current_bid_amount) 
+								   && !(item.start_from_amount)){
+								   sell_query.push(item);
+								}
+							});
+							query = {$and: sell_query};							
+							console.log(query);
+							Sell.find(query).limit(2)
 								.exec(function(err, sales) {
 								console.log(err);
 									for(var i=0; i<sales.length; i++){
@@ -294,11 +321,16 @@ module.exports.search = function(req,res){//Fetch
 											results.push(clone);
 									}
 									//res.status(200).json({results: result, error: err});
-									var buy_query = JSON.parse(JSON.stringify(query));
-									delete buy_query.discount;
-									delete buy_query.current_bid_amount;
-									delete buy_query.start_from_amount;
-									Buy.find(buy_query).limit(2)
+									var buy_query = [];
+									ands.forEach(function(item, index, arr) {
+										if(!(item.discount)
+										   &&!(item.current_bid_amount) 
+										   && !(item.start_from_amount)){
+										   buy_query.push(item);
+										}
+									});
+									query = {$and: buy_query};									
+									Buy.find(query).limit(2)
 										.exec(function(err, buy) {
 											for(var i=0; i<buy.length; i++){
 												var clone = JSON.parse(JSON.stringify(buy[i]));
@@ -315,11 +347,16 @@ module.exports.search = function(req,res){//Fetch
 													results.push(clone);
 											}
 											//res.status(200).json({results: result, error: err});
-											var bid_query = JSON.parse(JSON.stringify(query));
-											delete bid_query.discount;
-											delete bid_query.net_price;
-											delete bid_query.start_from_amount;
-											Bid.find(bid_query).limit(2)
+											var bid_query = [];
+											ands.forEach(function(item, index, arr) {
+												if(!(item.discount)
+												   &&!(item.net_price) 
+												   && !(item.start_from_amount)){
+												   bid_query.push(item);
+												}
+											});
+											query = {$and: bid_query};											
+											Bid.find(query).limit(2)
 												.exec(function(err, bids) {
 													for(var i=0; i<bids.length; i++){
 														var clone = JSON.parse(JSON.stringify(bids[i]));
@@ -336,13 +373,18 @@ module.exports.search = function(req,res){//Fetch
 															results.push(clone);
 													}
 													//res.status(200).json({results: results, error: err});
-													var service_query = JSON.parse(JSON.stringify(query));
-													delete service_query.discount;
-													delete service_query.net_price;
-													delete service_query.current_bid_amount;
-													delete service_query.year_of_reg;
-													delete service_query.km_done;
-													Service.find(service_query).limit(2)
+													var service_query = [];
+													ands.forEach(function(item, index, arr) {
+														if(!(item.discount) 
+														   && !(item.net_price) 
+														   && !(item.current_bid_amount) 
+														   && !(item.year_of_reg)
+														   && !(item.km_done)){
+														   service_query.push(item);
+														}
+													});
+													query = {$and: service_query};														
+													Service.find(query).limit(2)
 														.exec(function(err, services) {
 															for(var i=0; i<services.length; i++){
 																var clone = JSON.parse(JSON.stringify(services[i]));
