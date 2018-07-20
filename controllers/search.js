@@ -58,7 +58,7 @@ module.exports.search = function(req,res){//Fetch
 			Filter.find(query_filter,function(err_filter, result_filter){
 						var user_filter = {};
 						for(var i=0; i<result_filter.length; i++){
-							if(result_filter[i].filter_value && result_filter[i].filter_field){//If Filter Value & Field is there
+							if(result_filter[i].filter_value && result_filter[i].filter_field && result_filter[i].filter_value !== 'All'){//If Filter Value & Field is there
 								/*var terms = [];
 								if(user_filter[result_filter[i].filter_field]){//If filter field already defined
 									terms = user_filter[result_filter[i].filter_field]['$in'];
@@ -275,8 +275,10 @@ module.exports.search = function(req,res){//Fetch
 							var sell_query = JSON.parse(JSON.stringify(query));
 							delete sell_query.current_bid_amount;
 							delete sell_query.start_from_amount;
+							console.log(sell_query);
 							Sell.find(sell_query).limit(2)
 								.exec(function(err, sales) {
+								console.log(err);
 									for(var i=0; i<sales.length; i++){
 										var clone = JSON.parse(JSON.stringify(sales[i]));
 										clone.text = sales[i].product_type_name +" "+ sales[i].brand_name +" "+ sales[i].model +" "+ sales[i].variant ;
@@ -412,7 +414,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 		query_filter.deleted = {"$ne": true};			
 		Filter.find(query_filter,function(err_filter, result_filter){
 					for(var i=0; i<result_filter.length; i++){
-						if(result_filter[i].filter_value && result_filter[i].filter_field){//If Filter Value & Field is there
+						if(result_filter[i].filter_value && result_filter[i].filter_field && result_filter[i].filter_value !== 'All'){//If Filter Value & Field is there
 							if(result_filter[i].filter_field === 'km_run_from'){
 								if(query['km_done']){//If filter field already defined
 									query['km_done']['$gte'] = Number(result_filter[i].filter_value);									
