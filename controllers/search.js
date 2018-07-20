@@ -161,7 +161,8 @@ module.exports.search = function(req,res){//Fetch
 								else{
 									var terms = [];
 									if(user_filter[result_filter[i].filter_field]){//If filter field already defined
-										terms = user_filter[result_filter[i].filter_field]['$in'];
+										if(user_filter[result_filter[i].filter_field]['$in'])
+											terms = user_filter[result_filter[i].filter_field]['$in'];
 										terms.push(result_filter[i].filter_value);
 										user_filter[result_filter[i].filter_field] = {'$in': terms};
 									}
@@ -439,8 +440,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 	   var query = {};
 		for (var key in queries) {
 			if (queries.hasOwnProperty(key)) {
-				//var q = {};
-				query[key] = {$eq: queries[key]};
+				var inArr = [];
+				if(queries[key])
+					inArr.push(queries[key]);
+				query[key] = {$in: inArr};
 				//query.push(q);
 			}
 		}        
@@ -541,7 +544,8 @@ module.exports.getTransactions = function(req,res){//Fetch
 							else{
 								var terms = [];
 								if(query[result_filter[i].filter_field]){//If filter field already defined
-									terms = query[result_filter[i].filter_field]['$in'];
+									if(query[result_filter[i].filter_field]['$in'])
+										terms = query[result_filter[i].filter_field]['$in'];
 									terms.push(result_filter[i].filter_value);
 									query[result_filter[i].filter_field] = {'$in': terms};
 								}
