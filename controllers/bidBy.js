@@ -39,10 +39,26 @@ module.exports.addBidBy = function(req,res){//Add New
 		query_bid.deleted = {"$ne": true};		
 		Bid.find(query_bid,function(err_bid, result_bid){
 			if(result_bid.length > 0){
-				var to = (result_bid[0].bid_valid_to).split('/');
-				var toDateObj = new Date(to[2]+'-'+to[1]+'-'+to[0]);
+				var date_split = [];
+				var time_split = [];
+				var validTo = new Date();
+										
+				if(result_bid[0].bid_valid_to){
+					var date_part = ((result_bid[0].bid_valid_to).split('T'))[0];
+					var time_part = ((result_bid[0].bid_valid_to).split('T'))[1];
+					if(date_part)
+						date_split = (date_part).split('/');
+					if(time_part)
+						time_split = (time_part).split(':');
+							
+					if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
+						validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+				}
+				
+				//var to = (result_bid[0].bid_valid_to).split('/');
+				//var toDateObj = new Date(to[2]+'-'+to[1]+'-'+to[0]);
 				var currentDateObj = new Date();
-				if(toDateObj>currentDateObj && result_bid[0].active === 'X'){	
+				if(validTo>currentDateObj && result_bid[0].active === 'X'){	
 					var query = {};
 					query.user_id = {"$eq":req.payload.user_id};
 					Profile.find(query,function(profile_err, users){
