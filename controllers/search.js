@@ -637,6 +637,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 						delete query.discount;
 						delete query.net_price;
 						delete query.start_from_amount;
+						query.bid_status = {"$eq": "Active"};
 						Bid.count(query,function(err_bid_count,res_bid_count){
 							if(err_bid_count){
 								res.status(401).json({statusCode:"F", results:null, error:err_bid_count});
@@ -787,6 +788,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 															delete bid_query.discount;
 															delete bid_query.net_price;
 															delete bid_query.start_from_amount;
+															bid_query.bid_status = {"$eq": "Active"};
 															Bid.count(bid_query,function(err_bid_count,res_bid_count){
 																		var skip_rec_bid = (req.body.bid.skip)?req.body.bid.skip:0;
 																		if(count_bid && res_bid_count>count_bid && req.body.bid.skip)
