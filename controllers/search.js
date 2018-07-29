@@ -212,7 +212,7 @@ module.exports.search = function(req,res){//Fetch
 						else if(type === "Buy"){
 							var buy_query = [];
 							ands.forEach(function(item, index, arr) {
-								if(!(item.discount) && !(item.current_bid_amount) && !(item.start_from_amount)){
+								if(!(item.current_bid_amount) && !(item.start_from_amount)){
 								   buy_query.push(item);
 								}
 							});
@@ -239,7 +239,7 @@ module.exports.search = function(req,res){//Fetch
 						else if (type === "Bid"){
 							var bid_query = [];
 							ands.forEach(function(item, index, arr) {
-								if(!(item.discount) && !(item.net_price) && !(item.start_from_amount)){
+								if(!(item.net_price) && !(item.start_from_amount)){
 								   bid_query.push(item);
 								}
 							});
@@ -266,11 +266,8 @@ module.exports.search = function(req,res){//Fetch
 						else if(type === "Service"){
 							var service_query = [];
 							ands.forEach(function(item, index, arr) {
-								if(!(item.discount) 
-								   && !(item.net_price) 
-								   && !(item.current_bid_amount) 
-								   && !(item.year_of_reg)
-								   && !(item.km_done)){
+								if(!(item.net_price) 
+								   && !(item.current_bid_amount)){
 								   service_query.push(item);
 								}
 							});
@@ -324,8 +321,7 @@ module.exports.search = function(req,res){//Fetch
 									//res.status(200).json({results: result, error: err});
 									var buy_query = [];
 									ands.forEach(function(item, index, arr) {
-										if(!(item.discount)
-										   &&!(item.current_bid_amount) 
+										if(!(item.current_bid_amount) 
 										   && !(item.start_from_amount)){
 										   buy_query.push(item);
 										}
@@ -350,8 +346,7 @@ module.exports.search = function(req,res){//Fetch
 											//res.status(200).json({results: result, error: err});
 											var bid_query = [];
 											ands.forEach(function(item, index, arr) {
-												if(!(item.discount)
-												   &&!(item.net_price) 
+												if(!(item.net_price) 
 												   && !(item.start_from_amount)){
 												   bid_query.push(item);
 												}
@@ -376,11 +371,8 @@ module.exports.search = function(req,res){//Fetch
 													//res.status(200).json({results: results, error: err});
 													var service_query = [];
 													ands.forEach(function(item, index, arr) {
-														if(!(item.discount) 
-														   && !(item.net_price) 
-														   && !(item.current_bid_amount) 
-														   && !(item.year_of_reg)
-														   && !(item.km_done)){
+														if(!(item.net_price) 
+														   && !(item.current_bid_amount)){
 														   service_query.push(item);
 														}
 													});
@@ -600,7 +592,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 						if(req.body.buy.count)
 							count_buy = req.body.buy.count;
 						
-						delete query.discount;
+						//delete query.discount;
 						delete query.current_bid_amount;
 						delete query.start_from_amount;
 						Buy.count(query,function(err_buy_count,res_buy_count){
@@ -634,10 +626,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 						if(req.body.bid.count)
 							count_bid = req.body.bid.count;
 						delete query.active;
-						delete query.discount;
+						//delete query.discount;
 						delete query.net_price;
 						delete query.start_from_amount;
 						query.bid_status = {"$eq": "Active"};
+						console.log(query);
 						Bid.count(query,function(err_bid_count,res_bid_count){
 							if(err_bid_count){
 								res.status(401).json({statusCode:"F", results:null, error:err_bid_count});
@@ -649,8 +642,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 								if(!count_bid)
 									count_bid = res_bid_count;
 								var limit_rec = (req.body.bid.limit)?req.body.bid.limit:10;
+								console.log(res_bid_count);
+								console.log(skip_rec);
+								console.log(limit_rec);
 								Bid.find(query).sort({"index_count":-1}).skip(skip_rec).limit(limit_rec)
 									.exec(function(err, result) {
+										console.log(result);
 										//result.forEach(function(item, index, arr) {
 										for(var i=0; i<result.length; i++){
 											var date_split = [];
@@ -701,11 +698,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 						if(req.body.service.count)
 							count_service = req.body.service.count;
 						
-						delete query.discount;
+						//delete query.discount;
 						delete query.current_bid_amount;
 						delete query.net_price;
-						delete query.year_of_reg;
-						delete query.km_done;
+						//delete query.year_of_reg;
+						//delete query.km_done;
 						Service.count(query,function(err_service_count,res_service_count){
 							if(err_service_count){
 								res.status(401).json({statusCode:"F", results:null, error:err_service_count});
@@ -739,7 +736,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 						var sell_query = JSON.parse(JSON.stringify(query));
 						delete sell_query.current_bid_amount;		
 						delete sell_query.start_from_amount;
-						console.log(sell_query);
+						
 						Sell.count(sell_query,function(err_sell_count,res_sell_count){							
 									var skip_rec_sale = (req.body.sale.skip)?req.body.sale.skip:0;
 									if(count_sale && res_sell_count>count_sale && req.body.sale.skip)
@@ -761,7 +758,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 												count_buy = req.body.buy.count;
 											
 											var buy_query = JSON.parse(JSON.stringify(query));
-											delete buy_query.discount;
+											//delete buy_query.discount;
 											delete buy_query.current_bid_amount;		
 											delete buy_query.start_from_amount;		
 											Buy.count(buy_query,function(err_buy_count,res_buy_count){
@@ -785,7 +782,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 															
 															var bid_query = JSON.parse(JSON.stringify(query));
 															delete bid_query.active;
-															delete bid_query.discount;
+															//delete bid_query.discount;
 															delete bid_query.net_price;
 															delete bid_query.start_from_amount;
 															bid_query.bid_status = {"$eq": "Active"};
@@ -841,11 +838,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 																					count_service = req.body.service.count;
 																				
 																				var service_query = JSON.parse(JSON.stringify(query));
-																				delete service_query.discount;
+																				//delete service_query.discount;
 																				delete service_query.current_bid_amount;
 																				delete service_query.net_price;
-																				delete service_query.year_of_reg;
-																				delete service_query.km_done;
+																				//delete service_query.year_of_reg;
+																				//delete service_query.km_done;
 																				Service.count(service_query,function(err_service_count,res_service_count){
 																						var skip_rec_service = (req.body.service.skip)?req.body.service.skip:0;
 																						if(count_service && res_service_count>count_service && req.body.service.skip)
