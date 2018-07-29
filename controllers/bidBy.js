@@ -57,6 +57,8 @@ module.exports.addBidBy = function(req,res){//Add New
 				
 				//var to = (result_bid[0].bid_valid_to).split('/');
 				//var toDateObj = new Date(to[2]+'-'+to[1]+'-'+to[0]);
+				console.log(validTo);
+				console.log(result_bid[0].active);
 				var currentDateObj = new Date();
 				if(validTo>currentDateObj && result_bid[0].active === 'X'){	
 					var query = {};

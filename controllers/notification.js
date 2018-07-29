@@ -89,7 +89,7 @@ module.exports.sendNotification = function(doc){//Send
 																			request.post({
 																				url:'https://api.textlocal.in/send/?', 
 																				form: {
-																						  'apikey': params.sms_api_key, //'MN/ELO/CKoU-bT0VHaKrMJ3hPcLreDUlNj90PY0MqC',
+																						  'apikey': params.sms_api_key, 
 																						  'message': 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'.',
 																						  'sender': 'TXTLCL',
 																						  'numbers': '91'+profiles[0].mobile
@@ -130,12 +130,12 @@ module.exports.sendNotification = function(doc){//Send
 																							"text": 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'.'
 																			};
 																			request.post({
-																				url:'https://api.mailgun.net/v3/'+ params.email_api_id//sandboxbd4811c4f46d4450987f8899b4c08721.mailgun.org
+																				url:'https://api.mailgun.net/v3/'+ params.email_api_id
 																						+'/messages', 
 																				form: data,
 																				headers: {
-																					'Authorization': 'Basic '+Buffer.from('api:key-'+params.email_api_key/*'api:key-3cf7952407982696ab3fec8171461271'*/).toString('base64')
-																					//btoa('api:key-3cf7952407982696ab3fec8171461271')
+																					'Authorization': 'Basic '+Buffer.from('api:key-'+params.email_api_key).toString('base64')
+																					
 																				  }
 																			},
 																			function(err_email,httpResponse,body){
