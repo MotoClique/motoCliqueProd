@@ -39,12 +39,12 @@ module.exports.addBidBy = function(req,res){//Add New
 		query_bid.deleted = {"$ne": true};		
 		Bid.find(query_bid,function(err_bid, result_bid){
 			if(result_bid.length > 0){
-				var date_split = [];
-				var time_split = [];
+				//var date_split = [];
+				//var time_split = [];
 				var validTo = new Date();
 										
 				if(result_bid[0].bid_valid_to){
-					var date_part = ((result_bid[0].bid_valid_to).split('T'))[0];
+					/*var date_part = ((result_bid[0].bid_valid_to).split('T'))[0];
 					var time_part = ((result_bid[0].bid_valid_to).split('T'))[1];
 					if(date_part)
 						date_split = (date_part).split('/');
@@ -52,7 +52,8 @@ module.exports.addBidBy = function(req,res){//Add New
 						time_split = (time_part).split(':');
 							
 					if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-						validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+						validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
+					validTo = result_bid[0].bid_valid_to;
 				}
 				
 				//var to = (result_bid[0].bid_valid_to).split('/');

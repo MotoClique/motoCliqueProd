@@ -630,6 +630,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 						delete query.net_price;
 						delete query.start_from_amount;
 						query.bid_status = {"$eq": "Active"};
+						var extr_dy = new Date();
+						if(params_result.length && params_result.length>0){
+							var newDate = extr_dy.getDate() - (params_result[0].value);
+							extr_dy.setDate(newDate);
+						}
+						query.bid_valid_to = {"$gte": extr_dy};
 						console.log(query);
 						Bid.count(query,function(err_bid_count,res_bid_count){
 							if(err_bid_count){
@@ -650,12 +656,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 										console.log(result);
 										//result.forEach(function(item, index, arr) {
 										for(var i=0; i<result.length; i++){
-											var date_split = [];
-											var time_split = [];
+											//var date_split = [];
+											//var time_split = [];
 											var validTo = new Date();
 											
 											if(result[i].bid_valid_to){
-												var date_part = ((result[i].bid_valid_to).split('T'))[0];
+												/*var date_part = ((result[i].bid_valid_to).split('T'))[0];
 												var time_part = ((result[i].bid_valid_to).split('T'))[1];
 												if(date_part)
 													date_split = (date_part).split('/');
@@ -663,24 +669,36 @@ module.exports.getTransactions = function(req,res){//Fetch
 													time_split = (time_part).split(':');
 												
 												if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-													validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+													validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
+												validTo = result[i].bid_valid_to;
 											}
 											
 											if(validTo >= (new Date())){
 												var clone = JSON.parse(JSON.stringify(result[i]));
 												//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+												var bid_valid_to = result[i].bid_valid_to;
+												var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+												var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+												var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+												clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 												clone.type = "Bid";
 												results.push(clone);
 											}
 											else{												
-												if(params_result.length && params_result.length>0){
+												/*if(params_result.length && params_result.length>0){
 													var newDate = validTo.getDate() - (- params_result[0].value);
 													validTo.setDate(newDate);
-												}
+												}*/
 																								
-												if(validTo >= (new Date()) && result[i].current_bid_at){													
+												//if(validTo >= (new Date()) && result[i].current_bid_at){	
+												if(result[i].current_bid_at){	
 															var clone = JSON.parse(JSON.stringify(result[i]));
 															//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+															var bid_valid_to = result[i].bid_valid_to;
+															var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+															var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+															var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+															clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 															clone.type = "Bid";
 															clone.sold = true;
 															results.push(clone);													
@@ -786,6 +804,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 															delete bid_query.net_price;
 															delete bid_query.start_from_amount;
 															bid_query.bid_status = {"$eq": "Active"};
+															var extr_dy = new Date();
+															if(params_result.length && params_result.length>0){
+																var newDate = extr_dy.getDate() - (params_result[0].value);
+																extr_dy.setDate(newDate);
+															}
+															bid_query.bid_valid_to = {"$gte": extr_dy};
 															Bid.count(bid_query,function(err_bid_count,res_bid_count){
 																		var skip_rec_bid = (req.body.bid.skip)?req.body.bid.skip:0;
 																		if(count_bid && res_bid_count>count_bid && req.body.bid.skip)
@@ -796,12 +820,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 																		Bid.find(bid_query).sort({"index_count":-1}).skip(skip_rec_bid).limit(limit_rec_bid)
 																			.exec(function(err, bids) {
 																				for(var i=0; i<bids.length; i++){
-																					var date_split = [];
-																					var time_split = [];
+																					//var date_split = [];
+																					//var time_split = [];
 																					var validTo = new Date();
 																					
 																					if(bids[i].bid_valid_to){
-																						var date_part = ((bids[i].bid_valid_to).split('T'))[0];
+																						/*var date_part = ((bids[i].bid_valid_to).split('T'))[0];
 																						var time_part = ((bids[i].bid_valid_to).split('T'))[1];
 																						if(date_part)
 																							date_split = (date_part).split('/');
@@ -809,24 +833,36 @@ module.exports.getTransactions = function(req,res){//Fetch
 																							time_split = (time_part).split(':');
 																						
 																						if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-																							validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+																							validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
+																						validTo = bids[i].bid_valid_to;
 																					}
 																					
 																					
 																					if(validTo >= (new Date())){
 																						var clone = JSON.parse(JSON.stringify(bids[i]));
 																						//clone.text = bids[i].product_type_name +" "+ bids[i].brand_name +" "+ bids[i].model +" "+ bids[i].variant ;
+																						var bid_valid_to = bids[i].bid_valid_to;
+																						var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+																						var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+																						var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+																						clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 																						clone.type = "Bid";
 																						results.push(clone);
 																					}
 																					else{
-																						if(params_result.length && params_result.length>0){
+																						/*if(params_result.length && params_result.length>0){
 																							var newDate = validTo.getDate() - (- params_result[0].value);
 																							validTo.setDate(newDate);
-																						}
-																						if(validTo >= (new Date()) && bids[i].current_bid_at){																							
+																						}*/
+																						if(bids[i].current_bid_at){
+																						//if(validTo >= (new Date()) && bids[i].current_bid_at){																							
 																									var clone = JSON.parse(JSON.stringify(bids[i]));
 																									//clone.text = bids[i].product_type_name +" "+ bids[i].brand_name +" "+ bids[i].model +" "+ bids[i].variant ;
+																									var bid_valid_to = bids[i].bid_valid_to;
+																									var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+																									var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+																									var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+																									clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 																									clone.type = "Bid";
 																									clone.sold = true;
 																									results.push(clone);

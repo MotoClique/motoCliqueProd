@@ -113,7 +113,7 @@ var BidSchema = new mongoose.Schema({
 		type: String
 	},
 	bid_valid_to:{
-		type: String
+		type: Date, default: Date.now
 	},
 	bid_status:{
 		type: String

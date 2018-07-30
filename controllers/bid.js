@@ -27,6 +27,12 @@ module.exports.getBid = function(req,res){//Fetch
 			query.deleted = {"$ne": true};
 		}
 		//query.active = {"$eq": "X"};
+		var extr_dy = new Date();
+		if(params_result.length && params_result.length>0){
+			var newDate = extr_dy.getDate() - (params_result[0].value);
+			extr_dy.setDate(newDate);
+		}
+		query.bid_valid_to = {"$gte": extr_dy};
 		
 		if(req.query.user_id){
 			query.user_id = {"$regex":req.query.user_id, "$options":"i"};
@@ -50,12 +56,12 @@ module.exports.getBid = function(req,res){//Fetch
 					else{
 						var results = [];
 						for(var i=0; i<result.length; i++){
-							var date_split = [];
-							var time_split = [];
+							//var date_split = [];
+							//var time_split = [];
 							var validTo = new Date();
 										
 							if(result[i].bid_valid_to){
-								var date_part = ((result[i].bid_valid_to).split('T'))[0];
+								/*var date_part = ((result[i].bid_valid_to).split('T'))[0];
 								var time_part = ((result[i].bid_valid_to).split('T'))[1];
 								if(date_part)
 									date_split = (date_part).split('/');
@@ -63,27 +69,36 @@ module.exports.getBid = function(req,res){//Fetch
 									time_split = (time_part).split(':');
 									
 								if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-									validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+									validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
+								validTo = result[i].bid_valid_to;
 							}
-							
-							//var split = (result[i].bid_valid_to).split('/');
-							//var validTo = new Date(split[1]+'/'+split[0]+'/'+split[2]);
-											
-							if(validTo >= (new Date())){
+										
+							if(validTo >= (new Date())){//current date n above
 								var clone = JSON.parse(JSON.stringify(result[i]));
 								//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+								var bid_valid_to = result[i].bid_valid_to;
+								var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+								var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+								var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+								clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 								clone.type = "Bid";
 								results.push(clone);
 							}
 							else{												
-								if(params_result.length && params_result.length>0){
+								/*if(params_result.length && params_result.length>0){
 									var newDate = validTo.getDate() - (- params_result[0].value);
 									validTo.setDate(newDate);
-								}
+								}*/
 																						
-								if(validTo >= (new Date()) && result[i].current_bid_at){													
+								//if(validTo >= (new Date()) && result[i].current_bid_at){		
+								if(result[i].current_bid_at){	
 									var clone = JSON.parse(JSON.stringify(result[i]));
 								//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+									var bid_valid_to = result[i].bid_valid_to;
+									var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+									var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+									var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+									clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 									clone.type = "Bid";
 									clone.sold = true;
 									results.push(clone);													
@@ -99,12 +114,12 @@ module.exports.getBid = function(req,res){//Fetch
 			Bid.find(query,function(err, result){
 				var results = [];
 				for(var i=0; i<result.length; i++){
-					var date_split = [];
-					var time_split = [];
+					//var date_split = [];
+					//var time_split = [];
 					var validTo = new Date();
 										
 					if(result[i].bid_valid_to){
-						var date_part = ((result[i].bid_valid_to).split('T'))[0];
+						/*var date_part = ((result[i].bid_valid_to).split('T'))[0];
 						var time_part = ((result[i].bid_valid_to).split('T'))[1];
 						if(date_part)
 							date_split = (date_part).split('/');
@@ -112,7 +127,8 @@ module.exports.getBid = function(req,res){//Fetch
 							time_split = (time_part).split(':');
 							
 						if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-							validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+							validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
+						validTo = result[i].bid_valid_to;
 					}
 					
 										
@@ -122,18 +138,29 @@ module.exports.getBid = function(req,res){//Fetch
 					if(validTo >= (new Date())){
 						var clone = JSON.parse(JSON.stringify(result[i]));
 						//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+						var bid_valid_to = result[i].bid_valid_to;
+						var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+						var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+						var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+						clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 						clone.type = "Bid";
 						results.push(clone);
 					}
 					else{												
-						if(params_result.length && params_result.length>0){
+						/*if(params_result.length && params_result.length>0){
 							var newDate = validTo.getDate() - (- params_result[0].value);
 							validTo.setDate(newDate);
-						}
+						}*/
 																				
-						if(validTo >= (new Date()) && result[i].current_bid_at){													
+						//if(validTo >= (new Date()) && result[i].current_bid_at){	
+						if(result[i].current_bid_at){	
 							var clone = JSON.parse(JSON.stringify(result[i]));
 							//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+							var bid_valid_to = result[i].bid_valid_to;
+							var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+							var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+							var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+							clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 							clone.type = "Bid";
 							clone.sold = true;
 							results.push(clone);													
@@ -198,6 +225,22 @@ module.exports.addBid = function(req,res){//Add New
 					if(doc.bid_status === 'Active')
 						doc.active = "X";
 					
+					if(doc.bid_valid_to){
+						var date_split = [];
+						var time_split = [];
+						var date_part = ((doc.bid_valid_to).split('T'))[0];
+						var time_part = ((doc.bid_valid_to).split('T'))[1];
+						if(date_part)
+							date_split = (date_part).split('/');
+						if(time_part)
+							time_split = (time_part).split(':');
+							
+						if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
+							doc.bid_valid_to = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+						else
+							doc.bid_valid_to = new Date();
+					}
+					
 					//For testing purpose (to be removed)
 					if(doc.testing)
 						doc.variant = index_count;
@@ -228,12 +271,10 @@ module.exports.addBid = function(req,res){//Add New
 								postLife = parseInt(result_sub[i].post_day);
 							}
 						}
-						/*var d = new Date();
-						d.setDate(d.getDate() - (- postLife));
-						doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear();*/
+						
 						if(!(doc.bid_valid_to) && doc.bid_status === 'Active'){
 							var d = new Date();							
-							doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +'T00:00:00';
+							doc.bid_valid_to = d;//d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +'T00:00:00';
 						}
 						
 						let newBid = new Bid(doc);
@@ -291,10 +332,25 @@ module.exports.updateBid = function(req,res){//Update
 		doc.active = "X";
 	else
 		doc.active = "";
+	if(doc.bid_valid_to){
+		var date_split = [];
+		var time_split = [];
+		var date_part = ((doc.bid_valid_to).split('T'))[0];
+		var time_part = ((doc.bid_valid_to).split('T'))[1];
+		if(date_part)
+			date_split = (date_part).split('/');
+		if(time_part)
+			time_split = (time_part).split(':');
+				
+		if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
+			doc.bid_valid_to = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');
+		else
+			doc.bid_valid_to = new Date();
+	}
 		
 	if(doc.msg === 'D'){
 		d.setDate(d.getDate()-1);
-		doc.bid_valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +"T00:00:00";
+		doc.bid_valid_to = d;//d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +"T00:00:00";
 		doc.active = "";
 	}
 		
