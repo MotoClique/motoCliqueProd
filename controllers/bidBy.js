@@ -84,7 +84,12 @@ module.exports.addBidBy = function(req,res){//Add New
 									res.json({statusCode: 'F', msg: 'Failed to add', error: err});
 								}
 								else{
-									res.json({statusCode: 'S', msg: 'Entry added', result: result});
+									var updatedBid = result_bid[0];
+									updatedBid.current_bid_amount = doc.current_bid_amount;
+									updatedBid.current_bid_by = req.payload.user_id;
+									updatedBid.current_bid_at = at;
+									module.exports.updateBid({body:updatedBid, payload:req.payload},res);
+									//res.json({statusCode: 'S', msg: 'Entry added', result: result});
 								}
 							});
 						}
