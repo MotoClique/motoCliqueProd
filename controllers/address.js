@@ -4,6 +4,11 @@ const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
 var Counter = mongoose.model('Counter');
+var Sell = mongoose.model('Sell');
+var Bid = mongoose.model('Bid');
+var Buy = mongoose.model('Buy');
+var Service = mongoose.model('Service');
+var Parameter = mongoose.model('Parameter');
 
 //////////////////////////User Address////////////////////////////////
 const UserAddress = mongoose.model('UserAddress');
@@ -87,9 +92,57 @@ module.exports.addUserAddress = function(req,res){//Add New
 	});
 };
 module.exports.updateUserAddress = function(req,res){//Update
-	var d = new Date();
-	var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-	let updateUserAddress = {
+	if(req.body.deleted){
+		var posts = [];
+		var query = {};
+		query.user_id = {"$eq":req.payload.user_id};
+		query.address_id = {"$eq":req.body.address_id};
+		query.deleted = {"$ne": true};
+		query.active = {"$eq": "X"};
+		Parameter.find({parameter:{"$eq":"extra_life_time"}},function(params_err, params_result){
+			Sell.find(query,function(sell_err, sell_result){
+				if(sell_result && sell_result.length>0)
+					posts = posts.concat(sell_result);
+				Buy.find(query,function(buy_err, buy_result){
+					if(buy_result && buy_result.length>0)
+						posts = posts.concat(buy_result);
+					
+					var extr_dy = new Date();
+					if(params_result && params_result.length>0){
+						var newDate = extr_dy.getDate() - (params_result[0].value);
+						extr_dy.setDate(newDate);
+					}
+					query.bid_valid_to = {"$gte": extr_dy};
+					Bid.find(query,function(bid_err, bid_result){
+						if(bid_result && bid_result.length>0)
+							posts = posts.concat(bid_result);
+						
+						delete query.bid_valid_to;
+						Service.find(query,function(service_err, service_result){
+							if(service_result && service_result.length>0)
+								posts = posts.concat(service_result);
+							
+							if(posts && posts.length>0){
+								res.json({statusCode: 'F', msg: 'This particular address is being used in your existing posts. Please deactivate or change the address in those post and try again.', error: {}, posts: posts});
+							}
+							else{
+								module.exports.updateUserAddressMethod(req,res);
+							}
+						});
+					});
+				});
+			});
+		});
+	}
+	else{
+		module.exports.updateUserAddressMethod(req,res);
+	}
+};
+
+module.exports.updateUserAddressMethod = function(req,res){//
+		var d = new Date();
+		var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+		let updateUserAddress = {
 			_id:req.body._id,
 			user_id: req.body.user_id,
 			address_id: req.body.address_id,
@@ -108,9 +161,9 @@ module.exports.updateUserAddress = function(req,res){//Update
 			//createdAt: req.body.createdAt,
 			changedBy: req.payload.user_id,
 			changedAt: at
-	};
+		};
 	
-	if(req.body.default_flag){
+		if(req.body.default_flag){
 			UserAddress.update({user_id:req.body.user_id}, {$set:{default_flag:false}}, {multi: true}, (update_err, update_address)=>{
 				if(update_err){
 					res.json({statusCode: 'F', msg: 'Failed to update', error: update_err});

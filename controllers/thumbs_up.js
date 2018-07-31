@@ -15,6 +15,13 @@ module.exports.getThumbsUp = function(req,res){//Fetch
 	if(req.query.service_id){
 		query.service_id = {"$regex":req.query.service_id, "$options":"i"};
 	}
+	if(req.query.feedback_id){
+		query.feedback_id = {"$eq": req.query.feedback_id};
+	}
+	if(req.query.createdBy){
+		query.createdBy = {"$eq": req.query.createdBy};
+	}
+	
 	if(req.query.deleted){
 		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
 	}

@@ -11,6 +11,9 @@ var ThumbsUpSchema = new mongoose.Schema({
 		index: true,
 		unique: true
 	},
+	feedback_id:{
+		type: String
+	},
 	active:{
 		type: Boolean
 	},
