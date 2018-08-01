@@ -114,10 +114,12 @@ module.exports.updateUserAddress = function(req,res){//Update
 						extr_dy.setDate(newDate);
 					}
 					query.bid_valid_to = {"$gte": extr_dy};
+					delete query.active;
 					Bid.find(query,function(bid_err, bid_result){
 						if(bid_result && bid_result.length>0)
 							posts = posts.concat(bid_result);
 						
+						query.active = {"$eq": "X"};
 						delete query.bid_valid_to;
 						Service.find(query,function(service_err, service_result){
 							if(service_result && service_result.length>0)
