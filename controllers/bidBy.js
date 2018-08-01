@@ -3,6 +3,7 @@ const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
 var Profile = mongoose.model('Profile');
+var ctrlBid = require('./bid');
 
 //////////////////////////Bid By////////////////////////////////
 const BidBy = mongoose.model('BidBy');
@@ -89,7 +90,7 @@ module.exports.addBidBy = function(req,res){//Add New
 									updatedBid.current_bid_amount = doc.current_bid_amount;
 									updatedBid.current_bid_by = req.payload.user_id;
 									updatedBid.current_bid_at = at;
-									module.exports.updateBid({body:updatedBid, payload:req.payload},res);
+									ctrlBid.updateBid({body:updatedBid, payload:req.payload},res);
 									//res.json({statusCode: 'S', msg: 'Entry added', result: result});
 								}
 							});
