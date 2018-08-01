@@ -9,6 +9,7 @@ var Bid = mongoose.model('Bid');
 var Buy = mongoose.model('Buy');
 var Service = mongoose.model('Service');
 var Parameter = mongoose.model('Parameter');
+var cltrAddress = this;
 
 //////////////////////////User Address////////////////////////////////
 const UserAddress = mongoose.model('UserAddress');
@@ -126,7 +127,7 @@ module.exports.updateUserAddress = function(req,res){//Update
 								res.json({statusCode: 'F', msg: 'This particular address is being used in your existing posts. Please deactivate or change the address in those post and try again.', error: {}, posts: posts});
 							}
 							else{
-								module.exports.updateUserAddressMethod(req,res);
+								cltrAddress.updateUserAddressMethod(req,res);
 							}
 						});
 					});
@@ -135,7 +136,7 @@ module.exports.updateUserAddress = function(req,res){//Update
 		});
 	}
 	else{
-		module.exports.updateUserAddressMethod(req,res);
+		cltrAddress.updateUserAddressMethod(req,res);
 	}
 };
 
