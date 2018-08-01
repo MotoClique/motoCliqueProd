@@ -42,10 +42,11 @@ module.exports.addUserAlert = function(req,res){//Add New
 						var index_count = sequence.sequence_value;
 						var d = new Date();
 						var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-						let newUserAlert = new UserAlert({
-							user_id: req.body.user_id,
-							alert_id: alert_id - (-index_count),
-							bid_sell_buy: req.body.bid_sell_buy,
+						var doc = req.body;
+						//let newUserAlert = new UserAlert({
+							doc.user_id = req.payload.user_id;
+							doc.alert_id =  alert_id - (-index_count);
+							/*bid_sell_buy: req.body.bid_sell_buy,
 							individual_dealer: req.body.individual_dealer,
 							owner_type: req.body.owner_type,
 							product_type_name: req.body.product_type_name,
@@ -71,13 +72,13 @@ module.exports.addUserAlert = function(req,res){//Add New
 							email: req.body.email,
 							app: req.body.app,
 							active: req.body.active,
-							deleted: req.body.deleted,
-							createdBy: req.payload.user_id,
-							createdAt: at,
-							changedBy: req.payload.user_id,
-							changedAt: at
-						});
-						
+							deleted: req.body.deleted,*/
+							doc.createdBy = req.payload.user_id;
+							doc.createdAt = at;
+							doc.changedBy = req.payload.user_id;
+							doc.changedAt = at;
+						//});
+						let newUserAlert = new UserAlert(doc);
 						newUserAlert.save((err, result)=>{
 							if(err){
 								res.json({statusCode: 'F', msg: 'Failed to add', error: err});
@@ -110,7 +111,8 @@ module.exports.updateUserAlert = function(req,res){//Update
 			else{
 				var d = new Date();
 				var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-				let updateUserAddress = {
+				var doc = req.body;
+				/*let updateUserAddress = {
 						_id:req.body._id,
 						user_id: req.body.user_id,
 						alert_id: req.body.alert_id,
@@ -140,14 +142,14 @@ module.exports.updateUserAlert = function(req,res){//Update
 						email: req.body.email,
 						app: req.body.app,
 						active: req.body.active,
-						deleted: req.body.deleted,
-						//createdBy: req.body.createdBy,
-						//createdAt: req.body.createdAt,
-						changedBy: req.payload.user_id,
-						changedAt: at
-				};
+						deleted: req.body.deleted,*/
+						delete doc.createdBy;
+						delete doc.createdAt;
+						doc.changedBy = req.payload.user_id;
+						doc.changedAt = at;
+				//};
 				
-				UserAlert.findOneAndUpdate({_id:req.body._id},{$set: updateUserAddress},{},(err, updated)=>{
+				UserAlert.findOneAndUpdate({_id:req.body._id},{$set: doc},{},(err, updated)=>{
 					if(err){
 						res.json({statusCode: 'F', msg: 'Failed to update', error: err});
 					}
