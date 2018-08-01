@@ -332,6 +332,8 @@ module.exports.updateBid = function(req,res){//Update
 		doc.active = "X";
 	else
 		doc.active = "";
+	console.log(req);
+	console.log(doc.bid_valid_to);
 	if(doc.bid_valid_to){
 		var date_split = [];
 		var time_split = [];
