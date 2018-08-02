@@ -695,6 +695,7 @@ module.exports.addAppScrFieldsRights = function(req,res){//Add New
 		screen_for_nav: req.body.screen_for_nav,
 		applicable: req.body.applicable,
 		field: req.body.field,
+		field_id: req.body.field_id,
 		field_type: req.body.field_type,
 		field_path: req.body.field_path,
 		field_source: req.body.field_source,
@@ -737,6 +738,7 @@ module.exports.updateAppScrFieldsRights = function(req,res){//Update
 		screen_for_nav: req.body.screen_for_nav,
 		applicable: req.body.applicable,
 		field: req.body.field,
+		field_id: req.body.field_id,
 		field_type: req.body.field_type,
 		field_path: req.body.field_path,
 		field_source: req.body.field_source,
@@ -819,7 +821,54 @@ module.exports.getAppFieldRights = function(req,res){//Fetch Field Rights
 };
 module.exports.updateMultipleRights = function(req,res){//Update Multiple 
 	var records = req.body.rights;
-	var results = [];
+	var deleteQuery = {};
+	if(records && records.length>0){
+		if(records[0].field === '-'){//if screen update
+			deleteQuery = {
+				field: {"$eq":"-"}
+			};
+		}
+		else{//if field update
+			deleteQuery = {
+				field: {"$ne":"-"},
+				screen: {"$eq": records[0].screen}
+			};
+		}
+		AppScrFieldsRights.remove(deleteQuery , function(err_delete,result_delete){
+			if(err_delete){
+				res.json({statusCode: 'F', msg: 'Unable to remove previous mappings.', error: err_delete});
+			}
+			else{
+					var d = new Date();
+					var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+					
+					for(var i = 0; i<records.length; i++){						
+						records[i].createdAt = at;
+						records[i].changedAt = at;
+						records[i].createdBy = req.payload.user_id;
+						records[i].changedBy = req.payload.user_id;
+						if(records[i]._id){
+							delete records[i].createdBy;
+							delete records[i].createdAt;
+						}
+						delete records[i]._id;
+					}
+					
+					AppScrFieldsRights.insertMany(records,(err, result)=>{
+						if(err){
+							res.json({statusCode: 'F', msg: 'Failed to save the mappings.', error: err});
+						}
+						else{
+							res.json({statusCode: 'S', msg: 'Saved Successfully.', results: result});
+						}
+					});
+			}
+		});	
+	}
+	else{
+		res.json({statusCode: 'F', msg: 'No records to update.', error: null});
+	}
+	/*var results = [];
 	var doc_save = [];
 	var doc_update = [];
 	for(var count=0; count<records.length; count++){
@@ -863,41 +912,9 @@ module.exports.updateMultipleRights = function(req,res){//Update Multiple
 			res.json({results: results, error: add_err});
 		});	
 	}
+	*/
 	
 	
-	
-	
-	
-/*
-	async.each(records, function(doc, next){
-		var d = new Date();
-		doc.changedAt = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-		if(doc._id){
-			delete doc.createdBy;
-			delete doc.createdAt;
-			AppScrFieldsRights.update({_id:doc._id},doc,{upsert:true}, function(err, update_res){
-				results.push(update_res);
-				next(null, null);
-			});
-			console.log(doc);
-		}
-		else{
-			delete doc._id;
-			doc.createdAt = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-			let newDoc = new AppScrFieldsRights(doc);
-			newDoc.save((err, add_res)=>{
-				results.push(add_res);
-				next(null, null);
-			});
-			console.log(doc);
-		}
-		
-		
-    },
-	function(err){
-       //console.log(err);
-	   res.json({results: results, error: err});
-    });*/
 		
 };
 

@@ -31,6 +31,9 @@ var AppScrFieldsRightsSchema = new mongoose.Schema({
 		type: String,
 		maxLength: 30
 	},
+	field_id:{
+		type: String
+	},
 	field_type:{
 		type: String
 	},

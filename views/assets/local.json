@@ -76,7 +76,8 @@
 		 {"name": "address"},
 		 {"name": "pin_code"},
 		 {"name": "locality"},
-		 {"name": "bid_valid_to"}
+		 {"name": "bid_valid_to"},
+		 {"name": "current_bid_amount"}
 	 ],
 	 
 	 "serviceName": [
