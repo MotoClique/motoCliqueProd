@@ -19,47 +19,206 @@ module.exports.sendNotification = function(doc){//Send
 				}
 
 				//Trigger Notification	
-				var query_alert = {};
-				query_alert.deleted = {"$ne": true};
-				query_alert.active = {"$eq": true};
+				var query_alert = {"$and":[
+					{deleted: {"$ne": true}},
+					{active: {"$eq": true}}
+				]};
+				//query_alert.deleted = {"$ne": true};
+				//query_alert.active = {"$eq": true};
+				var orCondtn = [];
 				if(doc.transactionType)
-					query_alert.bid_sell_buy = {"$in": [doc.transactionType, 'All', '']};	
+					orCondtn.push({bid_sell_buy: {"$in": [doc.transactionType, 'All', '']}});	
 				if(doc.listing_by)
-					query_alert.individual_dealer = {"$in": [doc.listing_by, 'All', '']};
+					orCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '']}});
 				if(doc.product_type_name)
-					query_alert.product_type_name = {"$in": [doc.product_type_name, 'All', '']};
+					orCondtn.push({product_type_name: {"$in": [doc.product_type_name, 'All', '']}});
 				if(doc.brand_name)
-					query_alert.brand_name = {"$in": [doc.brand_name, 'All', '']};
+					orCondtn.push({brand_name: {"$in": [doc.brand_name, 'All', '']}});
 				if(doc.model)
-					query_alert.model = {"$in": [doc.model, 'All', '']};	
+					orCondtn.push({model: {"$in": [doc.model, 'All', '']}});	
 				if(doc.variant)
-					query_alert.variant = {"$in": [doc.variant, 'All', '']};	
+					orCondtn.push({variant: {"$in": [doc.variant, 'All', '']}});	
 				if(doc.fuel_type)
-					query_alert.fuel_type = {"$in": [doc.fuel_type, 'All', '']};	
+					orCondtn.push({fuel_type: {"$in": [doc.fuel_type, 'All', '']}});	
 				if(doc.city)
-					query_alert.city = {"$in": [doc.city, 'All', '']};	
+					orCondtn.push({city: {"$in": [doc.city, 'All', '']}});	
 				if(doc.current_bid_amount){
-					query_alert.price_from = {"$lt": doc.current_bid_amount};
-					query_alert.price_to = {"$gt": doc.current_bid_amount};
+					/*orCondtn.push({
+						"$and": [ {"$or":[
+								{price_from: {"$lte": doc.current_bid_amount}},
+								{price_from: {"$exists":false}}, 
+								{price_from: {"$type":10}}
+								]},
+							{"$or":[
+								{price_to: {"$gte": doc.current_bid_amount}},
+								{price_to: {"$exists":false}}, 
+								{price_to: {"$type":10}}
+								]}
+							 ]
+					});*/
+					//orCondtn.push({price_to: {"$gte": doc.current_bid_amount}});
+					orCondtn.push({
+						price_from: {"$lte": doc.current_bid_amount},
+						price_to: {"$gte": doc.current_bid_amount}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.current_bid_amount},
+						price_to: {"$exist": false}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.current_bid_amount},
+						price_to: {"$eq": ""}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.current_bid_amount},
+						price_to: {"$type": 10}
+					});
+					orCondtn.push({
+						price_from: {"$exist": false},
+						price_to: {"$gte": doc.current_bid_amount}
+					});
+					orCondtn.push({
+						price_from: {"$eq": ""},
+						price_to: {"$gte": doc.current_bid_amount}
+					});
+					orCondtn.push({
+						price_from: {"$type": 10},
+						price_to: {"$gte": doc.current_bid_amount}
+					});
 				}
 				if(doc.net_price){
-					query_alert.price_from = {"$lt": doc.net_price};
-					query_alert.price_to = {"$gt": doc.net_price};
+					/*orCondtn.push({price_from: {"$lte": doc.net_price}});
+					orCondtn.push({price_to: {"$gte": doc.net_price}});*/
+					orCondtn.push({
+						price_from: {"$lte": doc.net_price},
+						price_to: {"$gte": doc.net_price}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.net_price},
+						price_to: {"$exist": false}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.net_price},
+						price_to: {"$eq": ""}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.net_price},
+						price_to: {"$type": 10}
+					});
+					orCondtn.push({
+						price_from: {"$exist": false},
+						price_to: {"$gte": doc.net_price}
+					});
+					orCondtn.push({
+						price_from: {"$eq": ""},
+						price_to: {"$gte": doc.net_price}
+					});
+					orCondtn.push({
+						price_from: {"$type": 10},
+						price_to: {"$gte": doc.net_price}
+					});
 				}
 				if(doc.start_from_amount){
-					query_alert.price_from = {"$lt": doc.start_from_amount};
-					query_alert.price_to = {"$gt": doc.start_from_amount};
+					/*orCondtn.push({price_from: {"$lte": doc.start_from_amount}});
+					orCondtn.push({price_to: {"$gte": doc.start_from_amount}});*/
+					orCondtn.push({
+						price_from: {"$lte": doc.start_from_amount},
+						price_to: {"$gte": doc.start_from_amount}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.start_from_amount},
+						price_to: {"$exist": false}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.start_from_amount},
+						price_to: {"$eq": ""}
+					});
+					orCondtn.push({
+						price_from: {"$lte": doc.start_from_amount},
+						price_to: {"$type": 10}
+					});
+					orCondtn.push({
+						price_from: {"$exist": false},
+						price_to: {"$gte": doc.start_from_amount}
+					});
+					orCondtn.push({
+						price_from: {"$eq": ""},
+						price_to: {"$gte": doc.start_from_amount}
+					});
+					orCondtn.push({
+						price_from: {"$type": 10},
+						price_to: {"$gte": doc.start_from_amount}
+					});
 				}
 				
 				if(doc.km_done){
-					query_alert.km_run_from = {"$lt": doc.km_done};
-					query_alert.km_run_to = {"$gt": doc.km_done};
+					/*orCondtn.push({km_run_from: {"$lte": doc.km_done}});
+					orCondtn.push({km_run_to: {"$gte": doc.km_done}});*/
+					orCondtn.push({
+						km_run_from: {"$lte": doc.km_done},
+						km_run_to: {"$gte": doc.km_done}
+					});
+					orCondtn.push({
+						km_run_from: {"$lte": doc.km_done},
+						km_run_to: {"$exist": false}
+					});
+					orCondtn.push({
+						km_run_from: {"$lte": doc.km_done},
+						km_run_to: {"$eq": ""}
+					});
+					orCondtn.push({
+						km_run_from: {"$lte": doc.km_done},
+						km_run_to: {"$type": 10}
+					});
+					orCondtn.push({
+						km_run_from: {"$exist": false},
+						km_run_to: {"$gte": doc.km_done}
+					});
+					orCondtn.push({
+						km_run_from: {"$eq": ""},
+						km_run_to: {"$gte": doc.km_done}
+					});
+					orCondtn.push({
+						km_run_from: {"$type": 10},
+						km_run_to: {"$gte": doc.km_done}
+					});
 				}
 				if(doc.year_of_reg){
-					query_alert.year_of_reg_from = {"$lt": doc.year_of_reg};
-					query_alert.year_of_reg_to = {"$gt": doc.year_of_reg};
+					/*orCondtn.push({year_of_reg_from: {"$lte": doc.year_of_reg}});
+					orCondtn.push({year_of_reg_to: {"$gte": doc.year_of_reg}});*/
+					orCondtn.push({
+						year_of_reg_from: {"$lte": doc.year_of_reg},
+						year_of_reg_to: {"$gte": doc.year_of_reg}
+					});
+					orCondtn.push({
+						year_of_reg_from: {"$lte": doc.year_of_reg},
+						year_of_reg_to: {"$exist": false}
+					});
+					orCondtn.push({
+						year_of_reg_from: {"$lte": doc.year_of_reg},
+						year_of_reg_to: {"$eq": ""}
+					});
+					orCondtn.push({
+						year_of_reg_from: {"$lte": doc.year_of_reg},
+						year_of_reg_to: {"$type": 10}
+					});
+					orCondtn.push({
+						year_of_reg_from: {"$exist": false},
+						year_of_reg_to: {"$gte": doc.year_of_reg}
+					});
+					orCondtn.push({
+						year_of_reg_from: {"$eq": ""},
+						year_of_reg_to: {"$gte": doc.year_of_reg}
+					});
+					orCondtn.push({
+						year_of_reg_from: {"$type": 10},
+						year_of_reg_to: {"$gte": doc.year_of_reg}
+					});
 				}
-					
+				
+				query_alert["$or"] = orCondtn;
+				console(query_alert);
+				console(query_alert["$or"]);
 				UserAlert.find(query_alert,function(err_alert, result_alert){
 							if(err_alert){
 								console.log(err_alert);
