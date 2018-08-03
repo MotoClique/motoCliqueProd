@@ -298,6 +298,7 @@ module.exports.sendNotification = function(doc){//Send
 																				  }
 																			},
 																			function(err_email,httpResponse,body){
+																				console.log("email triggered to "+profiles[0].email);
 																				console.log(err_email);
 																			});
 																			email_sent = true;
