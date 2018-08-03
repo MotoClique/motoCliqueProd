@@ -217,8 +217,8 @@ module.exports.sendNotification = function(doc){//Send
 				}
 				
 				query_alert["$or"] = orCondtn;
-				console(query_alert);
-				console(query_alert["$or"]);
+				console.log(query_alert);
+				console.log(query_alert["$or"]);
 				UserAlert.find(query_alert,function(err_alert, result_alert){
 							if(err_alert){
 								console.log(err_alert);
