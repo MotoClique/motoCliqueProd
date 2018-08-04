@@ -19,29 +19,30 @@ module.exports.sendNotification = function(doc){//Send
 				}
 
 				//Trigger Notification	
-				var query_alert = {"$and":[
+				var query_alert = {"$and":[], "$or":[]};
+				var andCondtn = [
 					{deleted: {"$ne": true}},
 					{active: {"$eq": true}}
-				]};
+				];
 				//query_alert.deleted = {"$ne": true};
 				//query_alert.active = {"$eq": true};
 				var orCondtn = [];
 				if(doc.transactionType)
-					orCondtn.push({bid_sell_buy: {"$in": [doc.transactionType, 'All', '']}});	
+					andCondtn.push({bid_sell_buy: {"$in": [doc.transactionType, 'All', '']}});	
 				if(doc.listing_by)
-					orCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '']}});
+					andCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '']}});
 				if(doc.product_type_name)
-					orCondtn.push({product_type_name: {"$in": [doc.product_type_name, 'All', '']}});
+					andCondtn.push({product_type_name: {"$in": [doc.product_type_name, 'All', '']}});
 				if(doc.brand_name)
-					orCondtn.push({brand_name: {"$in": [doc.brand_name, 'All', '']}});
+					andCondtn.push({brand_name: {"$in": [doc.brand_name, 'All', '']}});
 				if(doc.model)
-					orCondtn.push({model: {"$in": [doc.model, 'All', '']}});	
+					andCondtn.push({model: {"$in": [doc.model, 'All', '']}});	
 				if(doc.variant)
-					orCondtn.push({variant: {"$in": [doc.variant, 'All', '']}});	
+					andCondtn.push({variant: {"$in": [doc.variant, 'All', '']}});	
 				if(doc.fuel_type)
-					orCondtn.push({fuel_type: {"$in": [doc.fuel_type, 'All', '']}});	
+					andCondtn.push({fuel_type: {"$in": [doc.fuel_type, 'All', '']}});	
 				if(doc.city)
-					orCondtn.push({city: {"$in": [doc.city, 'All', '']}});	
+					andCondtn.push({city: {"$in": [doc.city, 'All', '']}});	
 				if(doc.current_bid_amount){
 					/*orCondtn.push({
 						"$and": [ {"$or":[
@@ -57,13 +58,15 @@ module.exports.sendNotification = function(doc){//Send
 							 ]
 					});*/
 					//orCondtn.push({price_to: {"$gte": doc.current_bid_amount}});
+					if(!isNaN(doc.current_bid_amount))
+						doc.current_bid_amount = Number(doc.current_bid_amount);
 					orCondtn.push({
 						price_from: {"$lte": doc.current_bid_amount},
 						price_to: {"$gte": doc.current_bid_amount}
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.current_bid_amount},
-						price_to: {"$exist": false}
+						price_to: null
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.current_bid_amount},
@@ -74,7 +77,7 @@ module.exports.sendNotification = function(doc){//Send
 						price_to: {"$type": 10}
 					});
 					orCondtn.push({
-						price_from: {"$exist": false},
+						price_from: null,
 						price_to: {"$gte": doc.current_bid_amount}
 					});
 					orCondtn.push({
@@ -89,13 +92,15 @@ module.exports.sendNotification = function(doc){//Send
 				if(doc.net_price){
 					/*orCondtn.push({price_from: {"$lte": doc.net_price}});
 					orCondtn.push({price_to: {"$gte": doc.net_price}});*/
+					if(!isNaN(doc.net_price))
+						doc.net_price = Number(doc.net_price);
 					orCondtn.push({
 						price_from: {"$lte": doc.net_price},
 						price_to: {"$gte": doc.net_price}
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.net_price},
-						price_to: {"$exist": false}
+						price_to: null
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.net_price},
@@ -106,7 +111,7 @@ module.exports.sendNotification = function(doc){//Send
 						price_to: {"$type": 10}
 					});
 					orCondtn.push({
-						price_from: {"$exist": false},
+						price_from: null,
 						price_to: {"$gte": doc.net_price}
 					});
 					orCondtn.push({
@@ -121,13 +126,15 @@ module.exports.sendNotification = function(doc){//Send
 				if(doc.start_from_amount){
 					/*orCondtn.push({price_from: {"$lte": doc.start_from_amount}});
 					orCondtn.push({price_to: {"$gte": doc.start_from_amount}});*/
+					if(!isNaN(doc.start_from_amount))
+						doc.start_from_amount = Number(doc.start_from_amount);
 					orCondtn.push({
 						price_from: {"$lte": doc.start_from_amount},
 						price_to: {"$gte": doc.start_from_amount}
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.start_from_amount},
-						price_to: {"$exist": false}
+						price_to: null
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.start_from_amount},
@@ -138,7 +145,7 @@ module.exports.sendNotification = function(doc){//Send
 						price_to: {"$type": 10}
 					});
 					orCondtn.push({
-						price_from: {"$exist": false},
+						price_from: null,
 						price_to: {"$gte": doc.start_from_amount}
 					});
 					orCondtn.push({
@@ -154,13 +161,15 @@ module.exports.sendNotification = function(doc){//Send
 				if(doc.km_done){
 					/*orCondtn.push({km_run_from: {"$lte": doc.km_done}});
 					orCondtn.push({km_run_to: {"$gte": doc.km_done}});*/
+					if(!isNaN(doc.km_done))
+						doc.km_done = Number(doc.km_done);
 					orCondtn.push({
 						km_run_from: {"$lte": doc.km_done},
 						km_run_to: {"$gte": doc.km_done}
 					});
 					orCondtn.push({
 						km_run_from: {"$lte": doc.km_done},
-						km_run_to: {"$exist": false}
+						km_run_to: null
 					});
 					orCondtn.push({
 						km_run_from: {"$lte": doc.km_done},
@@ -171,7 +180,7 @@ module.exports.sendNotification = function(doc){//Send
 						km_run_to: {"$type": 10}
 					});
 					orCondtn.push({
-						km_run_from: {"$exist": false},
+						km_run_from: null,
 						km_run_to: {"$gte": doc.km_done}
 					});
 					orCondtn.push({
@@ -186,13 +195,15 @@ module.exports.sendNotification = function(doc){//Send
 				if(doc.year_of_reg){
 					/*orCondtn.push({year_of_reg_from: {"$lte": doc.year_of_reg}});
 					orCondtn.push({year_of_reg_to: {"$gte": doc.year_of_reg}});*/
+					if(!isNaN(doc.year_of_reg))
+						doc.year_of_reg = Number(doc.year_of_reg);
 					orCondtn.push({
 						year_of_reg_from: {"$lte": doc.year_of_reg},
 						year_of_reg_to: {"$gte": doc.year_of_reg}
 					});
 					orCondtn.push({
 						year_of_reg_from: {"$lte": doc.year_of_reg},
-						year_of_reg_to: {"$exist": false}
+						year_of_reg_to: null
 					});
 					orCondtn.push({
 						year_of_reg_from: {"$lte": doc.year_of_reg},
@@ -203,7 +214,7 @@ module.exports.sendNotification = function(doc){//Send
 						year_of_reg_to: {"$type": 10}
 					});
 					orCondtn.push({
-						year_of_reg_from: {"$exist": false},
+						year_of_reg_from: null,
 						year_of_reg_to: {"$gte": doc.year_of_reg}
 					});
 					orCondtn.push({
@@ -216,6 +227,7 @@ module.exports.sendNotification = function(doc){//Send
 					});
 				}
 				
+				query_alert["$and"] = andCondtn;
 				query_alert["$or"] = orCondtn;
 				console.log(query_alert);
 				console.log(query_alert["$or"]);

@@ -54,16 +54,16 @@ var UserAlertSchema = new mongoose.Schema({
 		type: String 
 	},
 	price_from:{
-		type: String 
+		type: Number 
 	},
 	price_to:{
-		type: String 
+		type: Number 
 	},
 	discount_from:{
-		type: String 
+		type: Number 
 	},
 	discount_to:{
-		type: String 
+		type: Number 
 	},
 	km_run_from:{
 		type: Number,
