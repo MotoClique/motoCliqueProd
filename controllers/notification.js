@@ -232,6 +232,7 @@ module.exports.sendNotification = function(doc){//Send
 				console.log(query_alert);
 				console.log(query_alert["$or"]);
 				UserAlert.find(query_alert,function(err_alert, result_alert){
+						console.log(result_alert);
 							if(err_alert){
 								console.log(err_alert);
 							}
@@ -281,6 +282,7 @@ module.exports.sendNotification = function(doc){//Send
 										//Send EMAIL
 										if(result_alert[i].email){
 												UserSubMap.find(query_userSub,function(err_userSub, result_userSub){
+													console.log(result_userSub);
 													if(err_userSub){
 														console.log(err_userSub);
 													}
