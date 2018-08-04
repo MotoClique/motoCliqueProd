@@ -19,30 +19,70 @@ module.exports.sendNotification = function(doc){//Send
 				}
 
 				//Trigger Notification	
-				var query_alert = {"$and":[], "$or":[]};
+				var query_alert = {"$and":[]};
 				var andCondtn = [
 					{deleted: {"$ne": true}},
 					{active: {"$eq": true}}
 				];
 				//query_alert.deleted = {"$ne": true};
 				//query_alert.active = {"$eq": true};
-				var orCondtn = [];
-				if(doc.transactionType)
-					andCondtn.push({bid_sell_buy: {"$in": [doc.transactionType, 'All', '']}});	
-				if(doc.listing_by)
-					andCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '']}});
-				if(doc.product_type_name)
-					andCondtn.push({product_type_name: {"$in": [doc.product_type_name, 'All', '']}});
-				if(doc.brand_name)
-					andCondtn.push({brand_name: {"$in": [doc.brand_name, 'All', '']}});
-				if(doc.model)
-					andCondtn.push({model: {"$in": [doc.model, 'All', '']}});	
-				if(doc.variant)
-					andCondtn.push({variant: {"$in": [doc.variant, 'All', '']}});	
-				if(doc.fuel_type)
-					andCondtn.push({fuel_type: {"$in": [doc.fuel_type, 'All', '']}});	
-				if(doc.city)
-					andCondtn.push({city: {"$in": [doc.city, 'All', '']}});	
+				
+				if(doc.transactionType){
+					var orCondtn = [];
+					orCondtn.push({bid_sell_buy: {"$in": [doc.transactionType, 'All', '']}});
+					orCondtn.push({bid_sell_buy: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}
+				if(doc.listing_by){
+					var orCondtn = [];
+					orCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '']}});
+					orCondtn.push({individual_dealer: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}
+				if(doc.product_type_name){
+					var orCondtn = [];
+					orCondtn.push({product_type_name: {"$in": [doc.product_type_name, 'All', '']}});
+					orCondtn.push({product_type_name: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}
+				if(doc.brand_name){
+					var orCondtn = [];
+					orCondtn.push({brand_name: {"$in": [doc.brand_name, 'All', '']}});
+					orCondtn.push({brand_name: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}
+				if(doc.model){
+					var orCondtn = [];
+					orCondtn.push({model: {"$in": [doc.model, 'All', '']}});
+					orCondtn.push({model: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}
+				if(doc.variant){
+					var orCondtn = [];
+					orCondtn.push({variant: {"$in": [doc.variant, 'All', '']}});
+					orCondtn.push({variant: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}
+				if(doc.fuel_type){
+					var orCondtn = [];
+					orCondtn.push({fuel_type: {"$in": [doc.fuel_type, 'All', '']}});
+					orCondtn.push({fuel_type: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}					
+				if(doc.city){
+					var orCondtn = [];
+					orCondtn.push({city: {"$in": [doc.city, 'All', '']}});	
+					orCondtn.push({city: null});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
+				}
 				if(doc.current_bid_amount){
 					/*orCondtn.push({
 						"$and": [ {"$or":[
@@ -58,6 +98,7 @@ module.exports.sendNotification = function(doc){//Send
 							 ]
 					});*/
 					//orCondtn.push({price_to: {"$gte": doc.current_bid_amount}});
+					var orCondtn = [];
 					if(!isNaN(doc.current_bid_amount))
 						doc.current_bid_amount = Number(doc.current_bid_amount);
 					orCondtn.push({
@@ -88,10 +129,13 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$type": 10},
 						price_to: {"$gte": doc.current_bid_amount}
 					});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
 				}
 				if(doc.net_price){
 					/*orCondtn.push({price_from: {"$lte": doc.net_price}});
 					orCondtn.push({price_to: {"$gte": doc.net_price}});*/
+					var orCondtn = [];
 					if(!isNaN(doc.net_price))
 						doc.net_price = Number(doc.net_price);
 					orCondtn.push({
@@ -122,10 +166,13 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$type": 10},
 						price_to: {"$gte": doc.net_price}
 					});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
 				}
 				if(doc.start_from_amount){
 					/*orCondtn.push({price_from: {"$lte": doc.start_from_amount}});
 					orCondtn.push({price_to: {"$gte": doc.start_from_amount}});*/
+					var orCondtn = [];
 					if(!isNaN(doc.start_from_amount))
 						doc.start_from_amount = Number(doc.start_from_amount);
 					orCondtn.push({
@@ -156,11 +203,14 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$type": 10},
 						price_to: {"$gte": doc.start_from_amount}
 					});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
 				}
 				
 				if(doc.km_done){
 					/*orCondtn.push({km_run_from: {"$lte": doc.km_done}});
 					orCondtn.push({km_run_to: {"$gte": doc.km_done}});*/
+					var orCondtn = [];
 					if(!isNaN(doc.km_done))
 						doc.km_done = Number(doc.km_done);
 					orCondtn.push({
@@ -191,10 +241,13 @@ module.exports.sendNotification = function(doc){//Send
 						km_run_from: {"$type": 10},
 						km_run_to: {"$gte": doc.km_done}
 					});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
 				}
 				if(doc.year_of_reg){
 					/*orCondtn.push({year_of_reg_from: {"$lte": doc.year_of_reg}});
 					orCondtn.push({year_of_reg_to: {"$gte": doc.year_of_reg}});*/
+					var orCondtn = [];
 					if(!isNaN(doc.year_of_reg))
 						doc.year_of_reg = Number(doc.year_of_reg);
 					orCondtn.push({
@@ -225,12 +278,14 @@ module.exports.sendNotification = function(doc){//Send
 						year_of_reg_from: {"$type": 10},
 						year_of_reg_to: {"$gte": doc.year_of_reg}
 					});
+					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					andCondtn.push(orCondtnObj);
 				}
 				
 				query_alert["$and"] = andCondtn;
-				query_alert["$or"] = orCondtn;
+				
 				console.log(query_alert);
-				console.log(query_alert["$or"]);
+				console.log(query_alert["$and"]);
 				UserAlert.find(query_alert,function(err_alert, result_alert){
 						console.log(result_alert);
 							if(err_alert){
