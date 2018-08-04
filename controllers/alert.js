@@ -46,33 +46,33 @@ module.exports.addUserAlert = function(req,res){//Add New
 						//let newUserAlert = new UserAlert({
 							doc.user_id = req.payload.user_id;
 							doc.alert_id =  alert_id - (-index_count);
-							/*bid_sell_buy: req.body.bid_sell_buy,
-							individual_dealer: req.body.individual_dealer,
-							owner_type: req.body.owner_type,
-							product_type_name: req.body.product_type_name,
-							brand_name: req.body.brand_name,
-							model: req.body.model,
-							variant: req.body.variant,
-							fuel_type: req.body.fuel_type,
-							color: req.body.color,
-							transmission: req.body.transmission,
-							country: req.body.country,
-							state: req.body.state,
-							city: req.body.city,
-							location: req.body.location,
-							price_from: req.body.price_from,
-							price_to: req.body.price_to,
-							discount_from: req.body.discount_from,
-							discount_to: req.body.discount_to,
-							km_run_from: req.body.km_run_from,
-							km_run_to: req.body.km_run_to,
-							year_of_reg_from: req.body.year_of_reg_from,
-							year_of_reg_to: req.body.year_of_reg_to,
-							sms: req.body.sms,
-							email: req.body.email,
-							app: req.body.app,
-							active: req.body.active,
-							deleted: req.body.deleted,*/
+							doc.bid_sell_buy= (req.body.bid_sell_buy)?req.body.bid_sell_buy:"";
+							doc.individual_dealer= (req.body.individual_dealer)?req.body.individual_dealer:"";
+							doc.owner_type= (req.body.owner_type)?req.body.owner_type:"";
+							doc.product_type_name= (req.body.product_type_name)?req.body.product_type_name:"";
+							doc.brand_name= (req.body.brand_name)?req.body.brand_name:"";
+							doc.model= (req.body.model)?req.body.model:"";
+							doc.variant= (req.body.variant)?req.body.variant:"";
+							doc.fuel_type= (req.body.fuel_type)?req.body.fuel_type:"";
+							doc.color= (req.body.color)?req.body.color:"";
+							doc.transmission= (req.body.transmission)?req.body.transmission:"";
+							doc.country= (req.body.country)?req.body.country:"";
+							doc.state= (req.body.state)?req.body.state:"";
+							doc.city= (req.body.city)?req.body.city:"";
+							doc.location= (req.body.location)?req.body.location:"";
+							doc.price_from= (req.body.price_from)?req.body.price_from:"";
+							doc.price_to= (req.body.price_to)?req.body.price_to:"";
+							doc.discount_from= (req.body.discount_from)?req.body.discount_from:"";
+							doc.discount_to= (req.body.discount_to)?req.body.discount_to:"";
+							doc.km_run_from= (req.body.km_run_from)?req.body.km_run_from:"";
+							doc.km_run_to= (req.body.km_run_to)?req.body.km_run_to:"";
+							doc.year_of_reg_from= (req.body.year_of_reg_from)?req.body.year_of_reg_from:"";
+							doc.year_of_reg_to= (req.body.year_of_reg_to)?req.body.year_of_reg_to:"";
+							doc.sms= req.body.sms;
+							doc.email= req.body.email;
+							doc.app= req.body.app;
+							doc.active= req.body.active;
+							doc.deleted= req.body.deleted;
 							doc.createdBy = req.payload.user_id;
 							doc.createdAt = at;
 							doc.changedBy = req.payload.user_id;
@@ -111,42 +111,38 @@ module.exports.updateUserAlert = function(req,res){//Update
 			else{
 				var d = new Date();
 				var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-				var doc = req.body;
-				/*let updateUserAddress = {
-						_id:req.body._id,
-						user_id: req.body.user_id,
-						alert_id: req.body.alert_id,
-						bid_sell_buy: req.body.bid_sell_buy,
-						individual_dealer: req.body.individual_dealer,
-						owner_type: req.body.owner_type,
-						product_type_name: req.body.product_type_name,
-						brand_name: req.body.brand_name,
-						model: req.body.model,
-						variant: req.body.variant,
-						fuel_type: req.body.fuel_type,
-						color: req.body.color,
-						transmission: req.body.transmission,
-						country: req.body.country,
-						state: req.body.state,
-						city: req.body.city,
-						location: req.body.location,
-						price_from: req.body.price_from,
-						price_to: req.body.price_to,
-						discount_from: req.body.discount_from,
-						discount_to: req.body.discount_to,
-						km_run_from: req.body.km_run_from,
-						km_run_to: req.body.km_run_to,
-						year_of_reg_from: req.body.year_of_reg_from,
-						year_of_reg_to: req.body.year_of_reg_to,
-						sms: req.body.sms,
-						email: req.body.email,
-						app: req.body.app,
-						active: req.body.active,
-						deleted: req.body.deleted,*/
-						delete doc.createdBy;
-						delete doc.createdAt;
-						doc.changedBy = req.payload.user_id;
-						doc.changedAt = at;
+				var doc = req.body;				
+				doc.bid_sell_buy= (req.body.bid_sell_buy)?req.body.bid_sell_buy:"";
+				doc.individual_dealer= (req.body.individual_dealer)?req.body.individual_dealer:"";
+				doc.owner_type= (req.body.owner_type)?req.body.owner_type:"";
+				doc.product_type_name= (req.body.product_type_name)?req.body.product_type_name:"";
+				doc.brand_name= (req.body.brand_name)?req.body.brand_name:"";
+				doc.model= (req.body.model)?req.body.model:"";
+				doc.variant= (req.body.variant)?req.body.variant:"";
+				doc.fuel_type= (req.body.fuel_type)?req.body.fuel_type:"";
+				doc.color= (req.body.color)?req.body.color:"";
+				doc.transmission= (req.body.transmission)?req.body.transmission:"";
+				doc.country= (req.body.country)?req.body.country:"";
+				doc.state= (req.body.state)?req.body.state:"";
+				doc.city= (req.body.city)?req.body.city:"";
+				doc.location= (req.body.location)?req.body.location:"";
+				doc.price_from= (req.body.price_from)?req.body.price_from:"";
+				doc.price_to= (req.body.price_to)?req.body.price_to:"";
+				doc.discount_from= (req.body.discount_from)?req.body.discount_from:"";
+				doc.discount_to= (req.body.discount_to)?req.body.discount_to:"";
+				doc.km_run_from= (req.body.km_run_from)?req.body.km_run_from:"";
+				doc.km_run_to= (req.body.km_run_to)?req.body.km_run_to:"";
+				doc.year_of_reg_from= (req.body.year_of_reg_from)?req.body.year_of_reg_from:"";
+				doc.year_of_reg_to= (req.body.year_of_reg_to)?req.body.year_of_reg_to:"";
+				doc.sms= req.body.sms;
+				doc.email= req.body.email;
+				doc.app= req.body.app;
+				doc.active= req.body.active;
+				doc.deleted= req.body.deleted;
+				delete doc.createdBy;
+				delete doc.createdAt;
+				doc.changedBy = req.payload.user_id;
+				doc.changedAt = at;
 				//};
 				
 				UserAlert.findOneAndUpdate({_id:req.body._id},{$set: doc},{},(err, updated)=>{
