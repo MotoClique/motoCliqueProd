@@ -27,6 +27,7 @@ module.exports.getUserSubMap = function(req,res){//Fetch
 module.exports.addUserSubMap = function(req,res){//Add New
 	var tdyObj = new Date();
 	var valid_from = tdyObj.getDate() +"/"+ (tdyObj.getMonth() - (-1)) +"/"+ tdyObj.getFullYear() ;
+	var valid_to = "";
 	var validity_unit = req.body.validity_unit.toLowerCase();
 	if(validity_unit.includes("hour")){
 		var d = new Date();

@@ -2,6 +2,7 @@
 const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
+var ctrlCommon = require('./common');
 
 //////////////////////////Search////////////////////////////////
 const Sell = mongoose.model('Sell');
@@ -551,8 +552,13 @@ module.exports.getTransactions = function(req,res){//Fetch
 					}
 		
 		
-		Parameter.find({parameter:{"$eq":"extra_life_time"}},function(params_err, params_result){
-		
+		Parameter.find({parameter:{"$in":["extra_life_time","to_ist"]}},function(params_err, params_result){
+			var params = {};
+			if(params_result){
+				params_result.forEach(function(val,indx,arr){
+					params[val.parameter] = val.value;
+				});
+			}
 					if(type === "Sale"){
 						var count_sale = null;
 						if(req.body.sale.count)
@@ -631,8 +637,8 @@ module.exports.getTransactions = function(req,res){//Fetch
 						delete query.start_from_amount;
 						query.bid_status = {"$eq": "Active"};
 						var extr_dy = new Date();
-						if(params_result.length && params_result.length>0){
-							var newDate = extr_dy.getDate() - (params_result[0].value);
+						if(params.extra_life_time){
+							var newDate = extr_dy.getDate() - (params.extra_life_time);
 							extr_dy.setDate(newDate);
 						}
 						query.bid_valid_to = {"$gte": extr_dy};
@@ -677,6 +683,9 @@ module.exports.getTransactions = function(req,res){//Fetch
 												var clone = JSON.parse(JSON.stringify(result[i]));
 												//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
 												var bid_valid_to = result[i].bid_valid_to;
+												if(params.to_ist)
+													bid_valid_to = ctrlCommon.convertDateTime(result[i].bid_valid_to,params.to_ist);
+												
 												var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
 												var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
 												var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
@@ -695,6 +704,9 @@ module.exports.getTransactions = function(req,res){//Fetch
 															var clone = JSON.parse(JSON.stringify(result[i]));
 															//clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
 															var bid_valid_to = result[i].bid_valid_to;
+															if(params.to_ist)
+																bid_valid_to = ctrlCommon.convertDateTime(result[i].bid_valid_to,params.to_ist);
+												
 															var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
 															var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
 															var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
@@ -805,8 +817,8 @@ module.exports.getTransactions = function(req,res){//Fetch
 															delete bid_query.start_from_amount;
 															bid_query.bid_status = {"$eq": "Active"};
 															var extr_dy = new Date();
-															if(params_result.length && params_result.length>0){
-																var newDate = extr_dy.getDate() - (params_result[0].value);
+															if(params.extra_life_time){
+																var newDate = extr_dy.getDate() - (params.extra_life_time);
 																extr_dy.setDate(newDate);
 															}
 															bid_query.bid_valid_to = {"$gte": extr_dy};
@@ -842,6 +854,9 @@ module.exports.getTransactions = function(req,res){//Fetch
 																						var clone = JSON.parse(JSON.stringify(bids[i]));
 																						//clone.text = bids[i].product_type_name +" "+ bids[i].brand_name +" "+ bids[i].model +" "+ bids[i].variant ;
 																						var bid_valid_to = bids[i].bid_valid_to;
+																						if(params.to_ist)
+																							bid_valid_to = ctrlCommon.convertDateTime(bids[i].bid_valid_to,params.to_ist);
+																						
 																						var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
 																						var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
 																						var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
@@ -859,6 +874,9 @@ module.exports.getTransactions = function(req,res){//Fetch
 																									var clone = JSON.parse(JSON.stringify(bids[i]));
 																									//clone.text = bids[i].product_type_name +" "+ bids[i].brand_name +" "+ bids[i].model +" "+ bids[i].variant ;
 																									var bid_valid_to = bids[i].bid_valid_to;
+																									if(params.to_ist)
+																										bid_valid_to = ctrlCommon.convertDateTime(bids[i].bid_valid_to,params.to_ist);
+																									
 																									var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
 																									var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
 																									var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();

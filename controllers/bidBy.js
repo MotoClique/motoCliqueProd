@@ -91,12 +91,12 @@ module.exports.addBidBy = function(req,res){//Add New
 									updatedBid.current_bid_amount = doc.current_bid_amount;
 									updatedBid.current_bid_by = req.payload.user_id;
 									updatedBid.current_bid_at = at;
-									var bidValidDateObj = result_bid[0].bid_valid_to;
+									/*var bidValidDateObj = result_bid[0].bid_valid_to;
 									var bidValidHrs = (bidValidDateObj.getHours()<10)?('0'+bidValidDateObj.getHours()):bidValidDateObj.getHours();
 									var bidValidMins = (bidValidDateObj.getMinutes()<10)?('0'+bidValidDateObj.getMinutes()):bidValidDateObj.getMinutes();
 									var bidValidSecs = (bidValidDateObj.getSeconds()<10)?('0'+bidValidDateObj.getSeconds()):bidValidDateObj.getSeconds();
-									updatedBid.bid_valid_to = bidValidDateObj.getDate() +"/"+ (bidValidDateObj.getMonth() - (-1)) +"/"+ bidValidDateObj.getFullYear() +"T"+ bidValidHrs +":"+ bidValidMins +":"+ bidValidSecs;
-									ctrlBid.updateBid({body:updatedBid, payload:req.payload},res);
+									updatedBid.bid_valid_to = bidValidDateObj.getDate() +"/"+ (bidValidDateObj.getMonth() - (-1)) +"/"+ bidValidDateObj.getFullYear() +"T"+ bidValidHrs +":"+ bidValidMins +":"+ bidValidSecs;*/
+									ctrlBid.updateBid({body:updatedBid, payload:req.payload, bidValidTo: updatedBid.bid_valid_to},res);
 									//res.json({statusCode: 'S', msg: 'Entry added', result: result});
 								}
 							});

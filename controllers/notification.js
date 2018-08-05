@@ -109,26 +109,26 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$lte": doc.current_bid_amount},
 						price_to: null
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						price_from: {"$lte": doc.current_bid_amount},
 						price_to: {"$eq": ""}
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.current_bid_amount},
 						price_to: {"$type": 10}
-					});
+					});*/
 					orCondtn.push({
 						price_from: null,
 						price_to: {"$gte": doc.current_bid_amount}
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						price_from: {"$eq": ""},
 						price_to: {"$gte": doc.current_bid_amount}
 					});
 					orCondtn.push({
 						price_from: {"$type": 10},
 						price_to: {"$gte": doc.current_bid_amount}
-					});
+					});*/
 					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
 					andCondtn.push(orCondtnObj);
 				}
@@ -146,26 +146,26 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$lte": doc.net_price},
 						price_to: null
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						price_from: {"$lte": doc.net_price},
 						price_to: {"$eq": ""}
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.net_price},
 						price_to: {"$type": 10}
-					});
+					});*/
 					orCondtn.push({
 						price_from: null,
 						price_to: {"$gte": doc.net_price}
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						price_from: {"$eq": ""},
 						price_to: {"$gte": doc.net_price}
 					});
 					orCondtn.push({
 						price_from: {"$type": 10},
 						price_to: {"$gte": doc.net_price}
-					});
+					});*/
 					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
 					andCondtn.push(orCondtnObj);
 				}
@@ -183,26 +183,26 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$lte": doc.start_from_amount},
 						price_to: null
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						price_from: {"$lte": doc.start_from_amount},
 						price_to: {"$eq": ""}
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.start_from_amount},
 						price_to: {"$type": 10}
-					});
+					});*/
 					orCondtn.push({
 						price_from: null,
 						price_to: {"$gte": doc.start_from_amount}
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						price_from: {"$eq": ""},
 						price_to: {"$gte": doc.start_from_amount}
 					});
 					orCondtn.push({
 						price_from: {"$type": 10},
 						price_to: {"$gte": doc.start_from_amount}
-					});
+					});*/
 					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
 					andCondtn.push(orCondtnObj);
 				}
@@ -221,26 +221,26 @@ module.exports.sendNotification = function(doc){//Send
 						km_run_from: {"$lte": doc.km_done},
 						km_run_to: null
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						km_run_from: {"$lte": doc.km_done},
 						km_run_to: {"$eq": ""}
 					});
 					orCondtn.push({
 						km_run_from: {"$lte": doc.km_done},
 						km_run_to: {"$type": 10}
-					});
+					});*/
 					orCondtn.push({
 						km_run_from: null,
 						km_run_to: {"$gte": doc.km_done}
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						km_run_from: {"$eq": ""},
 						km_run_to: {"$gte": doc.km_done}
 					});
 					orCondtn.push({
 						km_run_from: {"$type": 10},
 						km_run_to: {"$gte": doc.km_done}
-					});
+					});*/
 					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
 					andCondtn.push(orCondtnObj);
 				}
@@ -258,26 +258,26 @@ module.exports.sendNotification = function(doc){//Send
 						year_of_reg_from: {"$lte": doc.year_of_reg},
 						year_of_reg_to: null
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						year_of_reg_from: {"$lte": doc.year_of_reg},
 						year_of_reg_to: {"$eq": ""}
 					});
 					orCondtn.push({
 						year_of_reg_from: {"$lte": doc.year_of_reg},
 						year_of_reg_to: {"$type": 10}
-					});
+					});*/
 					orCondtn.push({
 						year_of_reg_from: null,
 						year_of_reg_to: {"$gte": doc.year_of_reg}
 					});
-					orCondtn.push({
+					/*orCondtn.push({
 						year_of_reg_from: {"$eq": ""},
 						year_of_reg_to: {"$gte": doc.year_of_reg}
 					});
 					orCondtn.push({
 						year_of_reg_from: {"$type": 10},
 						year_of_reg_to: {"$gte": doc.year_of_reg}
-					});
+					});*/
 					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
 					andCondtn.push(orCondtnObj);
 				}
