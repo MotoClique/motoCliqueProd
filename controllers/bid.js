@@ -97,7 +97,8 @@ module.exports.getBid = function(req,res){//Fetch
 									res.json({results: results, error: err, params:{count:count, skip:skip-(-result.length), limit:limit}});
 							});
 						},this);
-						
+						if(result.length<=0)
+							res.json({results: results, error: null, params:{count:count, skip:skip-(-result.length), limit:limit}});
 					}
 				});
 			});
@@ -106,6 +107,10 @@ module.exports.getBid = function(req,res){//Fetch
 			Bid.find(query,function(err, result){
 				var results = [];
 				var loopCount = 0;
+				if(err)
+					res.json({results: null, error: err, params:{}});
+				else if(result.length<=0)
+					res.json({results: results, error: null, params:{}});
 				//for(var i=0; i<result.length; i++){
 				result.forEach(function(currentValue, index, arr){							
 					ctrlCommon.convertFromUTC(currentValue.bid_valid_to,"IST",function(newDate,timeDiff){
@@ -145,7 +150,7 @@ module.exports.getBid = function(req,res){//Fetch
 						if(loopCount === result.length)
 							res.json({results: results, error: err, params:{}});
 					});
-				});
+				},this);
 				
 			});
 		}
