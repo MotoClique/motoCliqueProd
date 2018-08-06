@@ -262,6 +262,7 @@ module.exports.addBid = function(req,res){//Add New
 						}*/
 						
 						ctrlCommon.convertToUTC(doc.bid_valid_to,"IST",function(newDate){
+							console.log(newDate);
 							if(newDate){
 								doc.bid_valid_to = newDate;
 								let newBid = new Bid(doc);

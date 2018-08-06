@@ -28,60 +28,60 @@ module.exports.sendNotification = function(doc){//Send
 				//query_alert.active = {"$eq": true};
 				
 				if(doc.transactionType){
-					var orCondtn = [];
-					orCondtn.push({bid_sell_buy: {"$in": [doc.transactionType, 'All', '']}});
-					orCondtn.push({bid_sell_buy: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({bid_sell_buy: {"$in": [doc.transactionType, 'All', '', null]}});
+					//orCondtn.push({bid_sell_buy: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}
 				if(doc.listing_by){
-					var orCondtn = [];
-					orCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '']}});
-					orCondtn.push({individual_dealer: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '', null]}});
+					//orCondtn.push({individual_dealer: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}
 				if(doc.product_type_name){
-					var orCondtn = [];
-					orCondtn.push({product_type_name: {"$in": [doc.product_type_name, 'All', '']}});
-					orCondtn.push({product_type_name: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({product_type_name: {"$in": [doc.product_type_name, 'All', '', null]}});
+					//orCondtn.push({product_type_name: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}
 				if(doc.brand_name){
-					var orCondtn = [];
-					orCondtn.push({brand_name: {"$in": [doc.brand_name, 'All', '']}});
-					orCondtn.push({brand_name: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({brand_name: {"$in": [doc.brand_name, 'All', '', null]}});
+					//orCondtn.push({brand_name: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}
 				if(doc.model){
-					var orCondtn = [];
-					orCondtn.push({model: {"$in": [doc.model, 'All', '']}});
-					orCondtn.push({model: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({model: {"$in": [doc.model, 'All', '', null]}});
+					//orCondtn.push({model: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}
 				if(doc.variant){
-					var orCondtn = [];
-					orCondtn.push({variant: {"$in": [doc.variant, 'All', '']}});
-					orCondtn.push({variant: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({variant: {"$in": [doc.variant, 'All', '', null]}});
+					//orCondtn.push({variant: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}
 				if(doc.fuel_type){
-					var orCondtn = [];
-					orCondtn.push({fuel_type: {"$in": [doc.fuel_type, 'All', '']}});
-					orCondtn.push({fuel_type: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({fuel_type: {"$in": [doc.fuel_type, 'All', '', null]}});
+					//orCondtn.push({fuel_type: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}					
 				if(doc.city){
-					var orCondtn = [];
-					orCondtn.push({city: {"$in": [doc.city, 'All', '']}});	
-					orCondtn.push({city: null});
-					var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
-					andCondtn.push(orCondtnObj);
+					//var orCondtn = [];
+					andCondtn.push({city: {"$in": [doc.city, 'All', '', null]}});	
+					//orCondtn.push({city: null});
+					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
+					//andCondtn.push(orCondtnObj);
 				}
 				if(doc.current_bid_amount){
 					/*orCondtn.push({
@@ -107,7 +107,7 @@ module.exports.sendNotification = function(doc){//Send
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.current_bid_amount},
-						price_to: null
+						price_to: {"$eq": null}
 					});
 					/*orCondtn.push({
 						price_from: {"$lte": doc.current_bid_amount},
@@ -118,7 +118,7 @@ module.exports.sendNotification = function(doc){//Send
 						price_to: {"$type": 10}
 					});*/
 					orCondtn.push({
-						price_from: null,
+						price_from: {"$eq": null},
 						price_to: {"$gte": doc.current_bid_amount}
 					});
 					/*orCondtn.push({
@@ -144,7 +144,7 @@ module.exports.sendNotification = function(doc){//Send
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.net_price},
-						price_to: null
+						price_to: {"$eq": null}
 					});
 					/*orCondtn.push({
 						price_from: {"$lte": doc.net_price},
@@ -155,7 +155,7 @@ module.exports.sendNotification = function(doc){//Send
 						price_to: {"$type": 10}
 					});*/
 					orCondtn.push({
-						price_from: null,
+						price_from: {"$eq": null},
 						price_to: {"$gte": doc.net_price}
 					});
 					/*orCondtn.push({
@@ -181,7 +181,7 @@ module.exports.sendNotification = function(doc){//Send
 					});
 					orCondtn.push({
 						price_from: {"$lte": doc.start_from_amount},
-						price_to: null
+						price_to: {"$eq": null}
 					});
 					/*orCondtn.push({
 						price_from: {"$lte": doc.start_from_amount},
@@ -192,7 +192,7 @@ module.exports.sendNotification = function(doc){//Send
 						price_to: {"$type": 10}
 					});*/
 					orCondtn.push({
-						price_from: null,
+						price_from: {"$eq": null},
 						price_to: {"$gte": doc.start_from_amount}
 					});
 					/*orCondtn.push({
@@ -219,7 +219,7 @@ module.exports.sendNotification = function(doc){//Send
 					});
 					orCondtn.push({
 						km_run_from: {"$lte": doc.km_done},
-						km_run_to: null
+						km_run_to: {"$eq": null}
 					});
 					/*orCondtn.push({
 						km_run_from: {"$lte": doc.km_done},
@@ -230,7 +230,7 @@ module.exports.sendNotification = function(doc){//Send
 						km_run_to: {"$type": 10}
 					});*/
 					orCondtn.push({
-						km_run_from: null,
+						km_run_from: {"$eq": null},
 						km_run_to: {"$gte": doc.km_done}
 					});
 					/*orCondtn.push({
@@ -256,7 +256,7 @@ module.exports.sendNotification = function(doc){//Send
 					});
 					orCondtn.push({
 						year_of_reg_from: {"$lte": doc.year_of_reg},
-						year_of_reg_to: null
+						year_of_reg_to: {"$eq": null}
 					});
 					/*orCondtn.push({
 						year_of_reg_from: {"$lte": doc.year_of_reg},
@@ -267,7 +267,7 @@ module.exports.sendNotification = function(doc){//Send
 						year_of_reg_to: {"$type": 10}
 					});*/
 					orCondtn.push({
-						year_of_reg_from: null,
+						year_of_reg_from: {"$eq": null},
 						year_of_reg_to: {"$gte": doc.year_of_reg}
 					});
 					/*orCondtn.push({
@@ -285,7 +285,7 @@ module.exports.sendNotification = function(doc){//Send
 				query_alert["$and"] = andCondtn;
 				
 				console.log(query_alert);
-				console.log(query_alert["$and"]);
+				console.log(orCondtn);
 				UserAlert.find(query_alert,function(err_alert, result_alert){
 						console.log(result_alert);
 							if(err_alert){
