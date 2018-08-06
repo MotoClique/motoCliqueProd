@@ -282,10 +282,17 @@ module.exports.sendNotification = function(doc){//Send
 					andCondtn.push(orCondtnObj);
 				}
 				
+				var andCondtn = [
+					{deleted: {"$ne": true}},
+					{active: {"$eq": true}}
+				];				
+				if(doc.listing_by){
+					andCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '', null]}});					
+				}
 				query_alert["$and"] = andCondtn;
 				
 				console.log(query_alert);
-				console.log(orCondtn);
+				//console.log(orCondtn);
 				UserAlert.find(query_alert,function(err_alert, result_alert){
 						console.log(result_alert);
 							if(err_alert){

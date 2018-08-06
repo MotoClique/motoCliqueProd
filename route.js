@@ -11,6 +11,11 @@ var auth = jwt({
 var ctrlAuth = require('./controllers/authentication');
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
+router.post('/verifyOtp', ctrlAuth.verifyOtp);
+router.post('/changePassword', ctrlAuth.changePassword);
+// otp
+router.get('/sendOTP', ctrlAuth.sendOTP);
+router.get('/loginByOtp', ctrlAuth.loginByOtp);
 
 //Admin router
 var ctrlAdmin = require('./controllers/admin');
@@ -19,9 +24,7 @@ router.get('/profile', auth, ctrlAdmin.profileRead);
 router.post('/profile', auth, ctrlAdmin.profileAdd);
 router.put('/profile', auth, ctrlAdmin.profileUpdate);
 router.delete('/profile/:id', auth, ctrlAdmin.profileDelete);
-// otp
-router.get('/sendOTP', ctrlAdmin.sendOTP);
-router.get('/loginByOtp', ctrlAdmin.loginByOtp);
+
 // application
 router.get('/application', auth, ctrlAdmin.getApplication);
 router.post('/application', auth, ctrlAdmin.addApplication);
