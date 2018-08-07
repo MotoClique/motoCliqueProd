@@ -17,6 +17,14 @@ module.exports.register = function(req, res) {
 		}
 		//else if(otps.length>0){
 		else if(true){
+			User.find({ mobile: {"$eq":req.body.mobile} }, function (err_user, result_user) {
+				if(err_user){
+					res.json({"statusCode":"F","msg":"Unable to register.","error":err_user});
+				}
+				else if(result_user && result_user.length>0){
+					res.json({"statusCode":"F","msg":"Mobile number is already registered.","error":null});
+				}
+				else{
 				//Register Here
 				var user_id = "1000";
 				Counter.getNextSequenceValue('user',function(sequence){
@@ -77,6 +85,8 @@ module.exports.register = function(req, res) {
 						res.json({statusCode: 'F', msg: 'Unable to generate sequence number.'});
 					}
 				});
+			  }
+			});
 		}
 		else{
 			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
@@ -113,6 +123,7 @@ module.exports.login = function(req, res) {
       res.status(401).json({
 		"statusCode": "F",
 		"token" : null,
+	      	"msg" : "User not found.",
 		"error": info
       });
     }
@@ -217,7 +228,7 @@ module.exports.verifyOTP = function(req, res) {
 		}
 		//else if(otps.length>0){
 		else if(true){
-			User.findOne({ mobile: req.body.mobile }, function (err_user, result_user) {
+			User.find({ mobile: {"$eq":req.body.mobile} }, function (err_user, result_user) {
 				if(err_user){
 					res.json({"statusCode":"F","msg":"User not found.","user": null,"error":err_user});
 				}
