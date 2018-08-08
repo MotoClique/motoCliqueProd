@@ -71,7 +71,7 @@ app.use(express.static(path.join(__dirname, 'views')));
 app.use(passport.initialize());
 app.use('/api',route);
 
-
+/*
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
@@ -98,9 +98,11 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
     mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
 
   }
-}
+}*/
 var db = null,
-    dbDetails = new Object();
+    dbDetails = new Object(),
+	mongoURL = "mongodb://motoadmin:Moto@123@ds217002.mlab.com:17002/motodb",
+	mongoURLLabel = "mongodb://motoadmin:Moto@123@ds217002.mlab.com:17002/motodb";
 
 var initDb = function(callback) {
   if (mongoURL == null) return;
@@ -194,8 +196,8 @@ initDb(function(err){
   console.log('Error connecting to Mongo. Message:\n'+err);
 });
 
-app.listen(port, ip);
+/*app.listen(port, ip);
 console.log('Server running on http://%s:%s', ip, port);
-console.log('server started:'+port);
+console.log('server started:'+port);*/
 
 module.exports = app ;
