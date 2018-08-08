@@ -11,7 +11,7 @@ var auth = jwt({
 var ctrlAuth = require('./controllers/authentication');
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
-router.post('/verifyOtp', ctrlAuth.verifyOtp);
+router.post('/verifyOtp', ctrlAuth.verifyOTP);
 router.post('/changePassword', ctrlAuth.changePassword);
 // otp
 router.get('/sendOTP', ctrlAuth.sendOTP);

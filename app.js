@@ -75,46 +75,24 @@ app.use('/api',route);
 
 // MongoDB Connection
 
-var db = null,
-    dbDetails = new Object();
-
-var initDb = function(callback) {
-  var mongoURL = "mongodb://motoadmin:Moto@123@ds217002.mlab.com:17002/motodb";
+  var mongoURL = "mongodb://motoadmin:Moto1234@ds217002.mlab.com:17002/motodb";
 
   var mongodb = require('mongodb');
   
-  mongoose.connect(mongoURL);
-  db = true;
-};
+  mongoose.connect(mongoURL).then(
+  (res) => { console.log(res); },
+  (err) => { console.log(err); }
+);
 
 
 app.get('/', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
-  
   res.render('index.html', { pageCountMessage : null});
 });
 
 
-app.get('/pagecount', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
- 
-  res.send('{ pageCount: -1 }');
-});
+
 
 app.get('*', function (req, res) {
-      // try to initialize the db on every request if it's not already
-      if (!db) {
-        initDb(function(err){});
-      }
-      
 	  res.render('index.html', { pageCountMessage : null});
 });
 
@@ -125,9 +103,7 @@ app.use(function(err, req, res, next){
   res.status(500).send('Something bad happened!');
 });
 
-initDb(function(err){
-  console.log('Error connecting to Mongo. Message:\n'+err);
-});
+app.listen(3000, () => console.log('your app is listening on port 3000!'))
 
 
 module.exports = app ;
