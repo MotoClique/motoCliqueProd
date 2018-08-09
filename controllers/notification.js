@@ -121,6 +121,10 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$eq": null},
 						price_to: {"$gte": doc.current_bid_amount}
 					});
+					orCondtn.push({
+						price_from: {"$eq": null},
+						price_to: {"$eq": null}
+					});
 					/*orCondtn.push({
 						price_from: {"$eq": ""},
 						price_to: {"$gte": doc.current_bid_amount}
@@ -158,6 +162,10 @@ module.exports.sendNotification = function(doc){//Send
 						price_from: {"$eq": null},
 						price_to: {"$gte": doc.net_price}
 					});
+					orCondtn.push({
+						price_from: {"$eq": null},
+						price_to: {"$eq": null}
+					});
 					/*orCondtn.push({
 						price_from: {"$eq": ""},
 						price_to: {"$gte": doc.net_price}
@@ -194,6 +202,10 @@ module.exports.sendNotification = function(doc){//Send
 					orCondtn.push({
 						price_from: {"$eq": null},
 						price_to: {"$gte": doc.start_from_amount}
+					});
+					orCondtn.push({
+						price_from: {"$eq": null},
+						price_to: {"$eq": null}
 					});
 					/*orCondtn.push({
 						price_from: {"$eq": ""},
@@ -233,6 +245,10 @@ module.exports.sendNotification = function(doc){//Send
 						km_run_from: {"$eq": null},
 						km_run_to: {"$gte": doc.km_done}
 					});
+					orCondtn.push({
+						km_run_from: {"$eq": null},
+						km_run_to: {"$eq": null}
+					});
 					/*orCondtn.push({
 						km_run_from: {"$eq": ""},
 						km_run_to: {"$gte": doc.km_done}
@@ -269,6 +285,10 @@ module.exports.sendNotification = function(doc){//Send
 					orCondtn.push({
 						year_of_reg_from: {"$eq": null},
 						year_of_reg_to: {"$gte": doc.year_of_reg}
+					});
+					orCondtn.push({
+						year_of_reg_from: {"$eq": null},
+						year_of_reg_to: {"$eq": null}
 					});
 					/*orCondtn.push({
 						year_of_reg_from: {"$eq": ""},
