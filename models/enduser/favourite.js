@@ -8,8 +8,7 @@ var FavSchema = new mongoose.Schema({
 	bid_sell_buy_id:{
 		type: String,
 		required: true,
-		index: true,
-		unique: true
+		index: true
 	},
 	type:{
 		type: String 
@@ -30,5 +29,5 @@ var FavSchema = new mongoose.Schema({
 		type: String 
 	}
 });
-FavSchema.index({ bid_sell_buy_id: 1},{unique: true});
+
 mongoose.model('Fav', FavSchema);
