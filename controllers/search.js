@@ -950,11 +950,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 			});
 			}
 			else{
-				res.json({statusCode:"F", msg:"Your subscription has expired!", results: null, error: null});
+				res.json({statusCode:"F", msg:"Your subscription has expired!", noSubscription:true, results: null, error: null});
 			}
 		}
 		else{
-			res.json({statusCode:"F", msg:"You do not have any subscription plan. Subscribe Now!", results: null, error: null});
+			res.json({statusCode:"F", msg:"You do not have any subscription plan. Subscribe Now!", noSubscription:true, results: null, error: null});
 		}
 	});
 	}	
