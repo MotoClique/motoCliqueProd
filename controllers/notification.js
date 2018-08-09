@@ -282,13 +282,13 @@ module.exports.sendNotification = function(doc){//Send
 					andCondtn.push(orCondtnObj);
 				}
 				
-				var andCondtn = [
+				/*var andCondtn = [
 					{deleted: {"$ne": true}},
 					{active: {"$eq": true}}
 				];				
 				if(doc.listing_by){
 					andCondtn.push({individual_dealer: {"$in": [doc.listing_by, 'All', '', null]}});					
-				}
+				}*/
 				query_alert["$and"] = andCondtn;
 				
 				console.log(query_alert);
@@ -376,6 +376,8 @@ module.exports.sendNotification = function(doc){//Send
 																			function(err_email,httpResponse,body){
 																				console.log("email triggered to "+profiles[0].email);
 																				console.log(err_email);
+																				console.log(httpResponse);
+																				console.log(body);
 																			});
 																			email_sent = true;
 																		}
