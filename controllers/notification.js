@@ -1,4 +1,4 @@
-
+var Mailgun = require('mailgun-js');
 const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
@@ -370,6 +370,7 @@ module.exports.sendNotification = function(doc){//Send
 													}
 													else{
 														var email_sent = false;
+														var mailgun = new Mailgun({apiKey: params.email_api_key, domain: params.email_api_id});
 														for(var j = 0; j<result_userSub.length; j++){												
 															if(result_userSub[j].notification_email === 'X' && !email_sent){
 																var query_profile = {};
@@ -384,7 +385,11 @@ module.exports.sendNotification = function(doc){//Send
 																							"subject": doc.brand_name+' '+doc.model,
 																							"text": 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'.'
 																			};
-																			request.post({
+																			mailgun.messages().send(data, function (err, body) {
+																				console.log("Error in email: ", err);
+																				console.log("Success in email: ", body);
+																			});
+																			/*request.post({
 																				url:'https://api.mailgun.net/v3/'+ params.email_api_id
 																						+'/messages', 
 																				form: data,
@@ -398,7 +403,7 @@ module.exports.sendNotification = function(doc){//Send
 																				console.log(err_email);
 																				console.log(httpResponse);
 																				console.log(body);
-																			});
+																			});*/
 																			email_sent = true;
 																		}
 																	}
