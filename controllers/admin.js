@@ -2122,14 +2122,14 @@ module.exports.getAllParameter = function(req,res){//Fetch
 	});
 };
 module.exports.getParameter = function(req,res){//Fetch
-	console.log(req);
+	//console.log(req);
 	if(req.query.parameter){
 		var query = {};
 		query.parameter = {"$eq":req.query.parameter};
-		console.log(query);
+		//console.log(query);
 		Parameter.find(query,function(err, result){
-			console.log(err);
-			console.log(result);
+			//console.log(err);
+			//console.log(result);
 			if(err)
 				res.json({statusCode: 'F', msg: 'Unable to fetch.', error: err});
 			else

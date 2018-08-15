@@ -96,7 +96,7 @@ module.exports.addBidBy = function(req,res){//Add New
 									var bidValidMins = (bidValidDateObj.getMinutes()<10)?('0'+bidValidDateObj.getMinutes()):bidValidDateObj.getMinutes();
 									var bidValidSecs = (bidValidDateObj.getSeconds()<10)?('0'+bidValidDateObj.getSeconds()):bidValidDateObj.getSeconds();
 									updatedBid.bid_valid_to = bidValidDateObj.getDate() +"/"+ (bidValidDateObj.getMonth() - (-1)) +"/"+ bidValidDateObj.getFullYear() +"T"+ bidValidHrs +":"+ bidValidMins +":"+ bidValidSecs;*/
-									ctrlBid.updateBid({body:updatedBid, payload:req.payload, bidValidTo: updatedBid.bid_valid_to},res);
+									ctrlBid.updateBid({body:updatedBid, payload:req.payload, bidValidTo: (updatedBid.bid_valid_to).getTime()},res);
 									//res.json({statusCode: 'S', msg: 'Entry added', result: result});
 								}
 							});

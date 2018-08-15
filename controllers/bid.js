@@ -262,7 +262,7 @@ module.exports.addBid = function(req,res){//Add New
 						}*/
 						
 						ctrlCommon.convertToUTC(doc.bid_valid_to,"IST",function(newDate){
-							console.log(newDate);
+							//console.log(newDate);
 							if(newDate){
 								doc.bid_valid_to = newDate;
 								let newBid = new Bid(doc);
@@ -325,7 +325,7 @@ module.exports.updateBid = function(req,res){//Update
 		doc.active = "X";
 	else
 		doc.active = "";
-	console.log(doc.bid_valid_to);
+	//console.log(doc.bid_valid_to);
 	if(doc.bid_valid_to && (typeof doc.bid_valid_to) === "string"){
 		var date_split = [];
 		var time_split = [];
@@ -367,7 +367,7 @@ module.exports.updateBid = function(req,res){//Update
 		if(newDate){
 			doc.bid_valid_to = newDate;
 			if(req.bidValidTo){
-				doc.bid_valid_to = req.bidValidTo;
+				doc.bid_valid_to = new Date(req.bidValidTo);
 			}
 			if(doc.msg === 'D'){
 				d.setDate(d.getDate()-1);
