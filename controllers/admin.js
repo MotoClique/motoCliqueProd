@@ -1772,8 +1772,8 @@ module.exports.addMultiplePrdImage = function(req,res){//Add Multiple Images
 	var PrdThumbnail = mongoose.model('PrdThumbnail');
 	var records = req.body.docs;
 	var image_id = '0';
-	docs.forEach(function(currentItem, index, arr){
-		var item = JSON.parse(JSON.stringify(currentItem));
+	records.forEach(function(currentItem, index, arr){
+		//var item = JSON.parse(JSON.stringify(currentItem));
 		var buffr = new Buffer(currentItem.data,'base64');
 		//var prd_id = ""+ currentItem.product_type_name +"_"+ currentItem.brand_name +"_"+ currentItem.model +"_"+ currentItem.variant;
 		Counter.getNextSequenceValue('prdImage',function(sequence){
