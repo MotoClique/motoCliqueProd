@@ -1488,7 +1488,7 @@ module.exports.validateUploadData = function(req,res){//Validation
 					hasDiscrepancy = true;
 				}
 				
-				PrdTypSpecFieldMap.find({product_type_name:{"$eq":currentItem.product_type_name}},function(productTypSpec_err, productTypSpec){
+				PrdTypSpecFieldMap.find({product_type_name:{"$eq":currentItem.product_type_name}, specification_field_name:{"$eq":currentItem.specification_field_name}},function(productTypSpec_err, productTypSpec){
 					if(productTypSpec_err || productTypSpec.length===0){
 						if(item.msg)
 							item.msg = item.msg +', Invalid Product Type Specification';
@@ -1498,6 +1498,7 @@ module.exports.validateUploadData = function(req,res){//Validation
 					}
 					else{
 						item.specification_field_id = productTypSpec[0].specification_field_id;
+						item.deleted = false;
 					}
 						
 					validation_result.push(item);
