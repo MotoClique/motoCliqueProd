@@ -1794,11 +1794,11 @@ module.exports.addMultiplePrdImage = function(req,res){//Add Multiple Images
 						res.json({statusCode: 'F', msg: 'Failed to add', error: err});
 					}
 					else{
-						var base64string = "data:"+currentItem.type+";base64,"+currentItem.data;
-						module.exports.resizeBase64Img(base64string, 100, 100,function(newImg){
-				  			var compressed = newImg.replace(/^data:image\/[a-z]+;base64,/, "");
+						//var base64string = "data:"+currentItem.type+";base64,"+currentItem.data;
+						//module.exports.resizeBase64Img(base64string, 100, 100,function(newImg){
+				  			//var compressed = newImg.replace(/^data:image\/[a-z]+;base64,/, "");
 						
-							var thumbnail_buffr = new Buffer(compressed,'base64');
+							var thumbnail_buffr = new Buffer(currentItem.thumbnail,'base64');
 							let newPrdThumbnail = new PrdThumbnail({
 								product_id: currentItem.product_id,
 								type: currentItem.type,
@@ -1807,14 +1807,14 @@ module.exports.addMultiplePrdImage = function(req,res){//Add Multiple Images
 								year_from: parseInt(currentItem.year_from),
 								year_to: parseInt(currentItem.year_to),
 								thumbnail: thumbnail_buffr,
-								image_id: prdImage[0].image_id,
+								image_id: prdImage.image_id,
 								default: currentItem.default
 							});
 
 							newPrdThumbnail.save((err, prdThumbnail)=>{
-								res.json({statusCode: 'S', msg: 'Image uploaded', results: prdImage});
+								res.json({statusCode: 'S', msg: 'Image uploaded', results: {image:prdImage, thumbnail:prdThumbnail}});
 							});
-						});
+						//});
 					}
 				});
 			}
