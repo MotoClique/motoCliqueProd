@@ -1487,6 +1487,9 @@ module.exports.validateUploadData = function(req,res){//Validation
 					item.msg = 'Product does not exist.';
 					hasDiscrepancy = true;
 				}
+				else{
+					item.product_id = product[0].product_id;
+				}
 				
 				PrdTypSpecFieldMap.find({product_type_name:{"$eq":currentItem.product_type_name}, specification_field_name:{"$eq":currentItem.specification_field_name}},function(productTypSpec_err, productTypSpec){
 					if(productTypSpec_err || productTypSpec.length===0){
