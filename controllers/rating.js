@@ -83,12 +83,12 @@ module.exports.addRating = function(req,res){//Add New
 																+ (4 * updateService.no_of_four_star)
 																	+ (5 * updateService.no_of_five_star)) / (updateService.no_of_rating)).toFixed(1);
 							
-							Service.findOneAndUpdate({_id:updateService._id},{$set: updateService},{},(service_update_err, service_updated)=>{
+							Service.findOneAndUpdate({_id:updateService._id},{$set: updateService},{new:true},(service_update_err, service_updated)=>{
 								if(service_update_err){
 									res.json({statusCode: 'F', msg: 'Rating updated but Failed to update service', result: result, error: service_update_err});
 								}
 								else{
-									res.json({statusCode: 'S', msg: 'Rating and Service Entry updated Successfully.', result: result, updated: service_updated});
+									res.json({statusCode: 'S', msg: 'Rating and Service Entry updated Successfully.', result: result, updatedService: service_updated});
 								}
 							});
 						}
