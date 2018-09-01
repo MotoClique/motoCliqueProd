@@ -1616,19 +1616,26 @@ module.exports.getProductSpec = function(req,res){//Fetch
 module.exports.addProductSpec = function(req,res){//Add New
 		var d = new Date();
 		var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-		let newProductSpec = new ProductSpec({
+		let newProductSpec = {
 			product_id: req.body.product_id,
 			specification_field_id: req.body.specification_field_id,
 			specification_field_name: req.body.specification_field_name,
 			specification_field_value: req.body.specification_field_value,
-			deleted: req.body.deleted,
+			deleted: false,
 			createdBy: req.payload.user_id,
 			createdAt: at,
 			changedBy: req.payload.user_id,
 			changedAt: at
-		});
+		};
 		
-		newProductSpec.save((err, productSpec)=>{
+		var query = {
+			product_id: req.body.product_id, 
+			specification_field_id: req.body.specification_field_id, 
+			specification_field_name: req.body.specification_field_name, 
+			deleted: false
+		};
+		//newProductSpec.save((err, productSpec)=>{
+		ProductSpec.findOneAndUpdate(query, {$set: newProductSpec},{new:true, upsert:true},(err, productSpec)=>{
 			if(err){
 				res.json({statusCode: 'F', msg: 'Failed to add', error: err});
 			}
@@ -1675,14 +1682,32 @@ module.exports.deleteProductSpec = function(req,res){//Delete
 	});
 };
 module.exports.addMultiProductSpec = function(req,res){//Add Multiple 
+	var count = 0;
 	var records = req.body.docs;
 	var results = [];
 	for(var i = 0; i<records.length; i++){
 		var d = new Date();
 		records[i].createdAt = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
 		records[i].changedAt = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+		
+		var query = {
+			product_id: records[i].product_id, 
+			specification_field_id: records[i].specification_field_id, 
+			specification_field_name: records[i].specification_field_name, 
+			deleted: false
+		};
+		ProductSpec.findOneAndUpdate(query, {$set:records[i]},{new:true, upsert:true},(err, productSpec)=>{
+			if(!err && productSpec._id){
+				results.push(productSpec);
+			}
+			count = count - (-1);
+			if(count === records.length){
+				res.json({statusCode: 'S', msg: 'Entry added', error: err, productSpec: results});
+			}
+			
+		});
 	}
-	ProductSpec.insertMany(records,(err, productSpec)=>{
+	/*ProductSpec.insertMany(records,(err, productSpec)=>{
 			if(err){
 				res.json({statusCode: 'F', msg: 'Failed to add', error: err});
 			}
@@ -1690,7 +1715,7 @@ module.exports.addMultiProductSpec = function(req,res){//Add Multiple
 				res.json({statusCode: 'S', msg: 'Entry added', productSpec: productSpec});
 			}
 		});
-		
+	*/	
 };
 
 
