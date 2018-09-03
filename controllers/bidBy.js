@@ -11,13 +11,13 @@ const BidBy = mongoose.model('BidBy');
 module.exports.getBidBy = function(req,res){//Fetch
 	var query = {};
 	if(req.query.bid_id){
-		query.bid_id = {"$regex":req.query.bid_id, "$options":"i"};
+		query.bid_id = {"$eq":req.query.bid_id};
 	}
 	if(req.query.bid_by_user_id){
-		query.bid_by_user_id = {"$regex":req.query.bid_by_user_id, "$options":"i"};
+		query.bid_by_user_id = {"$eq":req.query.bid_by_user_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
