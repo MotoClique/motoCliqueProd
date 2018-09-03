@@ -10,10 +10,10 @@ const Image = mongoose.model('Image');
 module.exports.getThumbnail = function(req,res){//Fetch
 	var query = {};
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 	}
 	if(req.query.transaction_id){
-		query.transaction_id = {"$regex":req.query.transaction_id, "$options":"i"};
+		query.transaction_id = {"$eq":req.query.transaction_id};
 	}
 	Thumbnail.find(query,function(err, thumbnail){
 		res.json({results: thumbnail, error: err});
