@@ -10,13 +10,13 @@ const Feedback = mongoose.model('Feedback');
 module.exports.getFeedback = function(req,res){//Fetch
 	var query = {};
 	if(req.query.feedback_id){
-		query.feedback_id = {"$regex":req.query.feedback_id, "$options":"i"};
+		query.feedback_id = {"$eq":req.query.feedback_id};
 	}
 	if(req.query.service_id){
-		query.service_id = {"$regex":req.query.service_id, "$options":"i"};
+		query.service_id = {"$eq":req.query.service_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
