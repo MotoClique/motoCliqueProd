@@ -12,14 +12,14 @@ const Buy = mongoose.model('Buy');
 module.exports.getBuy = function(req,res){//Fetch
 	var query = {};
 	if(req.query.buy_req_id){
-		query.buy_req_id = {"$regex":req.query.buy_req_id, "$options":"i"};
+		query.buy_req_id = {"$eq":req.query.buy_req_id};
 	}
 	
 	if(req.query.city){
-		query.city = {"$regex":req.query.city, "$options":"i"};
+		query.city = {"$eq":req.query.city};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -27,7 +27,7 @@ module.exports.getBuy = function(req,res){//Fetch
 	query.active = {"$eq": "X"};
 	
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 		
 		Buy.count(query,function(err_count,res_count){
 			var count = res_count;
