@@ -12,14 +12,14 @@ const Service = mongoose.model('Service');
 module.exports.getService = function(req,res){//Fetch
 	var query = {};
 	if(req.query.service_id){
-		query.service_id = {"$regex":req.query.service_id, "$options":"i"};
+		query.service_id = {"$eq":req.query.service_id};
 	}
 	
 	if(req.query.city){
-		query.city = {"$regex":req.query.city, "$options":"i"};
+		query.city = {"$eq":req.query.city};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -27,7 +27,7 @@ module.exports.getService = function(req,res){//Fetch
 	query.active = {"$eq": "X"};
 	
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 		
 		Service.count(query,function(err_count,res_count){
 			var count = res_count;
