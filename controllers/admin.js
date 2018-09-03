@@ -19,13 +19,13 @@ module.exports.profileRead = function(req,res){//Fetch
 	} else {
 		var query = {};
 		if(req.query.user_id){
-			query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+			query.user_id = {"$eq":req.query.user_id};
 		}
 		if(req.query.mobile){
-			query.mobile = {"$regex":req.query.mobile, "$options":"i"};
+			query.mobile = {"$eq":req.query.mobile};
 		}
 		if(req.query.deleted){
-			query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+			query.deleted = {"$eq":req.query.deleted};
 		}
 		else{
 			query.deleted = {"$ne": true};
@@ -35,7 +35,7 @@ module.exports.profileRead = function(req,res){//Fetch
 				var result = JSON.parse(JSON.stringify(profiles));
 				console.log(result);
 				result[0].screenAccess = [];
-				UserSubMap.find({user_id: {"$regex":result[0].user_id, "$options":"i"}},function(sub_err, subs){
+				UserSubMap.find({user_id: {"$eq":result[0].user_id}},function(sub_err, subs){
 					if(sub_err){
 						res.json({statusCode:"F", msg:"Failed to retrieve user subscription", results: result,error: sub_err});		
 					}
@@ -45,7 +45,7 @@ module.exports.profileRead = function(req,res){//Fetch
 					}
 					
 					var screen_query =  [
-												{"field": {"$regex": "-", "$options":"i"}},												
+												{"field": {"$eq": "-"}},												
 													//"role_id": {"$regex":req.query.role_id, "$options":"i"},
 												{"deleted": {"$ne": true}}
 											];
@@ -173,10 +173,10 @@ const Application = mongoose.model('Application');
 module.exports.getApplication= function(req,res){//Fetch
 	var query = {};
 	if(req.query.app_id){
-		query.app_id = {"$regex":req.query.app_id, "$options":"i"};
+		query.app_id = {"$eq":req.query.app_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -259,7 +259,7 @@ const Role = mongoose.model('Role');
 module.exports.getRole = function(req,res){//Fetch
 	var query = {};
 	if(req.query.role_id){
-		query.role_id = {"$regex":req.query.role_id, "$options":"i"};
+		query.role_id = {"$eq":req.query.role_id};
 	}
 	Role.find(query,function(err, role){
 		res.json({results: role, error: err});
@@ -340,13 +340,13 @@ const Subscription = mongoose.model('Subscription');
 module.exports.getSubscription = function(req,res){//Fetch
 	var query = {};
 	if(req.query.subscription_id){
-		query.subscription_id = {"$regex":req.query.subscription_id, "$options":"i"};
+		query.subscription_id = {"$eq":req.query.subscription_id};
 	}
 	if(req.query.app_name){
-		query.app_name = {"$regex":req.query.app_name, "$options":"i"};
+		query.app_name = {"$eq":req.query.app_name};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -456,7 +456,7 @@ const Screen = mongoose.model('Screen');
 module.exports.getScreen = function(req,res){//Fetch
 	var query = {};
 	if(req.query.screen){
-		query.screen = {"$regex":req.query.screen, "$options":"i"};
+		query.screen = {"$eq":req.query.screen};
 	}
 	Screen.find(query,function(err, result){
 		res.json({results: result, error: err});
@@ -511,7 +511,7 @@ const Field = mongoose.model('Field');
 module.exports.getField = function(req,res){//Fetch
 	var query = {};
 	if(req.query.field){
-		query.field = {"$regex":req.query.field, "$options":"i"};
+		query.field = {"$eq":req.query.field};
 	}
 	Field.find(query,function(err, result){
 		res.json({results: result, error: err});
@@ -580,16 +580,16 @@ const AppScrFieldsRights = mongoose.model('AppScrFieldsRights');
 module.exports.getAppScrFieldsRights = function(req,res){//Fetch
 	var query = {};
 	if(req.query.screen){
-		query.screen = {"$regex":req.query.screen, "$options":"i"};
+		query.screen = {"$eq":req.query.screen};
 	}
 	if(req.query.field){
-		query.field = {"$regex":req.query.field, "$options":"i"};
+		query.field = {"$eq":req.query.field};
 	}
 	if(req.query.app_id){
-		query.app_id = {"$regex":req.query.app_id, "$options":"i"};
+		query.app_id = {"$eq":req.query.app_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -696,15 +696,15 @@ module.exports.deleteAppScrFieldsRights = function(req,res){//Delete
 };
 
 module.exports.getAppScrRights = function(req,res){//Fetch Screen Rights
-	var query = {"field": {"$regex": "-", "$options":"i"}};
+	var query = {"field": {"$eq": "-"}};
 	if(req.query.app_id){
-		query.app_id = {"$regex":req.query.app_id, "$options":"i"};
+		query.app_id = {"$eq":req.query.app_id};
 	}
 	if(req.query.role_id){
-		query.role_id = {"$regex":req.query.role_id, "$options":"i"};
+		query.role_id = {"$eq":req.query.role_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -716,16 +716,16 @@ module.exports.getAppScrRights = function(req,res){//Fetch Screen Rights
 module.exports.getAppFieldRights = function(req,res){//Fetch Field Rights
 	var query = {"field": {"$ne": "-"}};
 	if(req.query.app_id){
-		query.app_id = {"$regex":req.query.app_id, "$options":"i"};
+		query.app_id = {"$eq":req.query.app_id};
 	}
 	if(req.query.screen){
-		query.screen = {"$regex":req.query.screen, "$options":"i"};
+		query.screen = {"$eq":req.query.screen};
 	}
 	if(req.query.role_id){
-		query.role_id = {"$regex":req.query.role_id, "$options":"i"};
+		query.role_id = {"$eq":req.query.role_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -840,10 +840,10 @@ const ProductTyp = mongoose.model('ProductTyp');
 module.exports.getProductTyp = function(req,res){//Fetch
 	var query = {};
 	if(req.query.product_type_id){
-		query.product_type_id = {"$regex":req.query.product_type_id, "$options":"i"};
+		query.product_type_id = {"$eq":req.query.product_type_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -925,10 +925,10 @@ const ProductHierarchy = mongoose.model('ProductHierarchy');
 module.exports.getProductHierarchy = function(req,res){//Fetch
 	var query = {"deleted": {"$ne": true}};
 	if(req.query.product_hierarchy_id){
-		query.product_hierarchy_id = {"$regex":req.query.product_hierarchy_id, "$options":"i"};
+		query.product_hierarchy_id = {"$eq":req.query.product_hierarchy_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -1038,10 +1038,10 @@ const SpecField = mongoose.model('SpecField');
 module.exports.getSpecField = function(req,res){//Fetch
 	var query = {};
 	if(req.query.specification_field_id){
-		query.specification_field_id = {"$regex":req.query.specification_field_id, "$options":"i"};
+		query.specification_field_id = {"$eq":req.query.specification_field_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -1123,10 +1123,10 @@ const PrdTypSpecFieldMap = mongoose.model('PrdTypSpecFieldMap');
 module.exports.getPrdTypSpecFieldMap = function(req,res){//Fetch
 	var query = {};
 	if(req.query.product_type_id){
-		query.product_type_id = {"$regex":req.query.product_type_id, "$options":"i"};
+		query.product_type_id = {"$eq":req.query.product_type_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -1204,10 +1204,10 @@ const Brand = mongoose.model('Brand');
 module.exports.getBrand = function(req,res){//Fetch
 	var query = {};
 	if(req.query.brand_id){
-		query.brand_id = {"$regex":req.query.brand_id, "$options":"i"};
+		query.brand_id = {"$eq":req.query.brand_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -1290,19 +1290,19 @@ const Product = mongoose.model('Product');
 module.exports.getProduct = function(req,res){//Fetch
 	var query = {};
 	if(req.query.product_id){
-		query.product_id = {"$regex":req.query.product_id, "$options":"i"};
+		query.product_id = {"$eq":req.query.product_id};
 	}
 	if(req.query.product_type_id){
-		query.product_type_id = {"$regex":req.query.product_type_id, "$options":"i"};
+		query.product_type_id = {"$eq":req.query.product_type_id};
 	}
 	if(req.query.brand_id){
-		query.brand_id = {"$regex":req.query.brand_id, "$options":"i"};
+		query.brand_id = {"$eq":req.query.brand_id};
 	}
 	if(req.query.brand_name){
 		query.brand_name = {"$eq":req.query.brand_name};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -1385,13 +1385,13 @@ module.exports.deleteProduct = function(req,res){//Delete
 module.exports.getServiceProduct = function(req,res){//Fetch
 	var query = {};
 	
-	query.product_type_name = {"$regex":"Service", "$options":"i"};
+	query.product_type_name = {"$eq":"Service"};
 	
 	if(req.query.brand_id){
-		query.brand_id = {"$regex":req.query.brand_id, "$options":"i"};
+		query.brand_id = {"$eq":req.query.brand_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -1601,10 +1601,10 @@ const ProductSpec = mongoose.model('ProductSpec');
 module.exports.getProductSpec = function(req,res){//Fetch
 	var query = {};
 	if(req.query.product_id){
-		query.product_id = {"$regex":req.query.product_id, "$options":"i"};
+		query.product_id = {"$eq":req.query.product_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -1725,10 +1725,10 @@ const PrdImage = mongoose.model('PrdImage');
 module.exports.getPrdImage = function(req,res){//Fetch
 	var query = {};
 	if(req.query.image_id){
-		query.image_id = {"$regex":req.query.image_id, "$options":"i"};
+		query.image_id = {"$eq":req.query.image_id};
 	}
 	if(req.query.product_id){
-		query.product_id = {"$regex":req.query.product_id, "$options":"i"};
+		query.product_id = {"$eq":req.query.product_id};
 	}
 	PrdImage.find(query,function(err, prdImage){
 		res.json({results: prdImage, error: err});
@@ -1877,10 +1877,10 @@ const PrdThumbnail = mongoose.model('PrdThumbnail');
 module.exports.getPrdThumbnail = function(req,res){//Fetch
 	var query = {};
 	if(req.query.product_id){
-		query.product_id = {"$regex":req.query.product_id, "$options":"i"};
+		query.product_id = {"$eq":req.query.product_id};
 	}
 	if(req.query.color){
-		query.color = {"$regex":req.query.color, "$options":"i"};
+		query.color = {"$eq":req.query.color};
 	}
 	if(req.query.year_of_reg){
 		var year_of_reg = parseInt(req.query.year_of_reg);
@@ -1973,7 +1973,7 @@ module.exports.deletePrdThumbnail = function(req,res){//Delete
 module.exports.getPrdThumbnailColors = function(req,res){//Fetch
 	var query = {};
 	if(req.query.product_id){
-		query.product_id = {"$regex":req.query.product_id, "$options":"i"};
+		query.product_id = {"$eq":req.query.product_id};
 		
 		PrdThumbnail.find(query).distinct( "color",function(err, result){
 			res.json({statusCode: 'S', msg: 'Successfully retrieved.', results: result, error: err});
@@ -1991,19 +1991,19 @@ const Loc = mongoose.model('Loc');
 module.exports.getLoc = function(req,res){//Fetch
 	var query = {};
 	if(req.query.country){
-		query.country = {"$regex":req.query.country, "$options":"i"};
+		query.country = {"$eq":req.query.country};
 	}
 	if(req.query.state){
-		query.state = {"$regex":req.query.state, "$options":"i"};
+		query.state = {"$eq":req.query.state};
 	}
 	if(req.query.city){
-		query.city = {"$regex":req.query.city, "$options":"i"};
+		query.city = {"$eq":req.query.city};
 	}
 	if(req.query.location){
-		query.location = {"$regex":req.query.location, "$options":"i"};
+		query.location = {"$eq":req.query.location};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -2083,7 +2083,7 @@ module.exports.getCountry = function(req,res){//Fetch
 module.exports.getState = function(req,res){//Fetch
 	var query = {};
 	if(req.query.country){
-		query.country = {"$regex":req.query.country, "$options":"i"};
+		query.country = {"$eq":req.query.country};
 	}
 	query.deleted = {"$ne": true};
 	Loc.find(query).distinct( "state",function(err, result){
@@ -2102,7 +2102,7 @@ module.exports.getState = function(req,res){//Fetch
 module.exports.getCity = function(req,res){//Fetch
 	var query = {};
 	if(req.query.state){
-		query.state = {"$regex":req.query.state, "$options":"i"};
+		query.state = {"$eq":req.query.state};
 	}
 	query.deleted = {"$ne": true};
 	Loc.find(query).distinct( "city",function(err, result){
@@ -2121,7 +2121,7 @@ module.exports.getCity = function(req,res){//Fetch
 module.exports.getUnqLocation = function(req,res){//Fetch
 	var query = {};
 	if(req.query.city){
-		query.city = {"$regex":req.query.city, "$options":"i"};
+		query.city = {"$eq":req.query.city};
 	}
 	query.deleted = {"$ne": true};
 	Loc.find(query).distinct( "location",function(err, result){
