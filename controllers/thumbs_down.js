@@ -10,10 +10,10 @@ const ThumbsDown = mongoose.model('ThumbsDown');
 module.exports.getThumbsDown = function(req,res){//Fetch
 	var query = {};
 	if(req.query.thumbs_down_id){
-		query.thumbs_down_id = {"$regex":req.query.thumbs_down_id, "$options":"i"};
+		query.thumbs_down_id = {"$eq":req.query.thumbs_down_id};
 	}
 	if(req.query.service_id){
-		query.service_id = {"$regex":req.query.service_id, "$options":"i"};
+		query.service_id = {"$eq":req.query.service_id};
 	}
 	if(req.query.feedback_id){
 		query.feedback_id = {"$eq": req.query.feedback_id};
@@ -23,7 +23,7 @@ module.exports.getThumbsDown = function(req,res){//Fetch
 	}
 	
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
