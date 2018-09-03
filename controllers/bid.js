@@ -15,14 +15,14 @@ module.exports.getBid = function(req,res){//Fetch
 	Parameter.find({parameter:{"$eq":"extra_life_time"}},function(params_err, params_result){
 		var query = {};
 		if(req.query.bid_id){
-			query.bid_id = {"$regex":req.query.bid_id, "$options":"i"};
+			query.bid_id = {"$eq":req.query.bid_id};
 		}
 		
 		if(req.query.city){
-			query.city = {"$regex":req.query.city, "$options":"i"};
+			query.city = {"$eq":req.query.city};
 		}
 		if(req.query.deleted){
-			query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+			query.deleted = {"$eq":req.query.deleted};
 		}
 		else{
 			query.deleted = {"$ne": true};
@@ -36,7 +36,7 @@ module.exports.getBid = function(req,res){//Fetch
 		query.bid_valid_to = {"$gte": extr_dy};
 		
 		if(req.query.user_id){
-			query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+			query.user_id = {"$eq":req.query.user_id};
 			
 			Bid.count(query,function(err_count,res_count){
 				var count = res_count;
