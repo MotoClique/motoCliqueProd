@@ -13,14 +13,14 @@ module.exports.getSell = function(req,res){//Fetch
 	//var read_params = {count:0, skip:0, limit:10};
 	var query = {};
 	if(req.query.sell_id){
-		query.sell_id = {"$regex":req.query.sell_id, "$options":"i"};
+		query.sell_id = {"$eq":req.query.sell_id};
 	}
 	
 	if(req.query.city){
-		query.city = {"$regex":req.query.city, "$options":"i"};
+		query.city = {"$eq":req.query.city};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -28,7 +28,7 @@ module.exports.getSell = function(req,res){//Fetch
 	query.active = {"$eq": "X"};
 	
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 		
 		Sell.count(query,function(err_count,res_count){
 			var count = res_count;
