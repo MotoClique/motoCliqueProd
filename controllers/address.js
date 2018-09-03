@@ -17,13 +17,13 @@ const UserAddress = mongoose.model('UserAddress');
 module.exports.getUserAddress = function(req,res){//Fetch
 	var query = {};
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 	}
 	if(req.query.address_id){
-		query.address_id = {"$regex":req.query.address_id, "$options":"i"};
+		query.address_id = {"$eq":req.query.address_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
