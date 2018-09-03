@@ -9,13 +9,13 @@ const Fav = mongoose.model('Fav');
 module.exports.getFav = function(req,res){//Fetch
 	var query = {};
 	if(req.query.bid_sell_buy_id){
-		query.bid_sell_buy_id = {"$regex":req.query.bid_sell_buy_id, "$options":"i"};
+		query.bid_sell_buy_id = {"$eq":req.query.bid_sell_buy_id};
 	}
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
