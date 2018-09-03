@@ -17,7 +17,7 @@ module.exports.getImage = function(req,res){//Fetch
 		});
 	}
 	else if(req.query.transaction_id){
-		query.transaction_id = {"$regex":req.query.transaction_id, "$options":"i"};
+		query.transaction_id = {"$eq":req.query.transaction_id};
 		Thumbnail.find({transaction_id: {"$eq":req.query.transaction_id}, default: {"$eq": true}},function(thumbnail_err, thumbnail){
 			if(thumbnail && thumbnail.length>0){
 				Image.find({image_id: {"$eq": thumbnail[0].image_id}},function(err, image){
