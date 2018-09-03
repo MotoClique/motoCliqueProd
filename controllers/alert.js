@@ -11,13 +11,13 @@ const UserAlert = mongoose.model('UserAlert');
 module.exports.getUserAlert = function(req,res){//Fetch
 	var query = {};
 	if(req.query.alert_id){
-		query.alert_id = {"$regex":req.query.alert_id, "$options":"i"};
+		query.alert_id = {"$eq":req.query.alert_id};
 	}
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
