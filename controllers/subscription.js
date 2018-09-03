@@ -9,13 +9,13 @@ const UserSubMap = mongoose.model('UserSubMap');
 module.exports.getUserSubMap = function(req,res){//Fetch
 	var query = {};
 	if(req.query.subscription_id){
-		query.subscription_id = {"$regex":req.query.subscription_id, "$options":"i"};
+		query.subscription_id = {"$eq":req.query.subscription_id};
 	}
 	if(req.query.user_id){
-		query.user_id = {"$regex":req.query.user_id, "$options":"i"};
+		query.user_id = {"$eq":req.query.user_id};
 	}
 	if(req.query.deleted){
-		query.deleted = {"$regex":req.query.deleted, "$options":"i"};
+		query.deleted = {"$eq":req.query.deleted};
 	}
 	else{
 		query.deleted = {"$ne": true};
@@ -50,7 +50,7 @@ module.exports.addUserSubMap = function(req,res){//Add New
 		valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
 	}
 	var Subscription = mongoose.model('Subscription');
-	var query = {"subscription_id":{"$regex":req.body.subscription_id, "$options":"i"}};
+	var query = {"subscription_id":{"$eq":req.body.subscription_id}};
 	
 	Subscription.find(query,function(err, result){
 		if(err){
