@@ -1706,6 +1706,7 @@ module.exports.addMultiProductSpec = function(req,res){//Add Multiple
 			count = count - (-1);
 			console.log(count);
 			if(count === records.length){
+				console.log(records.length);
 				res.json({statusCode: 'S', msg: 'Entry added', error: err, productSpec: results});
 			}
 			
