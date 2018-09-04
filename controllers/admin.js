@@ -1685,6 +1685,7 @@ module.exports.addMultiProductSpec = function(req,res){//Add Multiple
 	var count = 0;
 	var records = req.body.docs;
 	var results = [];
+	console.log(records);
 	for(var i = 0; i<records.length; i++){
 		var d = new Date();
 		records[i].createdAt = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
@@ -1697,10 +1698,13 @@ module.exports.addMultiProductSpec = function(req,res){//Add Multiple
 			deleted: false
 		};
 		ProductSpec.findOneAndUpdate(query, {$set:records[i]},{new:true, upsert:true},(err, productSpec)=>{
+			console.log(err);
+			console.log(productSpec);
 			if(!err && productSpec._id){
 				results.push(productSpec);
 			}
 			count = count - (-1);
+			console.log(count);
 			if(count === records.length){
 				res.json({statusCode: 'S', msg: 'Entry added', error: err, productSpec: results});
 			}
