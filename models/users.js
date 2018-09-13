@@ -34,8 +34,8 @@ UserSchema.methods.validPassword = function(password) {
 };
 
 UserSchema.methods.generateJwt = function() {
-  var expiry = new Date();
-  expiry.setTime(expiry.getTime() + (1*60*60*1000));//1 Hour Life Span
+  var expiry = new Date('9999-12-31');//new Date();
+  //expiry.setTime(expiry.getTime() + (1*60*60*1000));//1 Hour Life Span
 
   return jwt.sign({
     //_id: this._id,

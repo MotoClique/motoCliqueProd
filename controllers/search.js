@@ -14,6 +14,7 @@ const Filter = mongoose.model('Filter');
 const Loc = mongoose.model('Loc');
 const Parameter = mongoose.model('Parameter');
 const UserSubMap = mongoose.model('UserSubMap');
+const Fav = mongoose.model('Fav');
 //const BidBy = mongoose.model('BidBy');
 
 module.exports.search = function(req,res){//Fetch
@@ -414,7 +415,7 @@ module.exports.search = function(req,res){//Fetch
 
 
 
-module.exports.getTransactions = function(req,res){//Fetch
+/*module.exports.getTransactions = function(req,res){//Fetch
 	 //Check token validity
      if(req.payload.exp < (Date.now() / 1000)){                            
         res.status(440).json({
@@ -677,15 +678,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 													var validTo = new Date();
 
 													if(result[i].bid_valid_to){
-														/*var date_part = ((result[i].bid_valid_to).split('T'))[0];
-														var time_part = ((result[i].bid_valid_to).split('T'))[1];
-														if(date_part)
-															date_split = (date_part).split('/');
-														if(time_part)
-															time_split = (time_part).split(':');
-
-														if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-															validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
+														
 														validTo = result[i].bid_valid_to;
 													}
 
@@ -703,11 +696,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 														clone.type = "Bid";
 														results.push(clone);
 													}
-													else{												
-														/*if(params_result.length && params_result.length>0){
-															var newDate = validTo.getDate() - (- params_result[0].value);
-															validTo.setDate(newDate);
-														}*/
+													else{	
 
 														//if(validTo >= (new Date()) && result[i].current_bid_at){	
 														if(result[i].current_bid_at){	
@@ -847,15 +836,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 																							var validTo = new Date();
 
 																							if(bids[i].bid_valid_to){
-																								/*var date_part = ((bids[i].bid_valid_to).split('T'))[0];
-																								var time_part = ((bids[i].bid_valid_to).split('T'))[1];
-																								if(date_part)
-																									date_split = (date_part).split('/');
-																								if(time_part)
-																									time_split = (time_part).split(':');
-
-																								if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-																									validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
+																								
 																								validTo = bids[i].bid_valid_to;
 																							}
 
@@ -875,10 +856,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 																								results.push(clone);
 																							}
 																							else{
-																								/*if(params_result.length && params_result.length>0){
-																									var newDate = validTo.getDate() - (- params_result[0].value);
-																									validTo.setDate(newDate);
-																								}*/
+																								
 																								if(bids[i].current_bid_at){
 																								//if(validTo >= (new Date()) && bids[i].current_bid_at){																							
 																											var clone = JSON.parse(JSON.stringify(bids[i]));
@@ -959,6 +937,629 @@ module.exports.getTransactions = function(req,res){//Fetch
 	});
 	}	
 	
+};*/
+
+
+module.exports.getTransactions = function(req,res){//Fetch
+	var that = this;
+	this.limit = {sale:3, buy:3, bid:3, service:3};
+	this.excess_limit = {sale:0, buy:0, bid:0, service:0};
+	this.limit.sale = (req.body.sale.limit)?req.body.sale.limit:3;
+	this.limit.buy = (req.body.buy.limit)?req.body.buy.limit:3;
+	this.limit.bid = (req.body.bid.limit)?req.body.bid.limit:3;
+	this.limit.service = (req.body.service.limit)?req.body.service.limit:3;
+	this.params = {};
+	
+    var query_sub = {}
+	query_sub.user_id = {"$eq":req.payload.user_id};
+	query_sub.active = {"$eq": "X"};
+	query_sub.deleted = {"$ne": true};
+	UserSubMap.find(query_sub,function(err_sub, result_sub){
+		if(result_sub && result_sub.length>0){//Check If user has subscribed
+			var sub_to = (result_sub[0].valid_to).split('/');
+			var subToDateObj = new Date(sub_to[2]+'-'+sub_to[1]+'-'+sub_to[0]);
+			var currentDateObj = new Date();
+			
+			//Check if subscription is still valid
+			if(subToDateObj > currentDateObj){			
+				var queries = req.body.queries;
+				var query = {};
+				for (var key in queries) {
+					if (queries.hasOwnProperty(key)) {
+						var inArr = [];
+						if(queries[key])
+							inArr.push(queries[key]);
+						query[key] = {$in: inArr};
+					}
+				}        
+				if(req.body.city){ query.city = {$eq: req.body.city}; }
+				if(req.body.location){ query.location = {$eq: req.body.location}; }
+				query.deleted = {$ne: true};
+				query.active = {$eq: "X"};
+				var type = req.body.type;
+				var results = [];
+				
+				//Fetch Config parameters
+				Parameter.find({parameter:{"$in":["extra_life_time","to_ist"]}},function(params_err, params_result){
+					if(params_result){
+						params_result.forEach(function(val,indx,arr){
+							that.params[val.parameter] = val.value;
+						});
+					}
+					
+					module.exports.getUserFilters(req,query,results,function(status,rt_query){
+						if(status)
+							query = rt_query;						
+						
+						if(type === "Sale"){
+							module.exports.fetchSell(req,query,results,function(rt_status,rt_sell,rt_params,rt_err){
+								if(rt_status){
+									results = rt_sell;
+									var search_complete = false;
+									if(that.excess_limit.sale > 0)
+										search_complete = true;
+									res.json({statusCode:"S", results: results, error: null, sale:rt_params, buy:{}, bid:{}, service:{}, completed:search_complete});
+								}
+								else{
+									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+								}
+							},that);
+						}
+						else if(type === "Buy"){
+							module.exports.fetchBuy(req,query,results,function(rt_status,rt_buy,rt_params,rt_err){
+								if(rt_status){
+									results = rt_buy;
+									var search_complete = false;
+									if(that.excess_limit.buy > 0)
+										search_complete = true;
+									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:rt_params, bid:{}, service:{}, completed:search_complete});
+								}
+								else{
+									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+								}
+							},that);	
+						}
+						else if(type === "Bid"){
+							module.exports.fetchBid(req,query,results,function(rt_status,rt_bid,rt_params,rt_err){
+								if(rt_status){
+									results = rt_bid;
+									var search_complete = false;
+									if(that.excess_limit.bid > 0)
+										search_complete = true;
+									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete});
+								}
+								else{
+									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+								}
+							},that);	
+						}
+						else if(type === "Service"){
+							module.exports.fetchService(req,query,results,function(rt_status,rt_service,rt_params,rt_err){
+								if(rt_status){
+									results = rt_service;
+									var search_complete = false;
+									if(that.excess_limit.service > 0)
+										search_complete = true;
+									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:{}, service:rt_params, completed:search_complete});
+								}
+								else{
+									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+								}
+							},that);	
+						}
+						else{//Fetch from all post table
+							module.exports.fetchBuy(req,query,results,function(rt_buy_status,rt_buy,rt_buy_params,rt_buy_err){
+								if(rt_buy_status){
+									results = rt_buy;									
+								}
+								else{
+									res.status(401).json({statusCode:"F", results:[], error:rt_buy_err});
+								}
+								module.exports.fetchBid(req,query,results,function(rt_bid_status,rt_bid,rt_bid_params,rt_bid_err){
+									if(rt_bid_status){
+										results = rt_bid;
+									}
+									else{
+										res.status(401).json({statusCode:"F", results:[], error:rt_bid_err});
+									}
+									module.exports.fetchService(req,query,results,function(rt_service_status,rt_service,rt_service_params,rt_service_err){
+										if(rt_service_status){
+											results = rt_service;
+										}
+										else{
+											res.status(401).json({statusCode:"F", results:[], error:rt_service_err});
+										}
+										module.exports.fetchSell(req,query,results,function(rt_sell_status,rt_sell,rt_sell_params,rt_sell_err){
+											if(rt_sell_status){
+												results = rt_sell;
+												var search_complete = false;
+												if(that.excess_limit.sale > 0 && that.excess_limit.buy > 0 && that.excess_limit.bid > 0 && that.excess_limit.service > 0)
+													search_complete = true;
+												res.json({
+													statusCode:"S", 
+													results: results, 
+													error: null, 
+													sale:rt_sell_params, 
+													buy:rt_buy_params, 
+													bid:rt_bid_params, 
+													service:rt_service_params,
+													completed: search_complete
+												});
+											}
+											else{
+												res.status(401).json({statusCode:"F", results:[], error:rt_sell_err});
+											}
+										},that);	
+									},that);
+								},that);
+							},that);
+						}
+					},that);
+				});
+			
+			}
+			else{//Subscription Expired
+				res.json({statusCode:"F", msg:"Your subscription has expired!", noSubscription:true, results: [], error: null});
+			}
+		}
+		else{//No Subscription
+			res.json({statusCode:"F", msg:"You do not have any subscription plan. Subscribe Now!", noSubscription:true, results: [], error: null});
+		}
+	});
+};
+
+
+module.exports.getUserFilters = function(req,query,results,callback,context){//Get the user specific filters and create query conditions
+	var query_filter = {};
+	query_filter.user_id = {"$eq":req.payload.user_id};
+	query_filter.deleted = {"$ne": true};			
+	Filter.find(query_filter,function(err_filter, result_filter){
+		for(var i=0; i<result_filter.length; i++){
+			if(result_filter[i].filter_value && result_filter[i].filter_field && result_filter[i].filter_value !== 'All'){//If Filter Value & Field is there
+				if(result_filter[i].filter_field === 'km_run_from'){
+					if(query['km_done']){//If filter field already defined
+						query['km_done']['$gte'] = Number(result_filter[i].filter_value);									
+					}
+					else{
+						query['km_done'] = {"$gte": Number(result_filter[i].filter_value)};								
+					}
+				}
+				else if(result_filter[i].filter_field === 'km_run_to'){
+					if(query['km_done']){//If filter field already defined
+						query['km_done']['$lte'] = Number(result_filter[i].filter_value);									
+					}
+					else{
+						query['km_done'] = {"lgte": Number(result_filter[i].filter_value)};								
+					}
+				}
+				else if(result_filter[i].filter_field === 'year_reg_from'){
+					if(query['year_of_reg']){//If filter field already defined
+						query['year_of_reg']['$gte'] = Number(result_filter[i].filter_value);									
+					}
+					else{
+						query['year_of_reg'] = {"$gte": Number(result_filter[i].filter_value)};								
+					}
+				}
+				else if(result_filter[i].filter_field === 'year_reg_to'){
+					if(query['year_of_reg']){//If filter field already defined
+						query['year_of_reg']['$lte'] = Number(result_filter[i].filter_value);									
+					}
+					else{
+						query['year_of_reg'] = {"$lte": Number(result_filter[i].filter_value)};								
+					}
+				}
+				else if(result_filter[i].filter_field === 'price_from'){
+					var price_fields = ['net_price','current_bid_amount','start_from_amount'];
+					for(var j=0; j<price_fields.length; j++){
+						if(query[price_fields[j]]){//If filter field already defined
+							query[price_fields[j]]['$gte'] = Number(result_filter[i].filter_value);									
+						}
+						else{
+							query[price_fields[j]] = {"$gte": Number(result_filter[i].filter_value)};								
+						}
+					}
+				}
+				else if(result_filter[i].filter_field === 'price_to'){
+					var price_fields = ['net_price','current_bid_amount','start_from_amount'];
+					for(var j=0; j<price_fields.length; j++){
+						if(query[price_fields[j]]){//If filter field already defined
+							query[price_fields[j]]['$lte'] = Number(result_filter[i].filter_value);									
+						}
+						else{
+							query[price_fields[j]] = {"$lte": Number(result_filter[i].filter_value)};								
+						}
+					}
+				}
+				else if(result_filter[i].filter_field === 'discount_from'){
+					if(query['discount']){//If filter field already defined
+						query['discount']['$gte'] = Number(result_filter[i].filter_value);									
+					}
+					else{
+						query['discount'] = {"$gte": Number(result_filter[i].filter_value)};								
+					}
+				}
+				else if(result_filter[i].filter_field === 'discount_to'){
+					if(query['discount']){//If filter field already defined
+						query['discount']['$lte'] = Number(result_filter[i].filter_value);									
+					}
+					else{
+						query['discount'] = {"$lte": Number(result_filter[i].filter_value)};								
+					}
+				}
+				else{
+					var terms = [];
+					if(query[result_filter[i].filter_field]){//If filter field already defined
+						if(query[result_filter[i].filter_field]['$in'])
+							terms = query[result_filter[i].filter_field]['$in'];
+						terms.push(result_filter[i].filter_value);
+						query[result_filter[i].filter_field] = {'$in': terms};
+					}
+					else{
+						terms = [];
+						terms.push(result_filter[i].filter_value);
+						query[result_filter[i].filter_field] = {'$in': terms};								
+					}					
+				}
+			}
+		}
+		callback(true,query);
+	});
+};
+
+
+
+module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch from buy table
+	var buy_query = JSON.parse(JSON.stringify(query));
+	delete buy_query.current_bid_amount;
+	delete buy_query.start_from_amount;
+	Buy.count(buy_query,function(err_buy_count,res_buy_count){
+		if(err_buy_count){
+			callback(false,results,{},err_buy_count);
+		}
+		else{
+			var count_buy = (req.body.buy.count)?req.body.buy.count:null;
+			var limit_rec = context.limit.buy;
+			
+			var skip_rec = (req.body.buy.skip)?req.body.buy.skip:0;
+			if(count_buy && req.body.buy.skip){
+				if(res_buy_count>count_buy)
+					skip_rec = (req.body.buy.skip) - (-(res_buy_count - count_buy));
+			}
+			if(!count_buy)
+				count_buy = res_buy_count;			
+
+			if(res_buy_count > skip_rec){
+				Buy.find(buy_query).sort({"index_count":-1}).skip(skip_rec).limit(limit_rec)
+				.exec(function(err, result) {
+						//////////////////////
+						var loopCount = 0;
+						result.forEach(function(current,index,arr){
+							var fav_query = {
+								bid_sell_buy_id: {"$eq":current.buy_req_id},
+								user_id: {"$eq":req.payload.user_id},
+								deleted: {"$ne": true}
+							};
+							Fav.find(fav_query)
+							.exec(function(fav_err, fav_result) {							
+								var clone = JSON.parse(JSON.stringify(current));
+								clone.type = "Buy";
+								if(fav_result && fav_result.length > 0){
+									clone.fav = true;		
+									clone.fav_id = fav_result[0]._id;		
+								}
+								results.push(clone);
+								loopCount = loopCount - (-1);
+								if(loopCount === result.length){
+									var buy_params = {count:count_buy, skip:skip_rec-(-result.length), limit:limit_rec};
+									context.excess_limit.buy = limit_rec - result.length;
+									callback(true,results,buy_params,null);
+								}
+							});
+						});	
+					
+						/*for(var i=0; i<result.length; i++){
+							var clone = JSON.parse(JSON.stringify(result[i]));
+							clone.type = "Buy";
+							results.push(clone);
+						}
+						var buy_params = {count:count_buy, skip:skip_rec-(-result.length), limit:limit_rec};
+						context.excess_limit.buy = limit_rec - result.length;
+						callback(true,results,buy_params,null);*/
+				});
+			}
+			else{
+				var buy_params = {count:count_buy, skip:skip_rec, limit:limit_rec};
+				context.excess_limit.buy = limit_rec;
+				callback(true,results,buy_params,null);
+			}
+		}
+	});
+};
+
+module.exports.fetchBid = function(req,query,results,callback,context){//Fetch from bid table
+	var bid_query = JSON.parse(JSON.stringify(query));
+	delete bid_query.active;
+	delete bid_query.net_price;
+	delete bid_query.start_from_amount;
+	bid_query.bid_status = {"$eq": "Active"};
+	var extr_dy = new Date();
+	if(context.params.extra_life_time){
+		var newDate = extr_dy.getDate() - (context.params.extra_life_time);
+		extr_dy.setDate(newDate);
+	}
+	bid_query.bid_valid_to = {"$gte": extr_dy};
+	//console.log(bid_query);
+	Bid.count(bid_query,function(err_bid_count,res_bid_count){
+		if(err_bid_count){
+			callback(false,results,{},err_bid_count);
+		}
+		else{
+			var count_bid = (req.body.bid.count)?req.body.bid.count:null;
+			if(context.excess_limit.buy > 0){
+				context.limit.bid = context.limit.bid - (-1);
+				context.limit.service = context.limit.service - (-1);
+				context.limit.sale = context.limit.sale - (-1);
+			}
+			var limit_rec = context.limit.bid;
+			
+			var skip_rec = (req.body.bid.skip)?req.body.bid.skip:0;
+			if(count_bid && req.body.bid.skip){
+				if(res_bid_count>count_bid)
+					skip_rec = (req.body.bid.skip) - (-(res_bid_count - count_bid));
+			}
+			if(!count_bid)
+				count_bid = res_bid_count;			
+
+			if(res_bid_count > skip_rec){
+				Bid.find(bid_query).sort({"index_count":-1}).skip(skip_rec).limit(limit_rec)
+				.exec(function(err, result) {
+					//////////////////////
+					var loopCount = 0;
+					result.forEach(function(current,index,arr){
+						var fav_query = {
+							bid_sell_buy_id: {"$eq":current.bid_id},
+							user_id: {"$eq":req.payload.user_id},
+							deleted: {"$ne": true}
+						};
+						Fav.find(fav_query)
+							.exec(function(fav_err, fav_result) {								
+								var clone = JSON.parse(JSON.stringify(current));
+								clone.type = "Bid";
+								if(fav_result && fav_result.length > 0){
+									clone.fav = true;		
+									clone.fav_id = fav_result[0]._id;		
+								}
+								
+								var validTo = new Date();
+								if(current.bid_valid_to){
+									validTo = current.bid_valid_to;
+								}
+
+								if(validTo >= (new Date())){									
+									var bid_valid_to = current.bid_valid_to;
+									if(context.params.to_ist)
+										bid_valid_to = ctrlCommon.convertDateTime(current.bid_valid_to,context.params.to_ist);
+									var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+									var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+									var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+									clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
+									results.push(clone);
+								}
+								else{
+									if(current.current_bid_at){											
+										var bid_valid_to = current.bid_valid_to;
+										if(context.params.to_ist)
+											bid_valid_to = ctrlCommon.convertDateTime(current.bid_valid_to,context.params.to_ist);
+										var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+										var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+										var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+										clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
+										clone.sold = true;
+										results.push(clone);													
+									}
+								}
+								
+								loopCount = loopCount - (-1);
+								if(loopCount === result.length){
+									var bid_params = {count:count_bid, skip:skip_rec-(-result.length), limit:limit_rec};
+									context.excess_limit.bid = limit_rec - result.length;
+									callback(true,results,bid_params,null);
+								}
+						});
+					});
+					
+					/*for(var i=0; i<result.length; i++){
+						var validTo = new Date();
+						if(result[i].bid_valid_to){
+							validTo = result[i].bid_valid_to;
+						}
+
+						if(validTo >= (new Date())){
+							var clone = JSON.parse(JSON.stringify(result[i]));
+							var bid_valid_to = result[i].bid_valid_to;
+							if(context.params.to_ist)
+								bid_valid_to = ctrlCommon.convertDateTime(result[i].bid_valid_to,context.params.to_ist);
+							var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+							var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+							var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+							clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
+							clone.type = "Bid";
+							results.push(clone);
+						}
+						else{
+							if(result[i].current_bid_at){	
+								var clone = JSON.parse(JSON.stringify(result[i]));
+								var bid_valid_to = result[i].bid_valid_to;
+								if(context.params.to_ist)
+									bid_valid_to = ctrlCommon.convertDateTime(result[i].bid_valid_to,context.params.to_ist);
+								var hrs = (bid_valid_to.getHours()<10)?("0"+bid_valid_to.getHours()):bid_valid_to.getHours();
+								var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
+								var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
+								clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
+								clone.type = "Bid";
+								clone.sold = true;
+								results.push(clone);													
+							}
+						}
+					}
+					
+					var bid_params = {count:count_bid, skip:skip_rec-(-result.length), limit:limit_rec};
+					context.excess_limit.bid = limit_rec - result.length;
+					callback(true,results,bid_params,null);*/
+				});
+			}
+			else{
+				var bid_params = {count:count_bid, skip:skip_rec, limit:limit_rec};
+				context.excess_limit.bid = limit_rec;
+				callback(true,results,bid_params,null);
+			}
+		}
+	});
+};
+
+module.exports.fetchService = function(req,query,results,callback,context){//Fetch from service table
+	var service_query = JSON.parse(JSON.stringify(query));
+	delete service_query.current_bid_amount;
+	delete service_query.net_price;
+	Service.count(service_query,function(err_service_count,res_service_count){
+		if(err_service_count){
+			callback(false,results,{},err_service_count);
+		}
+		else{
+			var count_service = (req.body.service.count)?req.body.service.count:null;
+			if(context.excess_limit.bid > 0){
+				context.limit.service = context.limit.service - (-2);
+				context.limit.sale = context.limit.sale - (-2);
+			}
+			var limit_rec = context.limit.service;
+			
+			var skip_rec = (req.body.service.skip)?req.body.service.skip:0;
+			if(count_service && req.body.service.skip){
+				if(res_service_count>count_service)
+					skip_rec = (req.body.service.skip) - (-(res_service_count - count_service));
+			}
+			if(!count_service)
+				count_service = res_service_count;			
+
+			if(res_service_count > skip_rec){
+				Service.find(service_query).sort({"index_count":-1}).skip(skip_rec).limit(limit_rec)
+				.exec(function(err, result) {
+						//////////////////////
+						var loopCount = 0;
+						result.forEach(function(current,index,arr){
+							var fav_query = {
+								bid_sell_buy_id: {"$eq":current.service_id},
+								user_id: {"$eq":req.payload.user_id},
+								deleted: {"$ne": true}
+							};
+							Fav.find(fav_query)
+							.exec(function(fav_err, fav_result) {							
+								var clone = JSON.parse(JSON.stringify(current));
+								clone.type = "Service";
+								if(fav_result && fav_result.length > 0){
+									clone.fav = true;		
+									clone.fav_id = fav_result[0]._id;		
+								}
+								results.push(clone);
+								loopCount = loopCount - (-1);
+								if(loopCount === result.length){
+									var service_params = {count:count_service, skip:skip_rec-(-result.length), limit:limit_rec};
+									context.excess_limit.service = limit_rec - result.length;
+									callback(true,results,service_params,null);
+								}
+							});
+						});
+					
+						/*for(var i=0; i<result.length; i++){
+							var clone = JSON.parse(JSON.stringify(result[i]));
+							clone.type = "Service";
+							results.push(clone);
+						}
+						var service_params = {count:count_service, skip:skip_rec-(-result.length), limit:limit_rec};
+						context.excess_limit.service = limit_rec - result.length;
+						callback(true,results,service_params,null);*/
+				});
+			}
+			else{
+				var service_params = {count:count_service, skip:skip_rec, limit:limit_rec};
+				context.excess_limit.service = limit_rec;
+				callback(true,results,service_params,null);
+			}
+		}
+	});
+};
+
+
+
+module.exports.fetchSell = function(req,query,results,callback,context){//Fetch from sell table
+	var sell_query = JSON.parse(JSON.stringify(query));
+	delete sell_query.current_bid_amount;
+	delete sell_query.start_from_amount;
+	Sell.count(sell_query,function(err_sell_count,res_sell_count){
+		if(err_sell_count){
+			callback(false,results,{},err_sell_count);
+		}
+		else{
+			var count_sale = (req.body.sale.count)?req.body.sale.count:null;
+			if(context.excess_limit.service > 0){
+				context.limit.sale = context.limit.sale - (-3);
+			}
+			var limit_rec = context.limit.sale;
+			
+			var skip_rec = (req.body.sale.skip)?req.body.sale.skip:0;
+			if(count_sale && req.body.sale.skip){
+				if(res_sell_count>count_sale)
+					skip_rec = (req.body.sale.skip) - (-(res_sell_count - count_sale));
+			}
+			if(!count_sale)
+				count_sale = res_sell_count;			
+
+			if(res_sell_count > skip_rec){
+				Sell.find(sell_query).sort({"index_count":-1}).skip(skip_rec).limit(limit_rec)
+				.exec(function(err, result) {
+						//////////////////////
+						var loopCount = 0;
+						result.forEach(function(current,index,arr){
+							var fav_query = {
+								bid_sell_buy_id: {"$eq":current.sell_id},
+								user_id: {"$eq":req.payload.user_id},
+								deleted: {"$ne": true}
+							};
+							Fav.find(fav_query)
+							.exec(function(fav_err, fav_result) {							
+								var clone = JSON.parse(JSON.stringify(current));
+								clone.type = "Sale";
+								if(fav_result && fav_result.length > 0){
+									clone.fav = true;		
+									clone.fav_id = fav_result[0]._id;		
+								}
+								results.push(clone);
+								loopCount = loopCount - (-1);
+								if(loopCount === result.length){
+									var sell_params = {count:count_sale, skip:skip_rec-(-result.length), limit:limit_rec};
+									context.excess_limit.sale = limit_rec - result.length;
+									callback(true,results,sell_params,null);
+								}
+							});
+						});	
+					
+						/*for(var i=0; i<result.length; i++){
+							var clone = JSON.parse(JSON.stringify(result[i]));
+							clone.type = "Sale";
+							results.push(clone);
+						}
+						var sell_params = {count:count_sale, skip:skip_rec-(-result.length), limit:limit_rec};
+						context.excess_limit.sale = limit_rec - result.length;
+						callback(true,results,sell_params,null);*/
+				});
+			}
+			else{
+				var sell_params = {count:count_sale, skip:skip_rec, limit:limit_rec};
+				context.excess_limit.sale = limit_rec;
+				callback(true,results,sell_params,null);
+			}
+		}
+	});
 };
 
 
