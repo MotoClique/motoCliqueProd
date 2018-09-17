@@ -1587,8 +1587,8 @@ module.exports.searchLoc = function(req,res){//Fetch
 							{deleted: {$ne: true}},
 							{ $or:
 								  [
-								   {country:  { $in: terms }},
-								   {state:  { $in: terms }},
+								   //{country:  { $in: terms }},
+								   //{state:  { $in: terms }},
 								   {city:  { $in: terms }},
 								   {location:  { $in: terms }}
 								  ]
@@ -1600,7 +1600,7 @@ module.exports.searchLoc = function(req,res){//Fetch
 					.exec(function(err, result) {
 						for(var i=0; i<result.length; i++){
 							var clone = JSON.parse(JSON.stringify(result[i]));
-							clone.text = result[i].location +", "+ result[i].city +", "+ result[i].country ;
+							clone.text = result[i].location +", "+ result[i].city;// +", "+ result[i].country ;
 							results.push(clone);
 						}
 						res.status(200).json({results: results, error: err});
