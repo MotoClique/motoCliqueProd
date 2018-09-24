@@ -1,3 +1,6 @@
+//Switch flag for Production DB / Testing DB
+var prodEnvFlag = true;
+
 //  Moto Clique Node application
 //importing modules
 
@@ -52,6 +55,8 @@ require('./models/enduser/rating');
 require('./models/enduser/thumbs_up');
 require('./models/enduser/thumbs_down');
 require('./models/enduser/counter');
+require('./models/enduser/chat_inbox');
+require('./models/enduser/chat_details');
 
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -103,8 +108,11 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 var db = null,
     dbDetails = new Object();
 	
-var mongoURL = "mongodb://motoadmin:Moto1234@ds217002.mlab.com:17002/motodb",
- mongoURLLabel = "mongodb://motoadmin:Moto1234@ds217002.mlab.com:17002/motodb";
+var prdDBUrl = "mongodb://motoadmin:Moto1234@ds217002.mlab.com:17002/motodb";
+var testDBUrl = "mongodb://meanadmin:Moto1234@ds235302.mlab.com:35302/meandb";
+var mongoURL = (prodEnvFlag)?prdDBUrl:testDBUrl ,
+ mongoURLLabel = (prodEnvFlag)?prdDBUrl:testDBUrl;
+
 
 var initDb = function(callback) {
   if (mongoURL == null) return;

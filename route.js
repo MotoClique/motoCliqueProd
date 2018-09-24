@@ -123,6 +123,7 @@ router.get('/country', auth, ctrlAdmin.getCountry);
 router.get('/state', auth, ctrlAdmin.getState);
 router.get('/city', auth, ctrlAdmin.getCity);
 router.get('/location', auth, ctrlAdmin.getUnqLocation);
+router.post('/addMultipleLocation', auth, ctrlAdmin.addMultipleLocation);
 // Config Parameter
 router.get('/allConfig', auth, ctrlAdmin.getAllParameter);
 router.get('/config', auth, ctrlAdmin.getParameter);
