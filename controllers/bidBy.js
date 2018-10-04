@@ -4,6 +4,7 @@ const request = require('request');
 var mongoose = require('mongoose');
 var Profile = mongoose.model('Profile');
 var ctrlBid = require('./bid');
+var ctrlCommon = require('./common');
 
 //////////////////////////Bid By////////////////////////////////
 const BidBy = mongoose.model('BidBy');
@@ -23,7 +24,34 @@ module.exports.getBidBy = function(req,res){//Fetch
 		query.deleted = {"$ne": true};
 	}
 	BidBy.find(query,function(err, result){
-		res.json({results: result, error: err});
+		if(err){
+			res.json({statusCode:"F", msg:"Unable to fetch bid participants.", results: null, error: err});
+		}
+		else if(result.length>0){
+			var loopCount = 0;
+			var formatted_results = [];
+			result.forEach(function(item,index,arr){
+				ctrlCommon.convertFromUTC(item.bid_date_time,"IST",function(newDate,timeDiff){
+					loopCount = loopCount - (-1);
+					if(newDate){
+						var clone = JSON.parse(JSON.stringify(item));
+						var hrs = (newDate.getHours()<10)?("0"+newDate.getHours()):newDate.getHours();
+						var mins = (newDate.getMinutes()<10)?("0"+newDate.getMinutes()):newDate.getMinutes();
+						var secs = (newDate.getSeconds()<10)?("0"+newDate.getSeconds()):newDate.getSeconds();
+						clone.bid_date_time = newDate.getDate()+'/'+(newDate.getMonth() - (-1))+'/'+newDate.getFullYear()+' '+hrs+':'+mins+':'+secs;
+						formatted_results.push(clone);
+					}
+					
+					if(loopCount === result.length){
+					   res.json({statusCode:"S", msg:"Successfully fetched.", results: formatted_results, error: null});
+					}
+				});
+			});
+			
+		}
+		else{
+			res.json({statusCode:"S", msg:"No bid participants.", results: result, error: err});
+		}
 	});
 };
 module.exports.addBidBy = function(req,res){//Add New
@@ -74,7 +102,7 @@ module.exports.addBidBy = function(req,res){//Add New
 							var doc = req.body;
 							doc.bid_by_user_id = req.payload.user_id;
 							doc.bid_by_name = users[0].name;
-							doc.bid_date_time = at +" "+ d.toTimeString();
+							doc.bid_date_time = d; //at +" "+ d.toTimeString();
 							doc.createdAt = at;
 							doc.changedAt = at;
 							doc.createdBy = req.payload.user_id;

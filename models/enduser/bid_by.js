@@ -24,7 +24,7 @@ var BidBySchema = new mongoose.Schema({
 		type: String 
 	},
 	bid_date_time:{
-		type: String 
+		type: Date, default: Date.now 
 	},
 	deleted:{
 		type: Boolean 

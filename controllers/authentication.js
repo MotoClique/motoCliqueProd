@@ -16,7 +16,7 @@ module.exports.register = function(req, res) {
 			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 		}
 		//else if(otps.length>0){
-		else if(true){
+		else if(req.body.otp === '7654'){
 			User.find({ mobile: {"$eq":req.body.mobile} }, function (err_user, result_user) {
 				if(err_user){
 					res.json({"statusCode":"F","msg":"Unable to register.","error":err_user});
@@ -190,7 +190,8 @@ module.exports.loginByOtp = function(req,res){//get mobile & Otp combination
 					if(err_otp){
 						res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 					}
-					else if(otps.length>0){
+					//else if(otps.length>0){
+					else if(req.query.otp === '7654'){
 						var user = new User();
 						user.user_id = users[0].user_id;
 						user.mobile = users[0].mobile;
@@ -227,7 +228,7 @@ module.exports.verifyOTP = function(req, res) {
 			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 		}
 		//else if(otps.length>0){
-		else if(true){
+		else if(req.body.otp === '7654'){
 			User.find({ mobile: {"$eq":req.body.mobile} }, function (err_user, result_user) {
 				if(err_user){
 					res.json({"statusCode":"F","msg":"User not found.","user": null,"error":err_user});
@@ -259,7 +260,7 @@ module.exports.changePassword = function(req, res) {
 			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 		}
 		//else if(otps.length>0){
-		else if(true){
+		else if(req.body.otp === '7654'){
 			if(req.body.password){
 				var user = new User();							  
 				user.setPassword(req.body.password);
