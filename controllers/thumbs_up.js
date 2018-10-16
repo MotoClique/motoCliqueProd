@@ -42,8 +42,8 @@ module.exports.addThumbsUp = function(req,res){//Add New
 			
 			var doc = req.body;
 			doc.thumbs_up_id = thumbs_up_id - (-index_count);
-			doc.createdAt = at;
-			doc.changedAt = at;
+			doc.createdAt = d;
+			doc.changedAt = d;
 			doc.createdBy = req.payload.user_id;
 			doc.changedBy = req.payload.user_id;
 			
@@ -90,7 +90,7 @@ module.exports.updateThumbsUp = function(req,res){//Update
 	var doc = req.body;
 		delete doc.createdAt;
 		delete doc.createdBy;
-		doc.changedAt = at;
+		doc.changedAt = d;
 		doc.changedBy = req.payload.user_id;
 		
 	ThumbsUp.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{

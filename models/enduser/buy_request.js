@@ -108,13 +108,13 @@ var BuyRequestSchema = new mongoose.Schema({
 		type: String 
 	},
 	createdAt:{
-		type: String 
+		type: Date 
 	},
 	changedBy:{
 		type: String 
 	},
 	changedAt:{
-		type: String 
+		type: Date 
 	}
 });
 BuyRequestSchema.index({ index_count:1, buy_req_id: 1},{unique: true});

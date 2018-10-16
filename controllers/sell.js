@@ -103,8 +103,8 @@ module.exports.addSell = function(req,res){//Add New
 					var doc = req.body;
 					doc.index_count = index_count;
 					doc.sell_id = "SELL_"+index_count;//sell_id;
-					doc.createdAt = at;
-					doc.changedAt = at;
+					doc.createdAt = d;
+					doc.changedAt = d;
 					doc.createdBy = req.payload.user_id;
 					doc.changedBy = req.payload.user_id;
 					doc.active = "X";
@@ -143,7 +143,7 @@ module.exports.addSell = function(req,res){//Add New
 							//updateSubscription.changedAt = at;
 							//updateSubscription.remain_post = result_sub[0].remain_post - 1;		
 							//console.log(updateSubscription);
-							UserSubMap.findOneAndUpdate({_id: result_sub[0]._id},{$set:{changedAt: at}, $inc:{remain_post: -1}},{},(err_subUpdate, result_subUpdate)=>{
+							UserSubMap.findOneAndUpdate({_id: result_sub[0]._id},{$set:{changedAt: d}, $inc:{remain_post: -1}},{},(err_subUpdate, result_subUpdate)=>{
 								//console.log(err_subUpdate);
 							});						
 							
@@ -175,7 +175,7 @@ module.exports.updateSell = function(req,res){//Update
 	var doc = req.body;
 		delete doc.createdAt;
 		delete doc.createdBy;
-		doc.changedAt = at;
+		doc.changedAt = d;
 		doc.changedBy = req.payload.user_id;
 		
 	if(doc.net_price && !isNaN(doc.net_price)){

@@ -202,8 +202,8 @@ module.exports.addBid = function(req,res){//Add New
 					doc.index_count = index_count;
 					doc.bid_id = "BID_"+index_count;//bid_id;
 					doc.bid_valid_from = at;
-					doc.createdAt = at;
-					doc.changedAt = at;
+					doc.createdAt = d;
+					doc.changedAt = d;
 					doc.createdBy = req.payload.user_id;
 					doc.changedBy = req.payload.user_id;
 					if(doc.bid_status === 'Active')
@@ -279,7 +279,7 @@ module.exports.addBid = function(req,res){//Add New
 										//var updateSubscription = result_sub[0];
 										//updateSubscription.changedAt = at;
 										//updateSubscription.remain_post = result_sub[0].remain_post - 1;							
-										UserSubMap.findOneAndUpdate({_id: result_sub[0]._id},{$set:{changedAt: at}, $inc:{remain_post: -1}},{},(err_subUpdate, result_subUpdate)=>{
+										UserSubMap.findOneAndUpdate({_id: result_sub[0]._id},{$set:{changedAt: d}, $inc:{remain_post: -1}},{},(err_subUpdate, result_subUpdate)=>{
 											
 										});						
 									
@@ -320,7 +320,7 @@ module.exports.updateBid = function(req,res){//Update
 		delete doc.createdAt;
 		delete doc.createdBy;
 		doc.changedBy = req.payload.user_id;
-		doc.changedAt = at;
+		doc.changedAt = d;
 	if(doc.bid_status === 'Active')
 		doc.active = "X";
 	else

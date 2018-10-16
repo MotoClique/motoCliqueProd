@@ -54,9 +54,9 @@ module.exports.addUserAddress = function(req,res){//Add New
 				default_flag: req.body.default_flag,
 				deleted: req.body.deleted,
 				createdBy: req.payload.user_id,
-				createdAt: at,
+				createdAt: d,
 				changedBy: req.payload.user_id,
-				changedAt: at
+				changedAt: d
 			});
 			
 			if(req.body.default_flag){
@@ -163,7 +163,7 @@ module.exports.updateUserAddressMethod = function(req,res){//
 			//createdBy: req.body.createdBy,
 			//createdAt: req.body.createdAt,
 			changedBy: req.payload.user_id,
-			changedAt: at
+			changedAt: d
 		};
 	
 		if(req.body.default_flag){

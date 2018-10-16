@@ -79,9 +79,9 @@ module.exports.addUserSubMap = function(req,res){//Add New
 				notification_app: result[0].notification_app,
 				active: "X",
 				createdBy: req.payload.user_id,
-				createdAt: at,
+				createdAt: d,
 				changedBy: req.payload.user_id,
-				changedAt: at,
+				changedAt: d,
 				deleted: req.body.deleted
 			});
 			
@@ -134,7 +134,7 @@ module.exports.updateUserSubMap = function(req,res){//Update
 			//createdBy: req.body.createdBy,
 			//createdAt: req.body.createdAt,
 			changedBy: req.payload.user_id,
-			changedAt: at,
+			changedAt: d,
 			deleted: req.body.deleted
 	};
 	

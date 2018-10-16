@@ -42,8 +42,8 @@ module.exports.addThumbsDown = function(req,res){//Add New
 			
 			var doc = req.body;
 			doc.thumbs_down_id = thumbs_down_id - (-index_count);
-			doc.createdAt = at;
-			doc.changedAt = at;
+			doc.createdAt = d;
+			doc.changedAt = d;
 			doc.createdBy = req.payload.user_id;
 			doc.changedBy = req.payload.user_id;
 			
@@ -90,7 +90,7 @@ module.exports.updateThumbsDown = function(req,res){//Update
 	var doc = req.body;
 		delete doc.createdAt;
 		delete doc.createdBy;
-		doc.changedAt = at;
+		doc.changedAt = d;
 		doc.changedBy = req.payload.user_id;
 		
 	ThumbsDown.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{

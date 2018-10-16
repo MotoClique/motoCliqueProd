@@ -103,8 +103,8 @@ module.exports.addBidBy = function(req,res){//Add New
 							doc.bid_by_user_id = req.payload.user_id;
 							doc.bid_by_name = users[0].name;
 							doc.bid_date_time = d; //at +" "+ d.toTimeString();
-							doc.createdAt = at;
-							doc.changedAt = at;
+							doc.createdAt = d;
+							doc.changedAt = d;
 							doc.createdBy = req.payload.user_id;
 							doc.changedBy = req.payload.user_id;
 							
@@ -151,7 +151,7 @@ module.exports.updateBidBy = function(req,res){//Update
 	var doc = req.body;
 		delete doc.createdAt;
 		delete doc.createdBy;
-		doc.changedAt = at;
+		doc.changedAt = d;
 		doc.changedBy = req.payload.user_id;
 		
 	BidBy.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{

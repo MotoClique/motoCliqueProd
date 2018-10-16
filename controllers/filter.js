@@ -33,8 +33,8 @@ module.exports.addFilter = function(req,res){//Add New
 				
 				var docs = req.body.data;
 				for(var i = 0; i<docs.length; i++){
-					docs[i].createdAt = at;
-					docs[i].changedAt = at;
+					docs[i].createdAt = d;
+					docs[i].changedAt = d;
 					docs[i].createdBy = req.payload.user_id;
 					docs[i].changedBy = req.payload.user_id;
 				}
@@ -58,7 +58,7 @@ module.exports.updateFilter = function(req,res){//Update
 	var doc = req.body;
 		delete doc.createdAt;
 		delete doc.createdBy;
-		doc.changedAt = at;
+		doc.changedAt = d;
 		doc.createdBy = req.payload.user_id
 		doc.changedBy = req.payload.user_id;
 		

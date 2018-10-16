@@ -239,6 +239,15 @@ router.post('/public/node/thumbs_down', auth, ctrlThumbsDown.addThumbsDown);
 router.put('/public/node/thumbs_down', auth, ctrlThumbsDown.updateThumbsDown);
 router.delete('/public/node/thumbs_down/:id', auth, ctrlThumbsDown.deleteThumbsDown);
 
+//Chat
+var ctrlChat = require('./controllers/chat');
+router.get('/public/node/chatInbox', auth, ctrlChat.getChatInbox);
+router.post('/public/node/chatInbox', auth, ctrlChat.addChatInbox);
+router.put('/public/node/chatInbox', auth, ctrlChat.updateChatInbox);
+
+router.get('/public/node/chatDetail', auth, ctrlChat.getChatDetail);
+router.post('/public/node/chatDetail', auth, ctrlChat.addChatDetail);
+
 
 
 

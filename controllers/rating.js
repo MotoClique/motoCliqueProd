@@ -35,8 +35,8 @@ module.exports.addRating = function(req,res){//Add New
 			
 			var doc = req.body;
 			doc.rating_id = rating_id - (-index_count);
-			doc.createdAt = at;
-			doc.changedAt = at;
+			doc.createdAt = d;
+			doc.changedAt = d;
 			doc.createdBy = req.payload.user_id;
 			doc.changedBy = req.payload.user_id;
 			
@@ -111,7 +111,7 @@ module.exports.updateRating = function(req,res){//Update
 	var doc = req.body;
 		delete doc.createdAt;
 		delete doc.createdBy;
-		doc.changedAt = at;
+		doc.changedAt = d;
 		doc.changedBy = req.payload.user_id;
 		
 	Rating.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{

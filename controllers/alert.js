@@ -74,9 +74,9 @@ module.exports.addUserAlert = function(req,res){//Add New
 							doc.active= req.body.active;
 							doc.deleted= req.body.deleted;
 							doc.createdBy = req.payload.user_id;
-							doc.createdAt = at;
+							doc.createdAt = d;
 							doc.changedBy = req.payload.user_id;
-							doc.changedAt = at;
+							doc.changedAt = d;
 						//});
 						let newUserAlert = new UserAlert(doc);
 						newUserAlert.save((err, result)=>{
@@ -142,7 +142,7 @@ module.exports.updateUserAlert = function(req,res){//Update
 				delete doc.createdBy;
 				delete doc.createdAt;
 				doc.changedBy = req.payload.user_id;
-				doc.changedAt = at;
+				doc.changedAt = d;
 				//};
 				
 				UserAlert.findOneAndUpdate({_id:req.body._id},{$set: doc},{},(err, updated)=>{

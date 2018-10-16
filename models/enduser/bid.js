@@ -129,13 +129,13 @@ var BidSchema = new mongoose.Schema({
 		type: String 
 	},
 	createdAt:{
-		type: String 
+		type: Date 
 	},
 	changedBy:{
 		type: String 
 	},
 	changedAt:{
-		type: String 
+		type: Date 
 	}
 });
 BidSchema.index({ index_count:1, bid_id: 1},{unique: true});

@@ -100,13 +100,13 @@ var UserAlertSchema = new mongoose.Schema({
 		type: String 
 	},
 	createdAt:{
-		type: String 
+		type: Date 
 	},
 	changedBy:{
 		type: String 
 	},
 	changedAt:{
-		type: String 
+		type: Date 
 	}
 });
 UserAlertSchema.index({ alert_id: 1},{unique: true});

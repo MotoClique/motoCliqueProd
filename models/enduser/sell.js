@@ -123,13 +123,13 @@ var SellSchema = new mongoose.Schema({
 		type: String 
 	},
 	createdAt:{
-		type: String 
+		type: Date 
 	},
 	changedBy:{
 		type: String 
 	},
 	changedAt:{
-		type: String 
+		type: Date 
 	}
 });
 SellSchema.index({ index_count:1, sell_id: 1},{unique: true});

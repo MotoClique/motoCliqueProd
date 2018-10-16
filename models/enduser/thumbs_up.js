@@ -24,13 +24,13 @@ var ThumbsUpSchema = new mongoose.Schema({
 		type: String 
 	},
 	createdAt:{
-		type: String 
+		type: Date 
 	},
 	changedBy:{
 		type: String 
 	},
 	changedAt:{
-		type: String 
+		type: Date 
 	}
 });
 

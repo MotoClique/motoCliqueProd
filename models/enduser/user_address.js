@@ -49,13 +49,13 @@ var UserAddressSchema = new mongoose.Schema({
 		type: String
 	},
 	createdAt:{
-		type: String
+		type: Date
 	},
 	changedBy:{
 		type: String
 	},
 	changedAt:{
-		type: String
+		type: Date
 	}
 });
 UserAddressSchema.index({ address_id: 1},{unique: true});
