@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 var ChatDetailSchema = new mongoose.Schema({
 	chat_id:{
 		type: String,
-		required: true
+		unique: false,
+		index: true
 	},
 	post_id:{
 		type: String 

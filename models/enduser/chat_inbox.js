@@ -10,16 +10,22 @@ var ChatInboxSchema = new mongoose.Schema({
 		required: true
 	},
 	post_id:{
-		type: String 
+		type: String,
+		unique: false,
+		index: true
 	},
 	post_type:{
 		type: String 
 	},
 	from_user:{
-		type: String 
+		type: String,
+		unique: false,
+		index: true
 	},
 	to_user:{
-		type: String 
+		type: String,
+		unique: false,
+		index: true
 	},
 	from_user_name:{
 		type: String 
