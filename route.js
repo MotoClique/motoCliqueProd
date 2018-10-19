@@ -245,6 +245,7 @@ router.get('/public/node/chatInbox', auth, ctrlChat.getChatInbox);
 router.post('/public/node/chatInbox', auth, ctrlChat.addChatInbox);
 router.put('/public/node/chatInbox', auth, ctrlChat.updateChatInbox);
 router.delete('/public/node/chatInbox/:id', auth, ctrlChat.deleteChatInbox);
+router.get('/public/node/freshChatCount', auth, ctrlChat.getNewChatCount);
 
 router.get('/public/node/chatDetail', auth, ctrlChat.getChatDetail);
 router.post('/public/node/chatDetail', auth, ctrlChat.addChatDetail);

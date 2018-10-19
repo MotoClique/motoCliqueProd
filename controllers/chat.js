@@ -487,5 +487,30 @@ module.exports.deleteChatInbox = function(req,res){//Delete Chat from Inbox
 };
 
 
+module.exports.getNewChatCount = function(req,res){//Fetch the count of new incoming chats
+	var query = {};
+	var or_query = [];
+	or_query.push({from_user: {"$eq":req.payload.user_id}, from_read: {"$eq": false}, from_deleted: {"$ne": true}});
+	or_query.push({to_user: {"$eq":req.payload.user_id}, to_read: {"$eq": false}, to_deleted: {"$ne": true}});
+	query['$or'] = or_query;
+	ChatInbox.find(query,function(err, newChats){
+	    if(err){
+	      res.json({statusCode:"F", results: [], error: err, count: null});
+	    }
+	    else if(newChats.length>0){
+			var chatCounts = 0;
+			newChats.forEach(function(item,index,arr){
+				if(req.payload.user_id == item.from_user)
+					chatCounts = chatCounts - (- item.from_unread_count);
+				else if(req.payload.user_id == item.to_user)
+					chatCounts = chatCounts - (- item.to_unread_count);
+			});
+			res.json({statusCode:"S", results: newChats, error: err, count: chatCounts});
+		}
+		else{
+			res.json({statusCode:"S", results: newChats, error: err, count: 0});
+		}
+	});
+};
 
 
