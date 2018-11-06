@@ -1,1 +1,50 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MotoClique</title><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico"><link href="styles.d9256a49e79a765fad89.bundle.css" rel="stylesheet"/></head><body><div id="brandlogo" style="width:100%; height:100%; position:absolute;"><div style="width:100%; height:100%; position:absolute; display:flex; justify-content:center; align-items:center;"><img src="assets/brandlogo.png" style="width:200px;"/></div></div><div id="approot" style="width:100%; height:100%; display:none;"><div id="loaderContainer"><div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;"><div id="loader"></div></div></div><app-root></app-root></div><script type="text/javascript" src="inline.e10ba3c7c31ac50819b4.bundle.js"></script><script type="text/javascript" src="polyfills.9bcb2e7367d42b8eedf2.bundle.js"></script><script type="text/javascript" src="scripts.7a44253c3dd0e00ec7bf.bundle.js"></script><script type="text/javascript" src="main.0cc6bd844bf2ff040a64.bundle.js"></script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MotoClique</title><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico"><script>document.addEventListener('deviceready', function(){
+		if(window.cordova){
+			var that = this;			
+			var push = PushNotification.init({
+					android: {
+					},
+					browser: {
+						pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+					},
+					ios: {
+						alert: "true",
+						badge: "true",
+						sound: "true"
+					},
+					windows: {}
+			});
+
+			push.on('registration', function(data) {
+				var token = data.registrationId;
+				localStorage.setItem('device-token', token);	// data.registrationId
+			});
+
+			push.on('notification', function(data) {
+				//
+			});
+
+			push.on('error', function(e){
+				alert(e.message);	// e.message
+			});
+			
+			push.setApplicationIconBadgeNumber(
+			  function(){
+				//console.log('success');
+			  },
+			  function(){
+				//console.log('error');
+			  },
+			  0
+			);
+			
+			push.clearAllNotifications(
+			  function(){
+				//console.log('success');
+			  },
+			  function(){
+				//console.log('error');
+			  }
+			);
+		}
+	}, false);</script><link href="styles.d9256a49e79a765fad89.bundle.css" rel="stylesheet"/></head><body><div id="brandlogo" style="width:100%; height:100%; position:absolute;"><div style="width:100%; height:100%; position:absolute; display:flex; justify-content:center; align-items:center;"><img src="assets/brandlogo.png" style="width:200px;"/></div></div><div id="approot" style="width:100%; height:100%; display:none;"><div id="loaderContainer"><div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;"><div id="loader"></div></div></div><app-root></app-root></div><script type="text/javascript" src="inline.ef5a78620cb3d5fbd314.bundle.js"></script><script type="text/javascript" src="polyfills.9bcb2e7367d42b8eedf2.bundle.js"></script><script type="text/javascript" src="scripts.da8478ae044ae9644012.bundle.js"></script><script type="text/javascript" src="main.737a189f74ff1d6db3b3.bundle.js"></script></body></html>
