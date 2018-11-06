@@ -15,12 +15,13 @@ router.post('/verifyOtp', ctrlAuth.verifyOTP);
 router.post('/changePassword', ctrlAuth.changePassword);
 // otp
 router.get('/sendOTP', ctrlAuth.sendOTP);
-router.get('/loginByOtp', ctrlAuth.loginByOtp);
+router.post('/loginByOtp', ctrlAuth.loginByOtp);
 
 //Admin router
 var ctrlAdmin = require('./controllers/admin');
 // profile
-router.get('/profile', auth, ctrlAdmin.profileRead);
+router.post('/getprofile', auth, ctrlAdmin.profileRead);
+//router.get('/profile', auth, ctrlAdmin.profileRead);
 router.post('/profile', auth, ctrlAdmin.profileAdd);
 router.put('/profile', auth, ctrlAdmin.profileUpdate);
 router.delete('/profile/:id', auth, ctrlAdmin.profileDelete);

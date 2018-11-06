@@ -36,6 +36,7 @@ require('./models/application');
 require('./models/app_scr_fields_rights');
 require('./models/country_state_city_loc');
 require('./models/parameter');
+require('./models/device_reg');
 
 //endusers schemas
 require('./models/enduser/bid');

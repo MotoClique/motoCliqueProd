@@ -5,6 +5,7 @@ const Buy = mongoose.model('Buy');
 const Bid = mongoose.model('Bid');
 const Service = mongoose.model('Service');
 const Thumbnail = mongoose.model('Thumbnail');
+var ctrlNotification = require('./notification');
 
 //////////////////////////Chat Inbox////////////////////////////////
 const ChatInbox = mongoose.model('ChatInbox');
@@ -392,6 +393,7 @@ module.exports.addChatDetail = function(req,res){//Add New Chat Detail
 						res.json({statusCode: 'F', msg: 'Failed to send', error: chatdetail_err});
 					}
 					else{
+						ctrlNotification.sendAppPushNotification(req.body);
 						res.json({statusCode: 'S', msg: 'Sent Successfully.', results: chatdetail_res});
 					}
 			});
@@ -429,6 +431,7 @@ module.exports.addChatDetail = function(req,res){//Add New Chat Detail
 						res.json({statusCode: 'F', msg: 'Failed to send', error: chatdetail_err});
 					}
 					else{
+						ctrlNotification.sendAppPushNotification(req.body);
 						res.json({statusCode: 'S', msg: 'Sent Successfully.', results: chatdetail_res});
 					}
 			});
@@ -488,7 +491,7 @@ module.exports.deleteChatInbox = function(req,res){//Delete Chat from Inbox
 
 
 module.exports.getNewChatCount = function(req,res){//Fetch the count of new incoming chats
-	var query = {};
+	/*var query = {};
 	var or_query = [];
 	or_query.push({from_user: {"$eq":req.payload.user_id}, from_read: {"$eq": false}, from_deleted: {"$ne": true}});
 	or_query.push({to_user: {"$eq":req.payload.user_id}, to_read: {"$eq": false}, to_deleted: {"$ne": true}});
@@ -510,7 +513,37 @@ module.exports.getNewChatCount = function(req,res){//Fetch the count of new inco
 		else{
 			res.json({statusCode:"S", results: newChats, error: err, count: 0});
 		}
+	});*/
+	
+	module.exports.countNewChat(req,function(resObj){
+		res.json(resObj);
 	});
 };
 
+
+module.exports.countNewChat = function(req,callback){//Count the new incoming chats for a user
+	var query = {};
+	var or_query = [];
+	or_query.push({from_user: {"$eq":req.payload.user_id}, from_read: {"$eq": false}, from_deleted: {"$ne": true}});
+	or_query.push({to_user: {"$eq":req.payload.user_id}, to_read: {"$eq": false}, to_deleted: {"$ne": true}});
+	query['$or'] = or_query;
+	ChatInbox.find(query,function(err, newChats){
+	    if(err){
+			callback({statusCode:"F", results: [], error: err, count: null});
+	    }
+	    else if(newChats.length>0){
+			var chatCounts = 0;
+			newChats.forEach(function(item,index,arr){
+				if(req.payload.user_id == item.from_user)
+					chatCounts = chatCounts - (- item.from_unread_count);
+				else if(req.payload.user_id == item.to_user)
+					chatCounts = chatCounts - (- item.to_unread_count);
+			});
+			callback({statusCode:"S", results: newChats, error: err, count: chatCounts});
+		}
+		else{
+			callback({statusCode:"S", results: newChats, error: err, count: 0});
+		}
+	});
+};
 

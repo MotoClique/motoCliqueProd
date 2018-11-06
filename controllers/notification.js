@@ -8,6 +8,8 @@ var Profile = mongoose.model('Profile');
 var UserSubMap = mongoose.model('UserSubMap');
 var UserAlert = mongoose.model('UserAlert');
 var Parameter = mongoose.model('Parameter');
+var DeviceReg = mongoose.model('DeviceReg');
+var ChatInbox = mongoose.model('ChatInbox');
 
 module.exports.sendNotification = function(doc){//Send
 	//Get API Keys
@@ -436,4 +438,107 @@ module.exports.sendNotification = function(doc){//Send
 
 	
 };
+
+
+module.exports.sendAppPushNotification = function(doc){//Send push notification to app
+	//Get User Device reg id
+	DeviceReg.find({user_id: doc.to_user},function(err_reg, result_reg){
+		if(result_reg && result_reg.length>0){
+			var device_reg_id = result_reg[0].device_reg_id;
+			//Get API Keys
+			Parameter.find({},function(err_param, result_param){
+				var params = {};
+				if(result_param){
+					for(var p =0; p<result_param.length; p++){
+						params[result_param[p].parameter] = result_param[p].value;
+					}			
+					
+					//module.exports.sendAppBadgeCount({device_reg_id:device_reg_id, fcm_server_logical_key:params['fcm_server_logical_key']});
+					module.exports.getNewChatCount(doc.to_user,function(mcount){
+						var messageCount = 1;
+						if(mcount){
+							messageCount = mcount;
+						}
+						request.post({
+								url:'https://fcm.googleapis.com/fcm/send', 
+								body: JSON.stringify({
+									"to": device_reg_id,
+									"data": {
+										"title": "MotoClique", //doc.from_user_name,
+										"message": messageCount+" New Message", //doc.text,
+										'content-available': '1',
+										"badge": messageCount
+									}
+								}),
+								headers: {
+									'content-type': 'application/json',
+									'Authorization': 'Key='+params['fcm_server_logical_key']
+								}
+							},
+							function(err_push,httpResponse,body){
+								console.log(err_push);
+							});
+					});
+				}
+			});
+		}
+	});
+};
+
+
+//******** Not In Use ******
+module.exports.sendAppBadgeCount = function(doc){//Send push notification for increasing badge count to app
+					request.post({
+							url:'https://fcm.googleapis.com/fcm/send', 
+							body: JSON.stringify({
+								"data":{
+									"badge":"true",
+								},
+								"to": doc.device_reg_id,
+								"priority":"high"
+							}),
+							headers: {
+								'content-type': 'application/json',
+								'Authorization': 'Key='+doc['fcm_server_logical_key']
+							}
+						},
+						function(err_push,httpResponse,body){
+							console.log(err_push);
+						});
+};
+
+
+
+
+
+module.exports.getNewChatCount = function(user_id,callback){//Fetch the count of new incoming chats
+	var query = {};
+	var or_query = [];
+	or_query.push({from_user: {"$eq":user_id}, from_read: {"$eq": false}, from_deleted: {"$ne": true}});
+	or_query.push({to_user: {"$eq":user_id}, to_read: {"$eq": false}, to_deleted: {"$ne": true}});
+	query['$or'] = or_query;
+	ChatInbox.find(query,function(err, newChats){
+	    if(err){
+	      callback(null);
+	    }
+	    else if(newChats.length>0){
+			var chatCounts = 0;
+			newChats.forEach(function(item,index,arr){
+				if(user_id == item.from_user)
+					chatCounts = chatCounts - (- item.from_unread_count);
+				else if(user_id == item.to_user)
+					chatCounts = chatCounts - (- item.to_unread_count);
+			});
+			callback(chatCounts);
+		}
+		else{
+			callback(0);
+		}
+	});
+};
+
+
+
+
+
 

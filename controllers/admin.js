@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var UserSubMap = mongoose.model('UserSubMap');
 var Counter = mongoose.model('Counter');
+var DeviceReg = mongoose.model('DeviceReg');
 
 //////////////////////////Users Profile Master Table////////////////////////////////
 var Profile = mongoose.model('Profile');
@@ -17,58 +18,69 @@ module.exports.profileRead = function(req,res){//Fetch
 		  "message" : "Unauthorized Access."
 		});
 	} else {
-		var query = {};
-		if(req.query.user_id){
-			query.user_id = {"$eq":req.query.user_id};
-		}
-		if(req.query.mobile){
-			query.mobile = {"$eq":req.query.mobile};
-		}
-		if(req.query.deleted){
-			query.deleted = {"$eq":req.query.deleted};
+	DeviceReg.find({user_id: req.body.user_id},function(err_reg, result_reg){
+		if(err_reg){
+		   res.json({statusCode:"F", msg:"Unable to identify the device", results: null,error: err_reg});
 		}
 		else{
-			query.deleted = {"$ne": true};
-		}
-		Profile.find(query,function(profile_err, profiles){
-			if(profiles.length > 0){
-				var result = JSON.parse(JSON.stringify(profiles));
-				console.log(result);
-				result[0].screenAccess = [];
-				UserSubMap.find({user_id: {"$eq":result[0].user_id}},function(sub_err, subs){
-					if(sub_err){
-						res.json({statusCode:"F", msg:"Failed to retrieve user subscription", results: result,error: sub_err});		
-					}
-					var role_query = [];
-					for(var i =0; i < subs.length; i++){
-						role_query.push({"role_id": {"$eq": subs[i].role_id}});												
-					}
-					
-					var screen_query =  [
-												{"field": {"$eq": "-"}},												
-													//"role_id": {"$regex":req.query.role_id, "$options":"i"},
-												{"deleted": {"$ne": true}}
-											];
-					if(role_query.length>0){
-						screen_query.push({"$or": role_query},);
-					}											
-					var AppScrFieldsRights = mongoose.model('AppScrFieldsRights');
-					AppScrFieldsRights.find({ $and: screen_query},function(screen_err, screens){
-						if(screen_err){
-							res.json({statusCode:"F", msg:"Failed to retrieve rights", results: result,error: screen_err});		
-						}
-						
-						for(var i =0; i < screens.length; i++){
-							result[0].screenAccess.push({name: screens[i].screen, for_nav: screens[i].screen_for_nav, sequence: screens[i].screen_sequence, applicable: screens[i].applicable, create: screens[i].create, edit: screens[i].edit});
-						}
-						res.json({statusCode:"S", msg:"Successfully retrieved.", results: result,error: screen_err});						
-					});	
-				});
+			if(result_reg && result_reg.length>0){
+				if(req.body.device_reg_id !== result_reg[0].device_reg_id && req.body.device_reg_id !== "empty")
+					res.json({statusCode:"F", msg:"Sorry! Device is not registered.", unknown_device:true, results: null,error: null});
+			}
+			var query = {};
+			if(req.body.user_id){
+				query.user_id = {"$eq":req.body.user_id};
+			}
+			if(req.body.mobile){
+				query.mobile = {"$eq":req.body.mobile};
+			}
+			if(req.body.deleted){
+				query.deleted = {"$eq":req.body.deleted};
 			}
 			else{
-					res.json({statusCode:"F", msg:"Failed to retrieve the profile", results: profiles,error: profile_err});
-			}			
-		});
+				query.deleted = {"$ne": true};
+			}
+			Profile.find(query,function(profile_err, profiles){
+				if(profiles.length > 0){
+					var result = JSON.parse(JSON.stringify(profiles));
+					console.log(result);
+					result[0].screenAccess = [];
+					UserSubMap.find({user_id: {"$eq":result[0].user_id}},function(sub_err, subs){
+						if(sub_err){
+							res.json({statusCode:"F", msg:"Failed to retrieve user subscription", results: result,error: sub_err});		
+						}
+						var role_query = [];
+						for(var i =0; i < subs.length; i++){
+							role_query.push({"role_id": {"$eq": subs[i].role_id}});												
+						}
+
+						var screen_query =  [
+													{"field": {"$eq": "-"}},												
+														//"role_id": {"$regex":req.query.role_id, "$options":"i"},
+													{"deleted": {"$ne": true}}
+												];
+						if(role_query.length>0){
+							screen_query.push({"$or": role_query},);
+						}											
+						var AppScrFieldsRights = mongoose.model('AppScrFieldsRights');
+						AppScrFieldsRights.find({ $and: screen_query},function(screen_err, screens){
+							if(screen_err){
+								res.json({statusCode:"F", msg:"Failed to retrieve rights", results: result,error: screen_err});		
+							}
+
+							for(var i =0; i < screens.length; i++){
+								result[0].screenAccess.push({name: screens[i].screen, for_nav: screens[i].screen_for_nav, sequence: screens[i].screen_sequence, applicable: screens[i].applicable, create: screens[i].create, edit: screens[i].edit});
+							}
+							res.json({statusCode:"S", msg:"Successfully retrieved.", results: result,error: screen_err});						
+						});	
+					});
+				}
+				else{
+						res.json({statusCode:"F", msg:"Failed to retrieve the profile", results: profiles,error: profile_err});
+				}			
+			});
+		}
+	});
 	}
 };
 module.exports.profileAdd = function(req,res){//Add New

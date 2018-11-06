@@ -3,6 +3,7 @@ const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
 var ctrlCommon = require('./common');
+var ctrlChat = require('./chat');
 
 //////////////////////////Search////////////////////////////////
 const Sell = mongoose.model('Sell');
@@ -987,6 +988,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 						});
 					}
 					
+					ctrlChat.countNewChat(req, function(chat_res){
+					var new_chat = 0;
+					if(chat_res && chat_res.statusCode === 'S')
+						new_chat = chat_res.count;
 					module.exports.getUserFilters(req,query,results,function(status,rt_query){
 						if(status)
 							query = rt_query;						
@@ -998,10 +1003,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 									var search_complete = false;
 									if(that.excess_limit.sale > 0)
 										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:rt_params, buy:{}, bid:{}, service:{}, completed:search_complete});
+									res.json({statusCode:"S", results: results, error: null, sale:rt_params, buy:{}, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
 								}
 								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
 								}
 							},that);
 						}
@@ -1012,10 +1017,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 									var search_complete = false;
 									if(that.excess_limit.buy > 0)
 										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:rt_params, bid:{}, service:{}, completed:search_complete});
+									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:rt_params, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
 								}
 								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
 								}
 							},that);	
 						}
@@ -1026,10 +1031,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 									var search_complete = false;
 									if(that.excess_limit.bid > 0)
 										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete});
+									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
 								}
 								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
 								}
 							},that);	
 						}
@@ -1040,10 +1045,10 @@ module.exports.getTransactions = function(req,res){//Fetch
 									var search_complete = false;
 									if(that.excess_limit.service > 0)
 										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:{}, service:rt_params, completed:search_complete});
+									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:{}, service:rt_params, completed:search_complete, chatCount:new_chat});
 								}
 								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err});
+									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
 								}
 							},that);	
 						}
@@ -1053,21 +1058,21 @@ module.exports.getTransactions = function(req,res){//Fetch
 									results = rt_buy;									
 								}
 								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_buy_err});
+									res.status(401).json({statusCode:"F", results:[], error:rt_buy_err, chatCount:new_chat});
 								}
 								module.exports.fetchBid(req,query,results,function(rt_bid_status,rt_bid,rt_bid_params,rt_bid_err){
 									if(rt_bid_status){
 										results = rt_bid;
 									}
 									else{
-										res.status(401).json({statusCode:"F", results:[], error:rt_bid_err});
+										res.status(401).json({statusCode:"F", results:[], error:rt_bid_err, chatCount:new_chat});
 									}
 									module.exports.fetchService(req,query,results,function(rt_service_status,rt_service,rt_service_params,rt_service_err){
 										if(rt_service_status){
 											results = rt_service;
 										}
 										else{
-											res.status(401).json({statusCode:"F", results:[], error:rt_service_err});
+											res.status(401).json({statusCode:"F", results:[], error:rt_service_err, chatCount:new_chat});
 										}
 										module.exports.fetchSell(req,query,results,function(rt_sell_status,rt_sell,rt_sell_params,rt_sell_err){
 											if(rt_sell_status){
@@ -1083,11 +1088,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 													buy:rt_buy_params, 
 													bid:rt_bid_params, 
 													service:rt_service_params,
-													completed: search_complete
+													completed: search_complete, chatCount:new_chat
 												});
 											}
 											else{
-												res.status(401).json({statusCode:"F", results:[], error:rt_sell_err});
+												res.status(401).json({statusCode:"F", results:[], error:rt_sell_err, chatCount:new_chat});
 											}
 										},that);	
 									},that);
@@ -1095,6 +1100,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 							},that);
 						}
 					},that);
+					});
 				});
 			
 			}
@@ -1114,6 +1120,9 @@ module.exports.getUserFilters = function(req,query,results,callback,context){//G
 	query_filter.user_id = {"$eq":req.payload.user_id};
 	query_filter.deleted = {"$ne": true};			
 	Filter.find(query_filter,function(err_filter, result_filter){
+		if(req.body.userFilter && Array.isArray(req.body.userFilter)){
+			result_filter = req.body.userFilter;
+		}
 		for(var i=0; i<result_filter.length; i++){
 			if(result_filter[i].filter_value && result_filter[i].filter_field && result_filter[i].filter_value !== 'All'){//If Filter Value & Field is there
 				if(result_filter[i].filter_field === 'km_run_from'){

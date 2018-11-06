@@ -116,6 +116,9 @@ var SellSchema = new mongoose.Schema({
 		type: String,
 		maxlength: 1
 	},
+	note:{
+		type: String 
+	},
 	deleted:{
 		type: Boolean 
 	},
