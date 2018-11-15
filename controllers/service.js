@@ -5,6 +5,8 @@ var mongoose = require('mongoose');
 var ctrlNotification = require('./notification');
 const UserSubMap = mongoose.model('UserSubMap');
 const Counter = mongoose.model('Counter');
+const Thumbnail = mongoose.model('Thumbnail');
+const Image = mongoose.model('Image');
 
 //////////////////////////Service////////////////////////////////
 const Service = mongoose.model('Service');
@@ -185,13 +187,35 @@ module.exports.updateService = function(req,res){//Update
 		}
 	});
 };
+
 module.exports.deleteService = function(req,res){//Delete
-	Service.remove({_id: req.params.id}, function(err,result){
-		if(err){
-			res.json(err);
+	Service.remove({service_id: req.params.id}, function(post_err,post_result){
+		if(post_err){
+			res.json({statusCode:"F", msg:"Unable to delete the Post.", error:post_err});
 		}
 		else{
-			res.json(result);
+			Thumbnail.remove({transaction_id: req.params.id}, function(thumbnail_err,thumbnail_result){
+				if(thumbnail_err){
+					res.json({statusCode:"F", msg:"Unable to delete the Thumbnails.", error:thumbnail_err});
+				}
+				else{
+					Image.remove({transaction_id: req.params.id}, function(image_err,image_result){
+						if(image_err){
+							res.json({statusCode:"F", msg:"Unable to delete the Images.", error:image_err});
+						}
+						else{
+							res.json({
+								statusCode:"S", 
+								msg:"Successfully deleted the Post.",
+								error:null, 
+								post:post_result, 
+								thumbnail:thumbnail_result, 
+								image:image_result
+							});
+						}
+					});
+				}
+			});
 		}
 	});
 };
