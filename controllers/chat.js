@@ -48,7 +48,7 @@ module.exports.getChatInbox = function(req,res){//Fetch
 			if(chat.post_type === 'Sale'){
 				module.exports.getSellForChat(chat,function(data){
 					if(data){
-					   var obj = Object.assign({}, chat, data); obj.post_deletion = (data.active === 'X')?false:true;
+					   var obj = Object.assign({}, chat, data); //obj.post_deletion = (data.active === 'X')?false:true;
 					   myInboxs.push(obj);
 					}
 					loopCount = loopCount - (-1);
@@ -67,7 +67,7 @@ module.exports.getChatInbox = function(req,res){//Fetch
 			else if(chat.post_type === 'Buy'){
 				module.exports.getBuyForChat(chat,function(data){
 					if(data){
-					   var obj = Object.assign({}, chat, data); obj.post_deletion = (data.active === 'X')?false:true;
+					   var obj = Object.assign({}, chat, data); //obj.post_deletion = (data.active === 'X')?false:true;
 					   myInboxs.push(obj);
 					}
 					loopCount = loopCount - (-1);
@@ -86,7 +86,7 @@ module.exports.getChatInbox = function(req,res){//Fetch
 			else if(chat.post_type === 'Bid'){
 				module.exports.getBidForChat(chat,function(data){
 					if(data){
-					   var obj = Object.assign({}, chat, data); obj.post_deletion = (data.bid_valid_to >= new Date())?false:true;
+					   var obj = Object.assign({}, chat, data); //obj.post_deletion = (data.bid_valid_to >= new Date())?false:true;
 					   myInboxs.push(obj);
 					}
 					loopCount = loopCount - (-1);
@@ -105,7 +105,7 @@ module.exports.getChatInbox = function(req,res){//Fetch
 			else if(chat.post_type === 'Service'){
 				module.exports.getServiceForChat(chat,function(data){
 					if(data){
-					   var obj = Object.assign({}, chat, data); obj.post_deletion = (data.active === 'X')?false:true;
+					   var obj = Object.assign({}, chat, data); //obj.post_deletion = (data.active === 'X')?false:true;
 					   myInboxs.push(obj);
 					}
 					loopCount = loopCount - (-1);
@@ -169,7 +169,7 @@ module.exports.getSellForChat = function(req,callback){//Get the sell detail for
 			});			
 		}
 		else{
-			callback(null);
+			callback({});
 		}
 	});
 };
@@ -199,7 +199,7 @@ module.exports.getBuyForChat = function(req,callback){//Get the buy detail for t
 			});			
 		}
 		else{
-			callback(null);
+			callback({});
 		}
 	});
 };
@@ -229,7 +229,7 @@ module.exports.getBidForChat = function(req,callback){//Get the bid detail for t
 			});			
 		}
 		else{
-			callback(null);
+			callback({});
 		}
 	});
 };
@@ -259,7 +259,7 @@ module.exports.getServiceForChat = function(req,callback){//Get the service deta
 			});			
 		}
 		else{
-			callback(null);
+			callback({});
 		}
 	});
 };

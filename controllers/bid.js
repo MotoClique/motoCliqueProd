@@ -10,6 +10,7 @@ var ctrlCommon = require('./common');
 const Thumbnail = mongoose.model('Thumbnail');
 const Image = mongoose.model('Image');
 const BidBy = mongoose.model('BidBy');
+const ChatInbox = mongoose.model('ChatInbox');
 
 //////////////////////////Bid////////////////////////////////
 const Bid = mongoose.model('Bid');
@@ -382,6 +383,9 @@ module.exports.updateBid = function(req,res){//Update
 					res.json({statusCode: 'F', msg: 'Failed to update', error: err});
 				}
 				else{
+					if(doc.msg === 'D'){
+						ChatInbox.update({post_id: doc.bid_id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{ });
+					}
 					res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
 				}
 			});
@@ -398,6 +402,9 @@ module.exports.deleteBid = function(req,res){//Delete
 			res.json({statusCode:"F", msg:"Unable to delete the Post.", error:post_err});
 		}
 		else{
+			ChatInbox.update({post_id: req.params.id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{
+
+			});
 			BidBy.remove({bid_id: req.params.id}, function(bidby_err,bidby_result){
 				if(bidby_err){
 					res.json({statusCode:"F", msg:"Unable to delete the Participants.", error:bidby_err});
