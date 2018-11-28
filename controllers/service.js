@@ -7,6 +7,7 @@ const UserSubMap = mongoose.model('UserSubMap');
 const Counter = mongoose.model('Counter');
 const Thumbnail = mongoose.model('Thumbnail');
 const Image = mongoose.model('Image');
+const Fav = mongoose.model('Fav');
 
 //////////////////////////Service////////////////////////////////
 const Service = mongoose.model('Service');
@@ -180,6 +181,9 @@ module.exports.updateService = function(req,res){//Update
 		
 	Service.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{
 		if(err){
+			if(doc.active === '-'){
+				Fav.remove({bid_sell_buy_id: doc.service_id}, function(fav_err,fav_result){ });
+			}
 			res.json({statusCode: 'F', msg: 'Failed to update', error: err});
 		}
 		else{
@@ -194,6 +198,7 @@ module.exports.deleteService = function(req,res){//Delete
 			res.json({statusCode:"F", msg:"Unable to delete the Post.", error:post_err});
 		}
 		else{
+			Fav.remove({bid_sell_buy_id: req.params.id}, function(fav_err,fav_result){ });
 			Thumbnail.remove({transaction_id: req.params.id}, function(thumbnail_err,thumbnail_result){
 				if(thumbnail_err){
 					res.json({statusCode:"F", msg:"Unable to delete the Thumbnails.", error:thumbnail_err});

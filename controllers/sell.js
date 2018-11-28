@@ -8,6 +8,7 @@ const Counter = mongoose.model('Counter');
 const Image = mongoose.model('Image');
 const Thumbnail = mongoose.model('Thumbnail');
 const ChatInbox = mongoose.model('ChatInbox');
+const Fav = mongoose.model('Fav');
 
 //////////////////////////Sell////////////////////////////////
 const Sell = mongoose.model('Sell');
@@ -203,6 +204,7 @@ module.exports.updateSell = function(req,res){//Update
 		else{
 			if(doc.active === '-'){
 				ChatInbox.update({post_id: doc.sell_id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{ });
+				Fav.remove({bid_sell_buy_id: doc.sell_id}, function(fav_err,fav_result){ });
 			}
 			res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
 		}
@@ -217,6 +219,7 @@ module.exports.deleteSell = function(req,res){//Delete
 			ChatInbox.update({post_id: req.params.id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{
 
 			});
+			Fav.remove({bid_sell_buy_id: req.params.id}, function(fav_err,fav_result){ });
 			Thumbnail.remove({transaction_id: req.params.id}, function(thumbnail_err,thumbnail_result){
 				if(thumbnail_err){
 					res.json({statusCode:"F", msg:"Unable to delete the Thumbnails.", error:thumbnail_err});

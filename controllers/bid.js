@@ -11,6 +11,7 @@ const Thumbnail = mongoose.model('Thumbnail');
 const Image = mongoose.model('Image');
 const BidBy = mongoose.model('BidBy');
 const ChatInbox = mongoose.model('ChatInbox');
+const Fav = mongoose.model('Fav');
 
 //////////////////////////Bid////////////////////////////////
 const Bid = mongoose.model('Bid');
@@ -385,6 +386,7 @@ module.exports.updateBid = function(req,res){//Update
 				else{
 					if(doc.msg === 'D'){
 						ChatInbox.update({post_id: doc.bid_id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{ });
+						Fav.remove({bid_sell_buy_id: doc.bid_id}, function(fav_err,fav_result){ });
 					}
 					res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
 				}
@@ -405,6 +407,7 @@ module.exports.deleteBid = function(req,res){//Delete
 			ChatInbox.update({post_id: req.params.id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{
 
 			});
+			Fav.remove({bid_sell_buy_id: req.params.id}, function(fav_err,fav_result){ });
 			BidBy.remove({bid_id: req.params.id}, function(bidby_err,bidby_result){
 				if(bidby_err){
 					res.json({statusCode:"F", msg:"Unable to delete the Participants.", error:bidby_err});
