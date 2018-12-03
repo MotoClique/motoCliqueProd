@@ -92,7 +92,7 @@ app.use('/api',route);
   
   var mongodb = require('mongodb');
   
-  mongoose.connect(mongoURL).then(
+  mongoose.connect(mongoURL,{user:databaseUser, pass:databasePassword}).then(
   (res) => { console.log(res); },
   (err) => { console.log(err); }
 );
