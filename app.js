@@ -86,7 +86,7 @@ app.use('/api',route);
 
 
 // MongoDB Connection
-  var prdDBUrl = "mongodb://"+databaseUser+":"+databasePassword+"@localhost/"+databaseName; //"mongodb://motoadmin:Moto1234@ds217002.mlab.com:17002/motodb";
+  var prdDBUrl = "mongodb:///opt/bitnami/mongodb/tmp/mongodb-27017.sock/"+databaseName; //"mongodb://motoadmin:Moto1234@ds217002.mlab.com:17002/motodb";
   var testDBUrl = "mongodb://meanadmin:Moto1234@ds235302.mlab.com:35302/meandb";
   var mongoURL = (prodEnvFlag)?prdDBUrl:testDBUrl;
   
