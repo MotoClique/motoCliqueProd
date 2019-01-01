@@ -104,6 +104,18 @@ var BuyRequestSchema = new mongoose.Schema({
 	note:{
 		type: String 
 	},
+	insurance_valid_till:{
+		type: String 
+	},
+	tyre_cond:{
+		type: String 
+	},
+	interior_cond:{
+		type: String 
+	},
+	exterior_cond:{
+		type: String 
+	},
 	deleted:{
 		type: Boolean 
 	},

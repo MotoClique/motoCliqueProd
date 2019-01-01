@@ -16,6 +16,9 @@ var FavSchema = new mongoose.Schema({
 	deleted:{
 		type: Boolean 
 	},
+	post_createdAt:{
+		type: Date 
+	},
 	createdBy:{
 		type: String 
 	},
