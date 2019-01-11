@@ -137,6 +137,9 @@ var BidSchema = new mongoose.Schema({
 	exterior_cond:{
 		type: String 
 	},
+	mobile:{
+		type: String 
+	},
 	deleted:{
 		type: Boolean 
 	},
