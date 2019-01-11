@@ -16,6 +16,7 @@ const Loc = mongoose.model('Loc');
 const Parameter = mongoose.model('Parameter');
 const UserSubMap = mongoose.model('UserSubMap');
 const Fav = mongoose.model('Fav');
+const UserAddress = mongoose.model('UserAddress');
 //const BidBy = mongoose.model('BidBy');
 
 module.exports.search = function(req,res){//Fetch
@@ -962,147 +963,153 @@ module.exports.getTransactions = function(req,res){//Fetch
 			var currentDateObj = new Date();
 			
 			//Check if subscription is still valid
-			if(subToDateObj > currentDateObj){			
-				var queries = req.body.queries;
-				var query = {};
-				for (var key in queries) {
-					if (queries.hasOwnProperty(key)) {
-						var inArr = [];
-						if(queries[key])
-							inArr.push(queries[key]);
-						query[key] = {$in: inArr};
-					}
-				}        
-				if(req.body.city){ query.city = {$eq: req.body.city}; }
-				if(req.body.location){ query.location = {$eq: req.body.location}; }
-				query.deleted = {$ne: true};
-				query.active = {$eq: "X"};
-				var type = req.body.type;
-				var results = [];
-				
-				//Fetch Config parameters
-				Parameter.find({parameter:{"$in":["extra_life_time","to_ist"]}},function(params_err, params_result){
-					if(params_result){
-						params_result.forEach(function(val,indx,arr){
-							that.params[val.parameter] = val.value;
-						});
-					}
-					
-					ctrlChat.countNewChat(req, function(chat_res){
-					var new_chat = 0;
-					if(chat_res && chat_res.statusCode === 'S')
-						new_chat = chat_res.count;
-					module.exports.getUserFilters(req,query,results,function(status,rt_query){
-						if(status)
-							query = rt_query;						
+			if(subToDateObj > currentDateObj){
+				UserAddress.find({user_id: {"$eq":req.payload.user_id}},function(err_address, result_address){
+					if(result_address && result_address.length>0){			
+						var queries = req.body.queries;
+						var query = {};
+						for (var key in queries) {
+							if (queries.hasOwnProperty(key)) {
+								var inArr = [];
+								if(queries[key])
+									inArr.push(queries[key]);
+								query[key] = {$in: inArr};
+							}
+						}        
+						if(req.body.city){ query.city = {$eq: req.body.city}; }
+						if(req.body.location){ query.location = {$eq: req.body.location}; }
+						query.deleted = {$ne: true};
+						query.active = {$eq: "X"};
+						var type = req.body.type;
+						var results = [];
 						
-						if(type === "Sale"){
-							module.exports.fetchSell(req,query,results,function(rt_status,rt_sell,rt_params,rt_err){
-								if(rt_status){
-									results = rt_sell;
-									var search_complete = false;
-									if(that.excess_limit.sale > 0)
-										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:rt_params, buy:{}, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
-								}
-								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
-								}
-							},that);
-						}
-						else if(type === "Buy"){
-							module.exports.fetchBuy(req,query,results,function(rt_status,rt_buy,rt_params,rt_err){
-								if(rt_status){
-									results = rt_buy;
-									var search_complete = false;
-									if(that.excess_limit.buy > 0)
-										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:rt_params, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
-								}
-								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
-								}
-							},that);	
-						}
-						else if(type === "Bid"){
-							module.exports.fetchBid(req,query,results,function(rt_status,rt_bid,rt_params,rt_err){
-								if(rt_status){
-									results = rt_bid;
-									var search_complete = false;
-									if(that.excess_limit.bid > 0)
-										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
-								}
-								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
-								}
-							},that);	
-						}
-						else if(type === "Service"){
-							module.exports.fetchService(req,query,results,function(rt_status,rt_service,rt_params,rt_err){
-								if(rt_status){
-									results = rt_service;
-									var search_complete = false;
-									if(that.excess_limit.service > 0)
-										search_complete = true;
-									res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:{}, service:rt_params, completed:search_complete, chatCount:new_chat});
-								}
-								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
-								}
-							},that);	
-						}
-						else{//Fetch from all post table
-							module.exports.fetchBuy(req,query,results,function(rt_buy_status,rt_buy,rt_buy_params,rt_buy_err){
-								if(rt_buy_status){
-									results = rt_buy;									
-								}
-								else{
-									res.status(401).json({statusCode:"F", results:[], error:rt_buy_err, chatCount:new_chat});
-								}
-								module.exports.fetchBid(req,query,results,function(rt_bid_status,rt_bid,rt_bid_params,rt_bid_err){
-									if(rt_bid_status){
-										results = rt_bid;
-									}
-									else{
-										res.status(401).json({statusCode:"F", results:[], error:rt_bid_err, chatCount:new_chat});
-									}
-									module.exports.fetchService(req,query,results,function(rt_service_status,rt_service,rt_service_params,rt_service_err){
-										if(rt_service_status){
-											results = rt_service;
+						//Fetch Config parameters
+						Parameter.find({parameter:{"$in":["extra_life_time","to_ist"]}},function(params_err, params_result){
+							if(params_result){
+								params_result.forEach(function(val,indx,arr){
+									that.params[val.parameter] = val.value;
+								});
+							}
+							
+							ctrlChat.countNewChat(req, function(chat_res){
+							var new_chat = 0;
+							if(chat_res && chat_res.statusCode === 'S')
+								new_chat = chat_res.count;
+							module.exports.getUserFilters(req,query,results,function(status,rt_query){
+								if(status)
+									query = rt_query;						
+								
+								if(type === "Sale"){
+									module.exports.fetchSell(req,query,results,function(rt_status,rt_sell,rt_params,rt_err){
+										if(rt_status){
+											results = rt_sell;
+											var search_complete = false;
+											if(that.excess_limit.sale > 0)
+												search_complete = true;
+											res.json({statusCode:"S", results: results, error: null, sale:rt_params, buy:{}, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
 										}
 										else{
-											res.status(401).json({statusCode:"F", results:[], error:rt_service_err, chatCount:new_chat});
+											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
 										}
-										module.exports.fetchSell(req,query,results,function(rt_sell_status,rt_sell,rt_sell_params,rt_sell_err){
-											if(rt_sell_status){
-												results = rt_sell;
-												var search_complete = false;
-												if(that.excess_limit.sale > 0 && that.excess_limit.buy > 0 && that.excess_limit.bid > 0 && that.excess_limit.service > 0)
-													search_complete = true;
-												res.json({
-													statusCode:"S", 
-													results: results, 
-													error: null, 
-													sale:rt_sell_params, 
-													buy:rt_buy_params, 
-													bid:rt_bid_params, 
-													service:rt_service_params,
-													completed: search_complete, chatCount:new_chat
-												});
+									},that);
+								}
+								else if(type === "Buy"){
+									module.exports.fetchBuy(req,query,results,function(rt_status,rt_buy,rt_params,rt_err){
+										if(rt_status){
+											results = rt_buy;
+											var search_complete = false;
+											if(that.excess_limit.buy > 0)
+												search_complete = true;
+											res.json({statusCode:"S", results: results, error: null, sale:{}, buy:rt_params, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
+										}
+										else{
+											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
+										}
+									},that);	
+								}
+								else if(type === "Bid"){
+									module.exports.fetchBid(req,query,results,function(rt_status,rt_bid,rt_params,rt_err){
+										if(rt_status){
+											results = rt_bid;
+											var search_complete = false;
+											if(that.excess_limit.bid > 0)
+												search_complete = true;
+											res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
+										}
+										else{
+											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
+										}
+									},that);	
+								}
+								else if(type === "Service"){
+									module.exports.fetchService(req,query,results,function(rt_status,rt_service,rt_params,rt_err){
+										if(rt_status){
+											results = rt_service;
+											var search_complete = false;
+											if(that.excess_limit.service > 0)
+												search_complete = true;
+											res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:{}, service:rt_params, completed:search_complete, chatCount:new_chat});
+										}
+										else{
+											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
+										}
+									},that);	
+								}
+								else{//Fetch from all post table
+									module.exports.fetchBuy(req,query,results,function(rt_buy_status,rt_buy,rt_buy_params,rt_buy_err){
+										if(rt_buy_status){
+											results = rt_buy;									
+										}
+										else{
+											res.status(401).json({statusCode:"F", results:[], error:rt_buy_err, chatCount:new_chat});
+										}
+										module.exports.fetchBid(req,query,results,function(rt_bid_status,rt_bid,rt_bid_params,rt_bid_err){
+											if(rt_bid_status){
+												results = rt_bid;
 											}
 											else{
-												res.status(401).json({statusCode:"F", results:[], error:rt_sell_err, chatCount:new_chat});
+												res.status(401).json({statusCode:"F", results:[], error:rt_bid_err, chatCount:new_chat});
 											}
-										},that);	
+											module.exports.fetchService(req,query,results,function(rt_service_status,rt_service,rt_service_params,rt_service_err){
+												if(rt_service_status){
+													results = rt_service;
+												}
+												else{
+													res.status(401).json({statusCode:"F", results:[], error:rt_service_err, chatCount:new_chat});
+												}
+												module.exports.fetchSell(req,query,results,function(rt_sell_status,rt_sell,rt_sell_params,rt_sell_err){
+													if(rt_sell_status){
+														results = rt_sell;
+														var search_complete = false;
+														if(that.excess_limit.sale > 0 && that.excess_limit.buy > 0 && that.excess_limit.bid > 0 && that.excess_limit.service > 0)
+															search_complete = true;
+														res.json({
+															statusCode:"S", 
+															results: results, 
+															error: null, 
+															sale:rt_sell_params, 
+															buy:rt_buy_params, 
+															bid:rt_bid_params, 
+															service:rt_service_params,
+															completed: search_complete, chatCount:new_chat
+														});
+													}
+													else{
+														res.status(401).json({statusCode:"F", results:[], error:rt_sell_err, chatCount:new_chat});
+													}
+												},that);	
+											},that);
+										},that);
 									},that);
-								},that);
+								}
 							},that);
-						}
-					},that);
-					});
+							});
+						});
+					}
+					else{//No Address Maintained
+						res.json({statusCode:"F", msg:"Your do not have any address maintained! Please maintain at least one address.", noAddress:true, results: [], error: null});
+					}
 				});
-			
 			}
 			else{//Subscription Expired
 				res.json({statusCode:"F", msg:"Your subscription has expired!", noSubscription:true, results: [], error: null});
