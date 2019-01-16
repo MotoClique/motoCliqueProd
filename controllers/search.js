@@ -966,16 +966,9 @@ module.exports.getTransactions = function(req,res){//Fetch
 			if(subToDateObj > currentDateObj){
 				UserAddress.find({user_id: {"$eq":req.payload.user_id}},function(err_address, result_address){
 					if(result_address && result_address.length>0){			
-						var queries = req.body.queries;
+						//var queries = req.body.queries;
 						var query = {};
-						for (var key in queries) {
-							if (queries.hasOwnProperty(key)) {
-								var inArr = [];
-								if(queries[key])
-									inArr.push(queries[key]);
-								query[key] = {$in: inArr};
-							}
-						}        
+						        
 						if(req.body.city){ query.city = {$eq: req.body.city}; }
 						if(req.body.location){ query.location = {$eq: req.body.location}; }
 						query.deleted = {$ne: true};
@@ -1228,6 +1221,39 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 	var buy_query = JSON.parse(JSON.stringify(query));
 	delete buy_query.current_bid_amount;
 	delete buy_query.start_from_amount;
+	var queries = req.body.queries
+	if(queries.product_type_name == queries.brand_name 
+		&& queries.product_type_name == queries.model
+			&& queries.product_type_name == queries.variant){
+		var queryClone = JSON.parse(JSON.stringify(buy_query));
+		var andQuery = {'$and':[]};
+		var orQuery = {'$or':[]};
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(buy_query[key])) {
+				if(queries[key]){
+					var obj = {}; obj[key] = {'$regex': queries[key], '$options': 'i'};
+					orQuery['$or'].push(obj);
+				}
+			}
+		}
+		
+		andQuery['$and'].push(queryClone);
+		buy_query = {'$and':[]};
+		buy_query['$and'].push(andQuery);
+		if(orQuery['$or'] && orQuery['$or'].length>0)
+			buy_query['$and'].push(orQuery);
+	}
+	else{
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(buy_query[key])) {
+				var inArr = [];
+				if(queries[key])
+					inArr.push(queries[key]);
+				buy_query[key] = {$in: inArr};
+			}
+		}
+	}
+	
 	Buy.count(buy_query,function(err_buy_count,res_buy_count){
 		if(err_buy_count){
 			callback(false,results,{},err_buy_count);
@@ -1304,6 +1330,40 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 		extr_dy.setDate(newDate);
 	}
 	bid_query.bid_valid_to = {"$gte": extr_dy};
+	
+	var queries = req.body.queries
+	if(queries.product_type_name == queries.brand_name 
+		&& queries.product_type_name == queries.model
+			&& queries.product_type_name == queries.variant){
+		var queryClone = JSON.parse(JSON.stringify(bid_query));
+		var andQuery = {'$and':[]};
+		var orQuery = {'$or':[]};
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(bid_query[key])) {
+				if(queries[key]){
+					var obj = {}; obj[key] = {'$regex': queries[key], '$options': 'i'};
+					orQuery['$or'].push(obj);
+				}
+			}
+		}
+		
+		andQuery['$and'].push(queryClone);
+		bid_query = {'$and':[]};
+		bid_query['$and'].push(andQuery);
+		if(orQuery['$or'] && orQuery['$or'].length>0)
+			bid_query['$and'].push(orQuery);
+	}
+	else{
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(bid_query[key])) {
+				var inArr = [];
+				if(queries[key])
+					inArr.push(queries[key]);
+				bid_query[key] = {$in: inArr};
+			}
+		}
+	}
+	
 	//console.log(bid_query);
 	Bid.count(bid_query,function(err_bid_count,res_bid_count){
 		if(err_bid_count){
@@ -1437,6 +1497,39 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 	var service_query = JSON.parse(JSON.stringify(query));
 	delete service_query.current_bid_amount;
 	delete service_query.net_price;
+	var queries = req.body.queries
+	if(queries.product_type_name == queries.brand_name 
+		&& queries.product_type_name == queries.model
+			&& queries.product_type_name == queries.variant){
+		var queryClone = JSON.parse(JSON.stringify(service_query));
+		var andQuery = {'$and':[]};
+		var orQuery = {'$or':[]};
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(service_query[key])) {
+				if(queries[key]){
+					var obj = {}; obj[key] = {'$regex': queries[key], '$options': 'i'};
+					orQuery['$or'].push(obj);
+				}
+			}
+		}
+		
+		andQuery['$and'].push(queryClone);
+		service_query = {'$and':[]};
+		service_query['$and'].push(andQuery);
+		if(orQuery['$or'] && orQuery['$or'].length>0)
+			service_query['$and'].push(orQuery);
+	}
+	else{
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(service_query[key])) {
+				var inArr = [];
+				if(queries[key])
+					inArr.push(queries[key]);
+				service_query[key] = {$in: inArr};
+			}
+		}
+	}
+	
 	Service.count(service_query,function(err_service_count,res_service_count){
 		if(err_service_count){
 			callback(false,results,{},err_service_count);
@@ -1511,6 +1604,39 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 	var sell_query = JSON.parse(JSON.stringify(query));
 	delete sell_query.current_bid_amount;
 	delete sell_query.start_from_amount;
+	var queries = req.body.queries
+	if(queries.product_type_name == queries.brand_name 
+		&& queries.product_type_name == queries.model
+			&& queries.product_type_name == queries.variant){
+		var queryClone = JSON.parse(JSON.stringify(sell_query));
+		var andQuery = {'$and':[]};
+		var orQuery = {'$or':[]};
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(sell_query[key])) {
+				if(queries[key]){
+					var obj = {}; obj[key] = {'$regex': queries[key], '$options': 'i'};
+					orQuery['$or'].push(obj);
+				}
+			}
+		}
+		
+		andQuery['$and'].push(queryClone);
+		sell_query = {'$and':[]};
+		sell_query['$and'].push(andQuery);
+		if(orQuery['$or'] && orQuery['$or'].length>0)
+			sell_query['$and'].push(orQuery);
+	}
+	else{
+		for (var key in queries) {
+			if (queries.hasOwnProperty(key) && !(sell_query[key])) {
+				var inArr = [];
+				if(queries[key])
+					inArr.push(queries[key]);
+				sell_query[key] = {$in: inArr};
+			}
+		}
+	}
+	
 	Sell.count(sell_query,function(err_sell_count,res_sell_count){
 		if(err_sell_count){
 			callback(false,results,{},err_sell_count);
