@@ -465,7 +465,8 @@ module.exports.sendAppPushNotification = function(doc){//Send push notification 
 									"to": device_reg_id,
 									"data": {
 										"title": "MotoClique", //doc.from_user_name,
-										"message": messageCount+" New Message", //doc.text,
+										"message": doc.from_user_name+": "+doc.text,
+										"notId": parseInt(messageCount),
 										'content-available': '1',
 										"badge": messageCount
 									}
