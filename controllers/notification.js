@@ -504,6 +504,7 @@ module.exports.sendChatPushNotification = function(doc){//Send push notification
 					"data": {
 						"title": "New Chat", //doc.from_user_name,
 						"message": doc.from_user_name+": "+doc.text,
+						"style": "inbox",
 						'content-available': '1',
 						"badge": messageCount
 					}
