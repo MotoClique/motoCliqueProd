@@ -440,9 +440,9 @@ module.exports.sendNotification = function(doc){//Send
 };
 
 
-module.exports.sendAppPushNotification = function(doc){//Send push notification to app
+module.exports.sendAppPushNotification = function(msgBody,user_id){//Send push notification to app
 	//Get User Device reg id
-	DeviceReg.find({user_id: doc.to_user},function(err_reg, result_reg){
+	DeviceReg.find({user_id: user_id},function(err_reg, result_reg){
 		if(result_reg && result_reg.length>0){
 			var device_reg_id = result_reg[0].device_reg_id;
 			//Get API Keys
@@ -451,39 +451,70 @@ module.exports.sendAppPushNotification = function(doc){//Send push notification 
 				if(result_param){
 					for(var p =0; p<result_param.length; p++){
 						params[result_param[p].parameter] = result_param[p].value;
-					}			
+					}
 					
-					//module.exports.sendAppBadgeCount({device_reg_id:device_reg_id, fcm_server_logical_key:params['fcm_server_logical_key']});
-					module.exports.getNewChatCount(doc.to_user,function(mcount){
-						var messageCount = 1;
-						if(mcount){
-							messageCount = mcount;
+					msgBody.to = device_reg_id;
+					request.post({
+							url:'https://fcm.googleapis.com/fcm/send', 
+							body: JSON.stringify(msgBody),
+							headers: {
+								'content-type': 'application/json',
+								'Authorization': 'Key='+params['fcm_server_logical_key']
+							}
+						},
+						function(err_push,httpResponse,body){
+							console.log(err_push);
 						}
-						request.post({
-								url:'https://fcm.googleapis.com/fcm/send', 
-								body: JSON.stringify({
-									"to": device_reg_id,
-									"data": {
-										"title": "MotoClique", //doc.from_user_name,
-										"message": doc.from_user_name+": "+doc.text,
-										"notId": parseInt(messageCount),
-										'content-available': '1',
-										"badge": messageCount
-									}
-								}),
-								headers: {
-									'content-type': 'application/json',
-									'Authorization': 'Key='+params['fcm_server_logical_key']
-								}
-							},
-							function(err_push,httpResponse,body){
-								console.log(err_push);
-							});
-					});
+					);
 				}
 			});
 		}
 	});
+};
+
+
+module.exports.sendChatPushNotification = function(doc){//Send push notification to app for chat
+	
+	module.exports.getNewChatCount(doc.to_user,function(mcount){
+		var messageCount = 1;
+		if(mcount){
+			messageCount = mcount;
+		}
+		module.exports.sendAppPushNotification(
+				{
+					"to": '-',
+					"data": {
+						"title": "New Chat", //doc.from_user_name,
+						"message": doc.from_user_name+": "+doc.text,
+						'content-available': '1',
+						"badge": messageCount
+					}
+				},
+				doc.to_user
+		);
+	});
+};
+
+module.exports.sendAlertPushNotification = function(doc){//Send push notification to app for post alert
+					
+	var not_id = 0;
+	var alert_title = '';
+	if(doc.sell_id) { not_id = parseInt('1'+((doc.sell_id).split('_'))[1]); alert_title = 'Sale'}
+	else if(doc.buy_req_id) { not_id = parseInt('1'+((doc.buy_req_id).split('_'))[1]); alert_title = 'Buy Request'}
+	else if(doc.bid_id) { not_id = parseInt('1'+((doc.bid_id).split('_'))[1]); alert_title = 'Bid'}
+	else if(doc.service_id) { not_id = parseInt('1'+((doc.service_id).split('_'))[1]); alert_title = 'Service'}
+	module.exports.sendAppPushNotification(
+				{
+					"to": "-",
+					"data": {
+						"title": alert_title,
+						"message": doc.product_type_name +' '+ doc.brand_name +' '+ doc.model +' '+ doc.variant,
+						"notId": not_id,
+						'content-available': '1'
+					}
+				},
+				doc.user_id
+	);
 };
 
 
