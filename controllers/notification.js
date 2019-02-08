@@ -321,13 +321,13 @@ module.exports.sendNotification = function(doc){//Send
 								console.log(err_alert);
 							}
 							else{
-								for(var i = 0; i<result_alert.length; i++){
+								result_alert.forEach(function(entry_alert,i,arr){
 										var query_userSub = {};
-										query_userSub.user_id = {"$eq": result_alert[i].user_id};
+										query_userSub.user_id = {"$eq": entry_alert.user_id};
 										query_userSub.active = {"$eq": "X"};	
 										query_userSub.deleted = {"$ne": true};	
 										//Send SMS
-										if(result_alert[i].sms){
+										if(entry_alert.sms){
 												UserSubMap.find(query_userSub,function(err_userSub, result_userSub){
 													if(err_userSub){
 														console.log(err_userSub);
@@ -364,7 +364,7 @@ module.exports.sendNotification = function(doc){//Send
 												});
 										}
 										//Send EMAIL
-										if(result_alert[i].email){
+										if(entry_alert.email){
 												UserSubMap.find(query_userSub,function(err_userSub, result_userSub){
 													console.log(result_userSub);
 													if(err_userSub){
@@ -416,6 +416,25 @@ module.exports.sendNotification = function(doc){//Send
 													}
 												});
 										}
+										//Send App Alert
+										if(entry_alert.app){
+												UserSubMap.find(query_userSub,function(err_userSub, result_userSub){
+													console.log(result_userSub);
+													if(err_userSub){
+														console.log(err_userSub);
+													}
+													else{
+														var pushNot_sent = false;
+														for(var j = 0; j<result_userSub.length; j++){												
+															if(result_userSub[j].notification_app === 'X' && !pushNot_sent){
+																doc.to_user = entry_alert.user_id;
+																module.exports.sendAlertPushNotification(doc);
+																pushNot_sent = true;
+															}
+														}
+													}
+												});
+										}
 										
 										
 										
@@ -426,8 +445,7 @@ module.exports.sendNotification = function(doc){//Send
 										
 										
 										
-										
-									}
+								});
 							}
 				});
 	
@@ -513,7 +531,7 @@ module.exports.sendAlertPushNotification = function(doc){//Send push notificatio
 						'content-available': '1'
 					}
 				},
-				doc.user_id
+				doc.to_user
 	);
 };
 
