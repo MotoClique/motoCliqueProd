@@ -143,19 +143,21 @@ module.exports.login = function(req, res) {
 		});
 	}
 	else{
-	      module.exports.registerDevice({user_id:user.user_id, device_reg_id:req.body.device_reg_id},function(state,return_msg,registered){
+	      module.exports.registerDevice({user_id:user.user_id, device_reg_id:req.body.device_reg_id},function(state,return_msg,registered,device_reg_id){
 			if(state){
 			      res.status(200);
 			      res.json({
 					"statusCode": "S",
-					"token" : token
+					"token" : token,
+					"device_reg_id": (device_reg_id)?device_reg_id:''
 			      });
 			}
 			else{
 				res.json({
 					"statusCode": "F",
 					"msg" : return_msg,
-					"registered": (registered === true)?true:false
+					"registered": (registered === true)?true:false,
+					"device_reg_id": (device_reg_id)?device_reg_id:''
 				});
 			}
 		});
@@ -258,18 +260,20 @@ module.exports.loginByOtp = function(req,res){//get mobile & Otp combination
 							});
 						}
 						else{
-							module.exports.registerDevice({user_id:user.user_id, device_reg_id:req.body.device_reg_id},function(state,return_msg,registered){
+							module.exports.registerDevice({user_id:user.user_id, device_reg_id:req.body.device_reg_id},function(state,return_msg,registered,device_reg_id){
 								if(state){
 									res.json({
 									"statusCode":"S","msg":"Successfully","results":otps,
-									"token" : token
+									"token" : token,
+									"device_reg_id": (device_reg_id)?device_reg_id:''
 									});
 								}
 								else{
 									res.json({
 										"statusCode":"F",
 										"msg":return_msg,
-										"registered": (registered === true)?true:false
+										"registered": (registered === true)?true:false,
+										"device_reg_id": (device_reg_id)?device_reg_id:''
 									});	      
 								}
 							});
@@ -370,7 +374,27 @@ module.exports.registerDevice = function(doc,callback){//Register device to user
 				callback(false,"Unable to identify the user.");
 			}
 			else if(doc.device_reg_id === 'empty'){
-				callback(true,"No Registration required.");
+				doc.device_reg_id = Buffer.from(doc.user_id+((new Date()).getTime()).toString()).toString('base64');
+				if(result_reg && result_reg.length>0){
+					if(result_reg[0].device_reg_id === doc.device_reg_id)
+						callback(true,"No Registration required.",false,doc.device_reg_id);
+					else
+						callback(false,"User is already logged into another device.",true,doc.device_reg_id);
+				}
+				else{
+					var device = new DeviceReg();
+					device.user_id = doc.user_id;
+					device.device_reg_id = doc.device_reg_id;
+
+					device.save(function(save_err,save_result) {
+						if(save_err){
+							callback(false,"Unable to register.",false,doc.device_reg_id);
+						}
+						else{
+							callback(true,"Successfully registered.",false,doc.device_reg_id);
+						}
+					});
+				}
 			}
 			else if(result_reg && result_reg.length>0){
 				if(result_reg[0].device_reg_id === doc.device_reg_id)
@@ -407,7 +431,7 @@ module.exports.reRegisterDevice = function(doc,callback){//ReRegister another de
 				callback(false,"Unable to remove the device registration for the user.");
 			}
 			else if(doc.device_reg_id === 'empty'){
-				callback(true,"No UnRegistration required.");
+				callback(false,"'Empty' device registration id passed.");
 			}
 			else{
 				//Register the new Device
