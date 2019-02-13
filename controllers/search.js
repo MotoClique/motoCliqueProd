@@ -1237,8 +1237,15 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 			}
 		}
 		
-		andQuery['$and'].push(queryClone);
 		buy_query = {'$and':[]};
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			buy_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			buy_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		andQuery['$and'].push(queryClone);
+		
 		buy_query['$and'].push(andQuery);
 		if(orQuery['$or'] && orQuery['$or'].length>0)
 			buy_query['$and'].push(orQuery);
@@ -1252,6 +1259,16 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 				buy_query[key] = {$in: inArr};
 			}
 		}
+		
+		var queryClone = JSON.parse(JSON.stringify(buy_query));
+		buy_query = {'$and':[]};		
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			buy_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			buy_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		buy_query['$and'].push(queryClone);
 	}
 	
 	Buy.count(buy_query,function(err_buy_count,res_buy_count){
@@ -1347,8 +1364,15 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 			}
 		}
 		
-		andQuery['$and'].push(queryClone);
 		bid_query = {'$and':[]};
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			bid_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			bid_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		andQuery['$and'].push(queryClone);
+		
 		bid_query['$and'].push(andQuery);
 		if(orQuery['$or'] && orQuery['$or'].length>0)
 			bid_query['$and'].push(orQuery);
@@ -1362,6 +1386,16 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 				bid_query[key] = {$in: inArr};
 			}
 		}
+		
+		var queryClone = JSON.parse(JSON.stringify(bid_query));
+		bid_query = {'$and':[]};		
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			bid_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			bid_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		bid_query['$and'].push(queryClone);
 	}
 	
 	//console.log(bid_query);
@@ -1513,8 +1547,15 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 			}
 		}
 		
-		andQuery['$and'].push(queryClone);
 		service_query = {'$and':[]};
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			service_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			service_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		andQuery['$and'].push(queryClone);
+		
 		service_query['$and'].push(andQuery);
 		if(orQuery['$or'] && orQuery['$or'].length>0)
 			service_query['$and'].push(orQuery);
@@ -1528,6 +1569,16 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 				service_query[key] = {$in: inArr};
 			}
 		}
+		
+		var queryClone = JSON.parse(JSON.stringify(service_query));
+		service_query = {'$and':[]};		
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			service_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			service_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		service_query['$and'].push(queryClone);
 	}
 	
 	Service.count(service_query,function(err_service_count,res_service_count){
@@ -1620,8 +1671,15 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 			}
 		}
 		
-		andQuery['$and'].push(queryClone);
 		sell_query = {'$and':[]};
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			sell_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			sell_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		andQuery['$and'].push(queryClone);
+		
 		sell_query['$and'].push(andQuery);
 		if(orQuery['$or'] && orQuery['$or'].length>0)
 			sell_query['$and'].push(orQuery);
@@ -1635,6 +1693,16 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 				sell_query[key] = {$in: inArr};
 			}
 		}
+		
+		var queryClone = JSON.parse(JSON.stringify(sell_query));
+		sell_query = {'$and':[]};		
+		if(req.body.location === req.body.city){
+			delete queryClone.location;
+			delete queryClone.city;
+			sell_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
+			sell_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
+		}
+		sell_query['$and'].push(queryClone);
 	}
 	
 	Sell.count(sell_query,function(err_sell_count,res_sell_count){
