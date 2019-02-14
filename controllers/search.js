@@ -1241,6 +1241,7 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			buy_query['$or'] = [];
 			buy_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			buy_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
@@ -1265,6 +1266,7 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			buy_query['$or'] = [];
 			buy_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			buy_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
@@ -1368,6 +1370,7 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			bid_query['$or'] = [];
 			bid_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			bid_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
@@ -1392,6 +1395,7 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			bid_query['$or'] = [];
 			bid_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			bid_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
@@ -1551,6 +1555,7 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			service_query['$or'] = [];
 			service_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			service_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
@@ -1575,6 +1580,7 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			service_query['$or'] = [];
 			service_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			service_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
@@ -1675,6 +1681,7 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			sell_query['$or'] = [];
 			sell_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			sell_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
@@ -1699,6 +1706,7 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 		if(req.body.location === req.body.city){
 			delete queryClone.location;
 			delete queryClone.city;
+			sell_query['$or'] = [];
 			sell_query['$or'].push({'location': {'$regex': req.body.location, '$options': 'i'}});
 			sell_query['$or'].push({'city': {'$regex': req.body.city, '$options': 'i'}});
 		}
