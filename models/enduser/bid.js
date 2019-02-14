@@ -140,6 +140,15 @@ var BidSchema = new mongoose.Schema({
 	mobile:{
 		type: String 
 	},
+	place_of_reg:{
+		type: String 
+	},
+	accident_history:{
+		type: String 
+	},
+	insurance_status:{
+		type: String 
+	},
 	deleted:{
 		type: Boolean 
 	},
