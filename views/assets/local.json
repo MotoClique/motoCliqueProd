@@ -30,6 +30,7 @@
 	 "fieldTypes": [
 		 {"name": ""},
 		 {"name": "Input"},
+     {"name": "ValueHelpInput"},
 		 {"name": "Select"},
 		 {"name": "Checkbox"},
 		 {"name": "TextArea"},
@@ -84,7 +85,10 @@
 		 {"name": "insurance_valid_till"},
 		 {"name": "tyre_cond"},
 		 {"name": "interior_cond"},
-		 {"name": "exterior_cond"}
+		 {"name": "exterior_cond"},
+     {"name": "place_of_reg"},
+    {"name": "accident_history"},
+    {"name": "insurance_status"}
 	 ],
 	 
 	 "serviceName": [
@@ -229,6 +233,15 @@
 				 {"key": "500000", "value":"5 Lac"},
 				 {"key": "1000000", "value":"10 Lac"}
 			   ],
+  "accident_history":[
+		 {"name":"None"},
+		 {"name":"Minor"},
+		 {"name":"Major"}
+	 ],
+  "insurance_status":[
+		 {"name":"Running"},
+		 {"name":"Expired"}
+	 ],
   "dbTables": [
 		{"name": "User"},
 		{"name": "UserSubMap"},
@@ -251,6 +264,7 @@
 		{"name": "PrdImage"},
 		{"name": "PrdThumbnail"},
 		{"name": "Loc"},
+    {"name": "PlaceOfReg"},
 		{"name": "Parameter"},
 		{"name": "UserAddress"},
 		{"name": "UserSubMap"},
