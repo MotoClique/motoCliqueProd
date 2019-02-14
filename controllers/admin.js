@@ -2259,7 +2259,80 @@ module.exports.deleteParameter = function(req,res){//Delete
 };
 
 
+//////////////////////////Place Of Registration Table////////////////////////////////
+const PlaceOfReg = mongoose.model('PlaceOfReg');
 
+module.exports.getPlaceOfReg = function(req,res){//Fetch
+	var query = {};
+	if(req.query.reg_number){
+		query.reg_number = {"$eq":req.query.reg_number};
+	}
+	if(req.query.state){
+		query.state = {"$eq":req.query.state};
+	}
+	if(req.query.deleted){
+		query.deleted = {"$eq":req.query.deleted};
+	}
+	else{
+		query.deleted = {"$ne": true};
+	}
+	PlaceOfReg.find(query,function(err, result){
+		res.json({results: result, error: err});
+	});
+};
+module.exports.addPlaceOfReg = function(req,res){//Add New
+	var d = new Date();
+	var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+	let newPlaceOfReg = new PlaceOfReg({
+		reg_number: req.body.reg_number,
+		place: req.body.place,
+		state: req.body.state,
+		deleted: false,
+		createdBy: req.payload.user_id,
+		createdAt: d,
+		changedBy: req.payload.user_id,
+		changedAt: d
+	});
+			
+	newPlaceOfReg.save((err, result)=>{
+		if(err){
+			res.json({statusCode: 'F', msg: 'Failed to add', error: err});
+		}
+		else{
+			res.json({statusCode: 'S', msg: 'Entry added', results: result});
+		}
+	});
+};
+
+module.exports.updatePlaceOfReg = function(req,res){//Update
+	var d = new Date();
+	var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+	let updatePlaceOfReg = req.body;
+	delete updatePlaceOfReg.createdAt;
+	delete updatePlaceOfReg.createdBy;
+	updatePlaceOfReg.changedAt = d;
+	updatePlaceOfReg.changedBy = req.payload.user_id;
+	
+	PlaceOfReg.findOneAndUpdate({_id:req.body._id},{$set: updatePlaceOfReg},{},(err, result)=>{
+		if(err){
+			res.json({statusCode: 'F', msg: 'Failed to update', error: err});
+		}
+		else{
+			res.json({statusCode: 'S', msg: 'Entry updated', updated: result});
+		}
+	});
+};
+
+module.exports.deletePlaceOfReg = function(req,res){//Delete
+	PlaceOfReg.remove({_id: req.params.id}, function(err,result){
+		if(err){
+			res.json(err);
+		}
+		else{
+			res.json(result);
+		}
+	});
+};
 
 
 
