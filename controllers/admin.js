@@ -2262,6 +2262,14 @@ module.exports.deleteParameter = function(req,res){//Delete
 //////////////////////////Place Of Registration Table////////////////////////////////
 const PlaceOfReg = mongoose.model('PlaceOfReg');
 
+module.exports.getUniquePlaceOfRegState = function(req,res){//Fetch
+	var query = {};
+	query.deleted = {"$ne": true};
+	PlaceOfReg.find(query).distinct( "state",function(err, states){
+		res.json({results: states, error: err});
+	});
+};
+
 module.exports.getPlaceOfReg = function(req,res){//Fetch
 	var query = {};
 	if(req.query.reg_number){
