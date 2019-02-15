@@ -93,7 +93,7 @@ module.exports.addBidBy = function(req,res){//Add New
 				console.log(currentDateObj);
 				if(validTo>currentDateObj && result_bid[0].bid_status === 'Active'){
 
-					if(result_bid[0].current_bid_amount == doc.bid_amount){
+					if(result_bid[0].current_bid_amount == req.body.bid_amount){
 						
 						var query = {};
 						query.user_id = {"$eq":req.payload.user_id};
