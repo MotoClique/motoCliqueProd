@@ -132,6 +132,7 @@ router.post('/config', auth, ctrlAdmin.addParameter);
 router.put('/config', auth, ctrlAdmin.updateParameter);
 router.delete('/config/:id', auth, ctrlAdmin.deleteParameter);
 // Place of Registration
+router.get('/placeOfRegState', auth, ctrlAdmin.getUniquePlaceOfRegState);
 router.get('/placeOfReq', auth, ctrlAdmin.getPlaceOfReg);
 router.post('/placeOfReq', auth, ctrlAdmin.addPlaceOfReg);
 router.put('/placeOfReq', auth, ctrlAdmin.updatePlaceOfReg);
