@@ -23,6 +23,7 @@ mongoose_models['PrdImage'] = mongoose.model('PrdImage');
 mongoose_models['PrdThumbnail'] = mongoose.model('PrdThumbnail');
 mongoose_models['Loc'] = mongoose.model('Loc');
 mongoose_models['Parameter'] = mongoose.model('Parameter');
+mongoose_models['PlaceOfReg'] = mongoose.model('PlaceOfReg');
 
 mongoose_models['UserAddress'] = mongoose.model('UserAddress');
 mongoose_models['UserSubMap'] = mongoose.model('UserSubMap');
