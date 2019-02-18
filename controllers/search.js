@@ -1138,7 +1138,7 @@ module.exports.getUserFilters = function(req,query,results,callback,context){//G
 						query['km_done']['$lte'] = Number(result_filter[i].filter_value);									
 					}
 					else{
-						query['km_done'] = {"lgte": Number(result_filter[i].filter_value)};								
+						query['km_done'] = {"$lte": Number(result_filter[i].filter_value)};								
 					}
 				}
 				else if(result_filter[i].filter_field === 'year_reg_from'){
