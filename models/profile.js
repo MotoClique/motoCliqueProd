@@ -28,6 +28,9 @@ var ProfileSchema = new mongoose.Schema({
 	currency:{
 		type: String
 	},
+	dob:{
+		type: String
+	},
 	walletAmount:{
 		type: String
 	},
