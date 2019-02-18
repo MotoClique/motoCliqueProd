@@ -116,6 +116,7 @@ module.exports.importFromCsv = function(req,res){
 			}
 			
 			delete entry.__v;
+			if(entry._id){
 			(mongoose_models[req.body.collection]).update({_id:entry._id},{$set: entry},{upsert:true}, function(update_err, update_data) {
 				if(update_err){
 					(responseData['failed']).push({_id:entry._id, error:update_err});
@@ -134,6 +135,28 @@ module.exports.importFromCsv = function(req,res){
 					res.json({statusCode: 'S', msg: msg, result:responseData, error: null});
 				}
 			});
+			}
+			else{
+				var entry_arr = []; entry_arr.push(entry);
+				(mongoose_models[req.body.collection]).insertMany(entry_arr, function(update_err, update_data) {
+					if(update_err){
+						(responseData['failed']).push({_id:null, error:update_err});
+					}
+					else{
+						(responseData['success']).push({_id:((update_data[0])?update_data[0]._id:'')});
+					}
+					
+					loopCount = loopCount - (-1);
+					if(loopCount === collectionData.length){
+						var msg = 'Import Successfully Completed.';
+						if((responseData['success']).length>0 && (responseData['failed']).length>0)
+						   msg = 'Import Partially Completed.';
+						else if((responseData['success']).length===0 && (responseData['failed']).length>0)
+						   msg = 'None of the entries were Imported.';
+						res.json({statusCode: 'S', msg: msg, result:responseData, error: null});
+					}
+				});
+			}
 		});
 	}
 	else{
