@@ -206,14 +206,15 @@ module.exports.addBid = function(req,res){//Add New
 					var doc = req.body;
 					doc.index_count = index_count;
 					doc.bid_id = "BID_"+index_count;//bid_id;
-					doc.bid_valid_from = at;
+					doc.bid_valid_from = d;
 					doc.createdAt = d;
 					doc.changedAt = d;
 					doc.createdBy = req.payload.user_id;
 					doc.changedBy = req.payload.user_id;
-					if(doc.bid_status === 'Active')
+					//if(doc.bid_status === 'Active')
 						doc.active = "X";
-					
+					doc.bid_status = 'Active';
+						
 					if(doc.bid_valid_to){
 						var date_split = [];
 						var time_split = [];
