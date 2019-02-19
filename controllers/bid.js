@@ -167,21 +167,133 @@ module.exports.addBid = function(req,res){//Add New
 	query_sub.active = {"$eq": "X"};
 	query_sub.deleted = {"$ne": true};
 	UserSubMap.find(query_sub,function(err_sub, result_sub){
-		if(result_sub.length>0){
-			/*var valid_sub = []
-			for(var count=0; count<result_sub.length; count++){
-				var to = (result_sub[count].valid_to).split('/');
-				var toDateObj = new Date(to[2]+'-'+to[1]+'-'+to[0]);
-				var currentDateObj = new Date();
-				if(toDateObj>currentDateObj && result_sub[count].remain_post > '0'){
-					valid_sub.push(result_sub[count]);
-				}
-			}			
-			if(valid_sub.length === 0){
+		if(result_sub.length>0){						
+			var to = (result_sub[0].valid_to).split('/');
+			var toDateObj = new Date(to[2]+'-'+to[1]+'-'+to[0]);
+			var currentDateObj = new Date();
+			if(toDateObj>currentDateObj && parseInt(result_sub[0].remain_post) > 0){
+				Counter.getNextSequenceValue('bid',function(sequence){
+					if(sequence){
+						Parameter.find({parameter:{"$in":["bid_slot_from","bid_slot_to","bid_slot_days"]}},function(params_err, params_result){
+							if(params_result && params_result.length>1){
+								var config_params = {};
+								params_result.forEach(function(val,indx,arr){
+									config_params[val.parameter] = val.value;
+								});
+								var bidSlotFrom = new Date();
+								if(config_params['bid_slot_from']){
+									bidSlotFrom.setHours(Number(config_params['bid_slot_from'].split(':')[0]));
+									bidSlotFrom.setMiniutes(Number(config_params['bid_slot_from'].split(':')[1]));
+									bidSlotFrom.setSeconds(00);
+								}
+								var bidSlotTo = new Date();
+								if(config_params['bid_slot_to']){
+									bidSlotTo.setHours(Number(config_params['bid_slot_to'].split(':')[0]));
+									bidSlotTo.setMiniutes(Number(config_params['bid_slot_to'].split(':')[1]));
+									bidSlotTo.setSeconds(00);
+								}
+								var bidValidFrom = bidSlotFrom;
+								var bidValidTo = bidSlotTo;
+								var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+								if(bidSlotFrom <= (new Date())){
+									bidValidFrom.setDate(bidValidFrom.getDate() - (-1));
+									bidValidTo.setDate(bidValidTo.getDate() - (-1));
+									
+									while(config_params['bid_slot_days'].indexOf(daysInWeeks[bidValidFrom.getDay()]) == -1){
+										bidValidFrom.setDate(bidValidFrom.getDate() - (-1));
+										bidValidTo.setDate(bidValidTo.getDate() - (-1));
+									}
+								}
+								
+								var index_count = sequence.sequence_value;//1;
+								var d = new Date();
+								var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+								
+								var doc = req.body;
+								doc.index_count = index_count;
+								doc.bid_id = "BID_"+index_count;//bid_id;
+								doc.bid_valid_from = bidValidFrom;
+								doc.createdAt = d;
+								doc.changedAt = d;
+								doc.createdBy = req.payload.user_id;
+								doc.changedBy = req.payload.user_id;
+								doc.active = "X";
+								doc.bid_status = 'Active';
+								doc.bid_valid_to = bidValidTo;	
+								
+								
+								if(doc.current_bid_amount && !isNaN(doc.current_bid_amount)){
+									if(parseFloat(doc.current_bid_amount) >= 10000000){//Crore
+										var amt = (parseFloat(doc.current_bid_amount)/10000000).toFixed(2);
+										doc.display_amount = amt + "Cr";
+									}
+									else if(parseFloat(doc.current_bid_amount) >= 100000){//Lakhs
+										var amt = (parseFloat(doc.current_bid_amount)/100000).toFixed(2);
+										doc.display_amount = amt + "L";
+									}
+									else{//Thousands
+										var amt = (parseFloat(doc.current_bid_amount)/1000).toFixed(2);
+										doc.display_amount = amt + "K";
+									}
+								}
+							
+								var postLife = 0;
+								for(var i = 0; i<result_sub.length; i++){
+									if(postLife < parseInt(result_sub[i].post_day)){
+										postLife = parseInt(result_sub[i].post_day);
+									}
+								}
+																
+								let newBid = new Bid(doc);
+								newBid.save((err, result)=>{
+											if(err){
+												res.json({statusCode: 'F', msg: 'Failed to add', error: err});
+											}
+											else{
+												res.json({statusCode: 'S', msg: 'Entry added', result: result});
+												//Deduct Post Remains
+												var d = new Date();
+												var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+																		
+												UserSubMap.findOneAndUpdate({_id: result_sub[0]._id},{$set:{changedAt: d}, $inc:{remain_post: -1}},{},(err_subUpdate, result_subUpdate)=>{
+													
+												});						
+											
+												//Trigger Notification
+												var entry = doc; entry.transactionType = "Bid";
+												ctrlNotification.sendNotification(entry);
+											}
+								});
+							}
+							else{
+								res.json({statusCode:"F", msg:"Unable to determine bid time slot.", error:params_err});
+							}
+						});			
+					}
+					else{
+						res.json({statusCode: 'F', msg: 'Unable to generate sequence number.'});
+					}
+				});
+			}
+			else{
 				res.json({statusCode: 'F', msg: 'Either Subscription is expired or no Post is left in your account.'});
-			}*/
-			
-			
+			}
+		}
+		else{
+			res.json({statusCode: 'F', msg: 'Subscription unavailable.', error: err_sub});
+		}
+	});
+};
+
+/*
+module.exports.addBid = function(req,res){//Add New
+	var query_sub = {}
+	query_sub.user_id = {"$eq":req.payload.user_id};
+	query_sub.active = {"$eq": "X"};
+	query_sub.deleted = {"$ne": true};
+	UserSubMap.find(query_sub,function(err_sub, result_sub){
+		if(result_sub.length>0){
+						
 			var to = (result_sub[0].valid_to).split('/');
 			var toDateObj = new Date(to[2]+'-'+to[1]+'-'+to[0]);
 			var currentDateObj = new Date();
@@ -190,16 +302,7 @@ module.exports.addBid = function(req,res){//Add New
 				Counter.getNextSequenceValue('bid',function(sequence){
 					if(sequence){
 						var index_count = sequence.sequence_value;//1;
-				/*var command = Bid.find().sort({"bid_id":-1}).limit(1);
-				command.exec(function(err, maxValue) 
-				{	
-					if(maxValue.length && maxValue.length > 0){
-						bid_id = "BID_"+(bid_id - (- (maxValue[0].bid_id).substr(4)));
-						index_count = (bid_id - (- (maxValue[0].bid_id).substr(4)));
-					}
-					else{
-						bid_id = "BID_1";
-					}*/
+				
 					var d = new Date();
 					var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
 					
@@ -250,11 +353,7 @@ module.exports.addBid = function(req,res){//Add New
 						}
 					}
 					
-					/*var UserSubMap = mongoose.model('UserSubMap');
-					var query = {};
-					query.user_id = {"$eq":req.payload.user_id};
-					query.deleted = {"$ne": true};	
-					UserSubMap.find(query,function(err_sub, result_sub){*/
+					
 						var postLife = 0;
 						for(var i = 0; i<result_sub.length; i++){
 							if(postLife < parseInt(result_sub[i].post_day)){
@@ -262,10 +361,6 @@ module.exports.addBid = function(req,res){//Add New
 							}
 						}
 						
-						/*if(!(doc.bid_valid_to) && doc.bid_status === 'Active'){
-							var d = new Date();							
-							doc.bid_valid_to = d;//d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +'T00:00:00';
-						}*/
 						
 						ctrlCommon.convertToUTC(doc.bid_valid_to,"IST",function(newDate){
 							//console.log(newDate);
@@ -318,7 +413,8 @@ module.exports.addBid = function(req,res){//Add New
 			res.json({statusCode: 'F', msg: 'Subscription unavailable.', error: err_sub});
 		}
 	});
-};
+};*/
+
 module.exports.updateBid = function(req,res){//Update
 	var d = new Date();
 	var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
