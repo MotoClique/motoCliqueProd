@@ -82,9 +82,9 @@ module.exports.getBid = function(req,res){//Fetch
 										var bidSlotFrom = config_params['bid_slot_from'];
 										var bidSlotFromDateObj = new Date();
 										bidSlotFromDateObj.setHours(parseInt(bidSlotFrom.split(":")[0]));
-										bidSlotFromDateObj.setMiniutes(parseInt(bidSlotFrom.split(":")[1]));
+										bidSlotFromDateObj.setMinutes(parseInt(bidSlotFrom.split(":")[1]));
 										bidSlotFromDateObj.setHours(bidSlotFromDateObj.getHours() - (- hrs));
-										bidSlotFromDateObj.setMiniutes(bidSlotFromDateObj.getMinutes() - (- mins));
+										bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
 										bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ bidSlotFromDateObj.getMinutes();
 										if(parseInt(bidSlotFrom.split(":")[0]) > 12)
 											bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"PM";
@@ -94,9 +94,9 @@ module.exports.getBid = function(req,res){//Fetch
 										var bidSlotTo = config_params['bid_slot_to'];
 										var bidSlotToDateObj = new Date();
 										bidSlotToDateObj.setHours(parseInt(bidSlotTo.split(":")[0]));
-										bidSlotToDateObj.setMiniutes(parseInt(bidSlotTo.split(":")[1]));
+										bidSlotToDateObj.setMinutes(parseInt(bidSlotTo.split(":")[1]));
 										bidSlotToDateObj.setHours(bidSlotToDateObj.getHours() - (- hrs));
-										bidSlotToDateObj.setMiniutes(bidSlotToDateObj.getMinutes() - (- mins));
+										bidSlotToDateObj.setMinutes(bidSlotToDateObj.getMinutes() - (- mins));
 										bidSlotTo = bidSlotToDateObj.getHours() +":"+ bidSlotToDateObj.getMinutes();
 										if(parseInt(bidSlotTo.split(":")[0]) > 12)
 											bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"PM";
@@ -224,13 +224,13 @@ module.exports.addBid = function(req,res){//Add New
 								var bidSlotFrom = new Date();
 								if(config_params['bid_slot_from']){
 									bidSlotFrom.setHours(Number(config_params['bid_slot_from'].split(':')[0]));
-									bidSlotFrom.setMiniutes(Number(config_params['bid_slot_from'].split(':')[1]));
+									bidSlotFrom.setMinutes(Number(config_params['bid_slot_from'].split(':')[1]));
 									bidSlotFrom.setSeconds(00);
 								}
 								var bidSlotTo = new Date();
 								if(config_params['bid_slot_to']){
 									bidSlotTo.setHours(Number(config_params['bid_slot_to'].split(':')[0]));
-									bidSlotTo.setMiniutes(Number(config_params['bid_slot_to'].split(':')[1]));
+									bidSlotTo.setMinutes(Number(config_params['bid_slot_to'].split(':')[1]));
 									bidSlotTo.setSeconds(00);
 								}
 								var bidValidFrom = bidSlotFrom;
