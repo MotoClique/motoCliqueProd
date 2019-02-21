@@ -17,7 +17,7 @@ const Fav = mongoose.model('Fav');
 const Bid = mongoose.model('Bid');
 
 module.exports.getBid = function(req,res){//Fetch
-	Parameter.find({parameter:{"$eq":"extra_life_time"}},function(params_err, params_result){
+	Parameter.find({parameter:{"$in":["bid_slot_from","bid_slot_to","extra_life_time"]}},function(params_err, params_result){
 		var query = {};
 		if(req.query.bid_id){
 			query.bid_id = {"$eq":req.query.bid_id};
@@ -33,9 +33,13 @@ module.exports.getBid = function(req,res){//Fetch
 			query.deleted = {"$ne": true};
 		}
 		//query.active = {"$eq": "X"};
+		var config_params = {};
+		params_result.forEach(function(val,indx,arr){
+			config_params[val.parameter] = val.value;
+		});
 		var extr_dy = new Date();
-		if(params_result.length && params_result.length>0){
-			var newDate = extr_dy.getDate() - (params_result[0].value);
+		if(config_params['extra_life_time']){
+			var newDate = extr_dy.getDate() - (config_params['extra_life_time']);
 			extr_dy.setDate(newDate);
 		}
 		query.bid_valid_to = {"$gte": extr_dy};
@@ -62,14 +66,51 @@ module.exports.getBid = function(req,res){//Fetch
 					else{
 						var results = [];
 						var loopCount = 0;
-						//for(var i=0; i<result.length; i++){
+						
 						result.forEach(function(currentValue, index, arr){							
 							ctrlCommon.convertFromUTC(currentValue.bid_valid_to,"IST",function(newDate,timeDiff){
 								loopCount = loopCount - (-1);
 								if(newDate){
-									currentValue.bid_valid_to = newDate;
 									var diffSplit = timeDiff.split(':');
 									var hrs = diffSplit[0]; var mins = diffSplit[1];
+									
+									if(currentValue.bid_valid_from <= (new Date()) && currentValue.bid_valid_to >= (new Date())){
+										currentValue.live = true;
+									}
+									else if(currentValue.bid_valid_from > (new Date())){
+										currentValue.live = false;
+										var bidSlotFrom = config_params['bid_slot_from'];
+										var bidSlotFromDateObj = new Date();
+										bidSlotFromDateObj.setHours(parseInt(bidSlotFrom.split(":")[0]));
+										bidSlotFromDateObj.setMiniutes(parseInt(bidSlotFrom.split(":")[1]));
+										bidSlotFromDateObj.setHours(bidSlotFromDateObj.getHours() - (- hrs));
+										bidSlotFromDateObj.setMiniutes(bidSlotFromDateObj.getMinutes() - (- mins));
+										bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ bidSlotFromDateObj.getMinutes();
+										if(parseInt(bidSlotFrom.split(":")[0]) > 12)
+											bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"PM";
+										else
+											bidSlotFrom += "AM";
+										
+										var bidSlotTo = config_params['bid_slot_to'];
+										var bidSlotToDateObj = new Date();
+										bidSlotToDateObj.setHours(parseInt(bidSlotTo.split(":")[0]));
+										bidSlotToDateObj.setMiniutes(parseInt(bidSlotTo.split(":")[1]));
+										bidSlotToDateObj.setHours(bidSlotToDateObj.getHours() - (- hrs));
+										bidSlotToDateObj.setMiniutes(bidSlotToDateObj.getMinutes() - (- mins));
+										bidSlotTo = bidSlotToDateObj.getHours() +":"+ bidSlotToDateObj.getMinutes();
+										if(parseInt(bidSlotTo.split(":")[0]) > 12)
+											bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"PM";
+										else
+											bidSlotTo += "AM";
+										currentValue.liveMsg = "Live on Date from "+bidSlotFrom+" to "+bidSlotTo+"!";
+									}
+									else{
+										currentValue.live = false;
+										currentValue.liveMsg = "";
+									}
+									
+									currentValue.bid_valid_to = newDate;
+									
 									var currentDate = new Date();
 									currentDate.setHours(currentDate.getHours() - (- hrs));
 									currentDate.setMinutes(currentDate.getMinutes() - (- mins));
