@@ -2203,23 +2203,59 @@ module.exports.getAllParameter = function(req,res){//Fetch
 	Parameter.find({},function(err, result){
 			if(err)
 				res.json({statusCode: 'F', msg: 'Unable to fetch.', error: err});
-			else
-				res.json({statusCode: 'S', msg: 'Successfully fetched.', results: result});
+			else{
+				var loopCount = 0;
+				result.forEach(function(val,indx,arr){
+					if(val.parameter == 'bid_slot_from' || val.parameter == 'bid_slot_to'){
+						var slotDate = new Date(); 
+						slotDate.setHours(parseInt((val.value).split(':')[0]));
+						slotDate.setMinutes(parseInt((val.value).split(':')[1]));
+						ctrlCommon.convertFromUTC(slotDate,"IST",function(newDate,timeDiff){
+							loopCount = loopCount - (-1);
+							if(newDate){
+								val.value = newDate.getHours()+":"+newDate.getMinutes();
+							}
+							else{
+								res.json({statusCode: 'F', msg: 'Unable to convert slot date/time to IST.', error: null});
+							}
+							
+							if(loopCount == result.length){
+								res.json({statusCode: 'S', msg: 'Successfully fetched.', results: result});
+							}
+						});
+					}
+				});
+				
+			}
 	});
 };
 module.exports.getParameter = function(req,res){//Fetch
-	//console.log(req);
 	if(req.query.parameter){
 		var query = {};
 		query.parameter = {"$eq":req.query.parameter};
-		//console.log(query);
 		Parameter.find(query,function(err, result){
-			//console.log(err);
-			//console.log(result);
 			if(err)
 				res.json({statusCode: 'F', msg: 'Unable to fetch.', error: err});
-			else
-				res.json({statusCode: 'S', msg: 'Successfully fetched.', results: result});
+			else{
+				var val = result[0];
+				if(val.parameter == 'bid_slot_from' || val.parameter == 'bid_slot_to'){
+					var slotDate = new Date(); 
+					slotDate.setHours(parseInt((val.value).split(':')[0]));
+					slotDate.setMinutes(parseInt((val.value).split(':')[1]));
+					ctrlCommon.convertFromUTC(slotDate,"IST",function(newDate,timeDiff){
+						if(newDate){
+							result[0].value = newDate.getHours()+":"+newDate.getMinutes();
+							res.json({statusCode: 'S', msg: 'Successfully fetched.', results: result});
+						}
+						else{
+							res.json({statusCode: 'F', msg: 'Unable to convert slot date/time to IST.', error: null});
+						}														
+					});
+				}
+				else{
+					res.json({statusCode: 'S', msg: 'Successfully fetched.', results: result});
+				}
+			}
 		});
 	}
 	else{
@@ -2227,27 +2263,74 @@ module.exports.getParameter = function(req,res){//Fetch
 	}
 };
 module.exports.addParameter = function(req,res){//Add New
-	var doc = req.body;			
-	let newParameter = new Parameter(doc);			
-	newParameter.save((err, result)=>{
-		if(err){
-			res.json({statusCode: 'F', msg: 'Failed to add', error: err});
-		}
-		else{
-			res.json({statusCode: 'S', msg: 'Entry added', result: result});							
-		}
-	});
+	var doc = req.body;
+	if(doc.parameter == 'bid_slot_from' || doc.parameter == 'bid_slot_to'){
+		var slotDate = new Date(); 
+		slotDate.setHours(parseInt((doc.value).split(':')[0]));
+		slotDate.setMinutes(parseInt((doc.value).split(':')[1]));
+		ctrlCommon.convertToUTC(slotDate,"IST",function(newDate){
+			if(newDate){
+				doc.value = newDate.getHours()+":"+newDate.getMinutes();
+				let newParameter = new Parameter(doc);			
+				newParameter.save((err, result)=>{
+					if(err){
+						res.json({statusCode: 'F', msg: 'Failed to add', error: err});
+					}
+					else{
+						res.json({statusCode: 'S', msg: 'Entry added', result: result});							
+					}
+				});
+			}
+			else{
+				res.json({statusCode: 'F', msg: 'Unable to convert slot date/time to UTC.', error: null});
+			}
+		});
+	}
+	else{
+		let newParameter = new Parameter(doc);			
+		newParameter.save((err, result)=>{
+			if(err){
+				res.json({statusCode: 'F', msg: 'Failed to add', error: err});
+			}
+			else{
+				res.json({statusCode: 'S', msg: 'Entry added', result: result});							
+			}
+		});
+	}
 };
 module.exports.updateParameter = function(req,res){//Update
-	var doc = req.body;		
-	Parameter.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{
-		if(err){
-			res.json({statusCode: 'F', msg: 'Failed to update', error: err});
-		}
-		else{
-			res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
-		}
-	});
+	var doc = req.body;
+	if(doc.parameter == 'bid_slot_from' || doc.parameter == 'bid_slot_to'){
+		var slotDate = new Date(); 
+		slotDate.setHours(parseInt((doc.value).split(':')[0]));
+		slotDate.setMinutes(parseInt((doc.value).split(':')[1]));
+		ctrlCommon.convertToUTC(slotDate,"IST",function(newDate){
+			if(newDate){
+				doc.value = newDate.getHours()+":"+newDate.getMinutes();
+				Parameter.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{
+					if(err){
+						res.json({statusCode: 'F', msg: 'Failed to update', error: err});
+					}
+					else{
+						res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
+					}
+				});				
+			}
+			else{
+				res.json({statusCode: 'F', msg: 'Unable to convert slot date/time to UTC.', error: null});
+			}
+		});
+	}
+	else{
+		Parameter.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{
+			if(err){
+				res.json({statusCode: 'F', msg: 'Failed to update', error: err});
+			}
+			else{
+				res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
+			}
+		});
+	}
 };
 module.exports.deleteParameter = function(req,res){//Delete
 	Parameter.remove({_id: req.params.id}, function(err,result){
