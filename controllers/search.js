@@ -1349,6 +1349,7 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 		extr_dy.setDate(newDate);
 	}
 	bid_query.bid_valid_to = {"$gte": extr_dy};
+	bid_query.bid_valid_from = {"$lte": (new Date())};
 	
 	var queries = req.body.queries
 	if(queries.product_type_name == queries.brand_name 
