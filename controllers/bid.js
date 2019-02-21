@@ -419,6 +419,61 @@ module.exports.updateBid = function(req,res){//Update
 	var d = new Date();
 	var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
 	var doc = req.body;
+	delete doc.createdAt;
+	delete doc.createdBy;
+	doc.changedBy = req.payload.user_id;
+	doc.changedAt = d;
+	if(doc.bid_status === 'Active')
+		doc.active = "X";
+	else
+		doc.active = "";
+				
+	if(doc.current_bid_amount && !isNaN(doc.current_bid_amount)){
+		if(parseFloat(doc.current_bid_amount) >= 10000000){//Crore
+			var amt = (parseFloat(doc.current_bid_amount)/10000000).toFixed(2);
+			doc.display_amount = amt + "Cr";
+		}
+		else if(parseFloat(doc.current_bid_amount) >= 100000){//Lakhs
+			var amt = (parseFloat(doc.current_bid_amount)/100000).toFixed(2);
+			doc.display_amount = amt + "L";
+		}
+		else{//Thousands
+			var amt = (parseFloat(doc.current_bid_amount)/1000).toFixed(2);
+			doc.display_amount = amt + "K";
+		}
+	}
+	
+	delete doc.bid_valid_from;
+	delete doc.bid_valid_to;
+	if(req.bidValidTo){
+		doc.bid_valid_to = new Date(req.bidValidTo);
+	}
+	
+	if(doc.msg === 'D'){
+		d.setDate(d.getDate()-1);
+		doc.bid_valid_to = d;
+		doc.active = "";
+	}
+	
+	Bid.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{
+		if(err){
+			res.json({statusCode: 'F', msg: 'Failed to update', error: err});
+		}
+		else{
+			if(doc.msg === 'D'){
+				ChatInbox.update({post_id: doc.bid_id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{ });
+				Fav.remove({bid_sell_buy_id: doc.bid_id}, function(fav_err,fav_result){ });
+			}
+			res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
+		}
+	});
+	
+};
+
+/*module.exports.updateBid = function(req,res){//Update
+	var d = new Date();
+	var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+	var doc = req.body;
 		delete doc.createdAt;
 		delete doc.createdBy;
 		doc.changedBy = req.payload.user_id;
@@ -444,11 +499,7 @@ module.exports.updateBid = function(req,res){//Update
 			doc.bid_valid_to = new Date();
 	}
 		
-	/*if(doc.msg === 'D'){
-		d.setDate(d.getDate()-1);
-		doc.bid_valid_to = d;//d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() +"T00:00:00";
-		doc.active = "";
-	}*/
+	
 		
 	if(doc.current_bid_amount && !isNaN(doc.current_bid_amount)){
 						if(parseFloat(doc.current_bid_amount) >= 10000000){//Crore
@@ -493,7 +544,7 @@ module.exports.updateBid = function(req,res){//Update
 			res.json({statusCode: 'F', msg: 'Unable to convert date.', error: null});
 		}
 	});
-};
+};*/
 
 module.exports.deleteBid = function(req,res){//Delete
 	Bid.remove({bid_id: req.params.id}, function(post_err,post_result){
