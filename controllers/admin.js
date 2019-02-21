@@ -2225,6 +2225,12 @@ module.exports.getAllParameter = function(req,res){//Fetch
 							}
 						});
 					}
+					else{
+						loopCount = loopCount - (-1);
+						if(loopCount == result.length){
+							res.json({statusCode: 'S', msg: 'Successfully fetched.', results: result});
+						}
+					}
 				});
 				
 			}
