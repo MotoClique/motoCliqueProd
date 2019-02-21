@@ -1458,6 +1458,7 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 									var mins = (bid_valid_to.getMinutes()<10)?("0"+bid_valid_to.getMinutes()):bid_valid_to.getMinutes();
 									var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
 									clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
+									clone.live = true;
 									results.push(clone);
 								}
 								else{
@@ -1470,6 +1471,7 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 										var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
 										clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 										clone.sold = true;
+										clone.live = true;
 										results.push(clone);													
 									}
 								}
