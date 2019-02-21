@@ -122,6 +122,8 @@ module.exports.getBid = function(req,res){//Fetch
 										var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
 										clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 										clone.type = "Bid";
+										clone.live = currentValue.live;
+										clone.liveMsg = currentValue.liveMsg;
 										results.push(clone);
 									}
 									else{//Bids within extra life time	
@@ -134,6 +136,8 @@ module.exports.getBid = function(req,res){//Fetch
 											clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 											clone.type = "Bid";
 											clone.sold = true;
+											clone.live = currentValue.live;
+											clone.liveMsg = currentValue.liveMsg;
 											results.push(clone);													
 										}
 									}
