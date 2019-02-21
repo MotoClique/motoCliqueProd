@@ -7,6 +7,7 @@ var User = mongoose.model('User');
 var UserSubMap = mongoose.model('UserSubMap');
 var Counter = mongoose.model('Counter');
 var DeviceReg = mongoose.model('DeviceReg');
+var ctrlCommon = require('./common');
 
 //////////////////////////Users Profile Master Table////////////////////////////////
 var Profile = mongoose.model('Profile');
