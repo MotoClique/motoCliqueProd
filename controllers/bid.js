@@ -166,9 +166,44 @@ module.exports.getBid = function(req,res){//Fetch
 					ctrlCommon.convertFromUTC(currentValue.bid_valid_to,"IST",function(newDate,timeDiff){
 						loopCount = loopCount - (-1);
 						if(newDate){
-							currentValue.bid_valid_to = newDate;
 							var diffSplit = timeDiff.split(':');
 							var hrs = diffSplit[0]; var mins = diffSplit[1];
+							if(currentValue.bid_valid_from <= (new Date()) && currentValue.bid_valid_to >= (new Date())){
+								currentValue.live = true;
+							}
+							else if(currentValue.bid_valid_from > (new Date())){
+								currentValue.live = false;
+								var bidSlotFrom = config_params['bid_slot_from'];
+								var bidSlotFromDateObj = new Date();
+								bidSlotFromDateObj.setHours(parseInt(bidSlotFrom.split(":")[0]));
+								bidSlotFromDateObj.setMinutes(parseInt(bidSlotFrom.split(":")[1]));
+								bidSlotFromDateObj.setHours(bidSlotFromDateObj.getHours() - (- hrs));
+								bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
+								bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ bidSlotFromDateObj.getMinutes();
+								if(parseInt(bidSlotFrom.split(":")[0]) > 12)
+									bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"PM";
+								else
+									bidSlotFrom += "AM";
+									
+								var bidSlotTo = config_params['bid_slot_to'];
+								var bidSlotToDateObj = new Date();
+								bidSlotToDateObj.setHours(parseInt(bidSlotTo.split(":")[0]));
+								bidSlotToDateObj.setMinutes(parseInt(bidSlotTo.split(":")[1]));
+								bidSlotToDateObj.setHours(bidSlotToDateObj.getHours() - (- hrs));
+								bidSlotToDateObj.setMinutes(bidSlotToDateObj.getMinutes() - (- mins));
+								bidSlotTo = bidSlotToDateObj.getHours() +":"+ bidSlotToDateObj.getMinutes();
+								if(parseInt(bidSlotTo.split(":")[0]) > 12)
+									bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"PM";
+								else
+									bidSlotTo += "AM";
+								currentValue.liveMsg = "Live on Date from "+bidSlotFrom+" to "+bidSlotTo+"!";
+							}
+							else{
+								currentValue.live = false;
+								currentValue.liveMsg = "";
+							}
+							currentValue.bid_valid_to = newDate;
+							
 							var currentDate = new Date();
 							currentDate.setHours(currentDate.getHours() - (- hrs));
 							currentDate.setMinutes(currentDate.getMinutes() - (- mins));		
@@ -180,6 +215,8 @@ module.exports.getBid = function(req,res){//Fetch
 								var secs = (bid_valid_to.getSeconds()<10)?("0"+bid_valid_to.getSeconds()):bid_valid_to.getSeconds();
 								clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 								clone.type = "Bid";
+								clone.live = currentValue.live;
+								clone.liveMsg = currentValue.liveMsg;
 								results.push(clone);
 							}
 							else{												
@@ -192,6 +229,8 @@ module.exports.getBid = function(req,res){//Fetch
 									clone.bid_valid_to = bid_valid_to.getDate()+'/'+(bid_valid_to.getMonth() - (-1))+'/'+bid_valid_to.getFullYear()+'T'+hrs+':'+mins+':'+secs;
 									clone.type = "Bid";
 									clone.sold = true;
+									clone.live = currentValue.live;
+									clone.liveMsg = currentValue.liveMsg;
 									results.push(clone);													
 								}
 							}
