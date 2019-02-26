@@ -85,6 +85,12 @@ module.exports.sendNotification = function(doc){//Send
 					//var orCondtnObj = {}; orCondtnObj["$or"] = orCondtn;
 					//andCondtn.push(orCondtnObj);
 				}
+				if(doc.place_of_reg){
+					andCondtn.push({place_of_reg: {"$in": [doc.place_of_reg, 'All', '', null]}});	
+				}
+				if(doc.accident_history){
+					andCondtn.push({accident_history: {"$in": [doc.accident_history, 'All', '', null]}});	
+				}
 				if(doc.current_bid_amount){
 					/*orCondtn.push({
 						"$and": [ {"$or":[
