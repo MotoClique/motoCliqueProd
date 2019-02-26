@@ -755,13 +755,17 @@ module.exports.updateMultipleRights = function(req,res){//Update Multiple
 	if(records && records.length>0){
 		if(records[0].field === '-'){//if screen update
 			deleteQuery = {
-				field: {"$eq":"-"}
+				field: {"$eq":"-"},
+				app_id: {"$eq": records[0].app_id},
+				role_id: {"$eq": records[0].role_id}
 			};
 		}
 		else{//if field update
 			deleteQuery = {
 				field: {"$ne":"-"},
-				screen: {"$eq": records[0].screen}
+				screen: {"$eq": records[0].screen},
+				app_id: {"$eq": records[0].app_id},
+				role_id: {"$eq": records[0].role_id}
 			};
 		}
 		AppScrFieldsRights.remove(deleteQuery , function(err_delete,result_delete){
