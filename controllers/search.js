@@ -1041,12 +1041,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 														bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
 														bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
 												}											
-												var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ bidSlotFrom.getMinutes();
+												var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ ((bidSlotFrom.getMinutes()<10)?('0'+bidSlotFrom.getMinutes()):bidSlotFrom.getMinutes());
 												if(parseInt(bidSlotTimeFrom.split(":")[0]) > 12)
 													bidSlotTimeFrom = (parseInt(bidSlotTimeFrom.split(":")[0]) - 12) +":"+ bidSlotTimeFrom.split(":")[1] +"PM";
 												else
 													bidSlotTimeFrom += "AM";
-												var bidSlotTimeTo = bidSlotTo.getHours() +":"+ bidSlotTo.getMinutes();
+												var bidSlotTimeTo = bidSlotTo.getHours() +":"+ ((bidSlotTo.getMinutes()<10)?('0'+bidSlotTo.getMinutes()):bidSlotTo.getMinutes());
 												if(parseInt(bidSlotTimeTo.split(":")[0]) > 12)
 													bidSlotTimeTo = (parseInt(bidSlotTimeTo.split(":")[0]) - 12) +":"+ bidSlotTimeTo.split(":")[1] +"PM";
 												else

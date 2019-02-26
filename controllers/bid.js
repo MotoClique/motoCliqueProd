@@ -85,7 +85,7 @@ module.exports.getBid = function(req,res){//Fetch
 										//bidSlotFromDateObj.setMinutes(parseInt(bidSlotFrom.split(":")[1]));
 										bidSlotFromDateObj.setHours(bidSlotFromDateObj.getHours() - (- hrs));
 										bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
-										bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ bidSlotFromDateObj.getMinutes();
+										bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ ((bidSlotFromDateObj.getMinutes() < 10)?('0'+bidSlotFromDateObj.getMinutes()):bidSlotFromDateObj.getMinutes());
 										if(parseInt(bidSlotFrom.split(":")[0]) > 12)
 											bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"PM";
 										else
@@ -98,7 +98,7 @@ module.exports.getBid = function(req,res){//Fetch
 										//bidSlotToDateObj.setMinutes(parseInt(bidSlotTo.split(":")[1]));
 										bidSlotToDateObj.setHours(bidSlotToDateObj.getHours() - (- hrs));
 										bidSlotToDateObj.setMinutes(bidSlotToDateObj.getMinutes() - (- mins));
-										bidSlotTo = bidSlotToDateObj.getHours() +":"+ bidSlotToDateObj.getMinutes();
+										bidSlotTo = bidSlotToDateObj.getHours() +":"+ ((bidSlotToDateObj.getMinutes() < 10)?('0'+bidSlotToDateObj.getMinutes()):bidSlotToDateObj.getMinutes());
 										if(parseInt(bidSlotTo.split(":")[0]) > 12)
 											bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"PM";
 										else
@@ -180,7 +180,7 @@ module.exports.getBid = function(req,res){//Fetch
 								//bidSlotFromDateObj.setMinutes(parseInt(bidSlotFrom.split(":")[1]));
 								bidSlotFromDateObj.setHours(bidSlotFromDateObj.getHours() - (- hrs));
 								bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
-								bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ bidSlotFromDateObj.getMinutes();
+								bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ ((bidSlotFromDateObj.getMinutes() < 10)?('0'+bidSlotFromDateObj.getMinutes()):bidSlotFromDateObj.getMinutes());
 								if(parseInt(bidSlotFrom.split(":")[0]) > 12)
 									bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"PM";
 								else
@@ -193,7 +193,7 @@ module.exports.getBid = function(req,res){//Fetch
 								//bidSlotToDateObj.setMinutes(parseInt(bidSlotTo.split(":")[1]));
 								bidSlotToDateObj.setHours(bidSlotToDateObj.getHours() - (- hrs));
 								bidSlotToDateObj.setMinutes(bidSlotToDateObj.getMinutes() - (- mins));
-								bidSlotTo = bidSlotToDateObj.getHours() +":"+ bidSlotToDateObj.getMinutes();
+								bidSlotTo = bidSlotToDateObj.getHours() +":"+ ((bidSlotToDateObj.getMinutes() < 10)?('0'+bidSlotToDateObj.getMinutes()):bidSlotToDateObj.getMinutes());
 								if(parseInt(bidSlotTo.split(":")[0]) > 12)
 									bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"PM";
 								else

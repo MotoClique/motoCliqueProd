@@ -2243,7 +2243,9 @@ module.exports.getAllParameter = function(req,res){//Fetch
 						ctrlCommon.convertFromUTC(slotDate,"IST",function(newDate,timeDiff){
 							loopCount = loopCount - (-1);
 							if(newDate){
-								val.value = newDate.getHours()+":"+newDate.getMinutes();
+								var hrs = (newDate.getHours() < 10)?('0'+newDate.getHours()):newDate.getHours();
+								var mins = (newDate.getMinutes() < 10)?('0'+newDate.getMinutes()):newDate.getMinutes();
+								val.value = hrs+":"+mins;
 							}
 							else{
 								res.json({statusCode: 'F', msg: 'Unable to convert slot date/time to IST.', error: null});
@@ -2280,7 +2282,9 @@ module.exports.getParameter = function(req,res){//Fetch
 					slotDate.setMinutes(parseInt((val.value).split(':')[1]));
 					ctrlCommon.convertFromUTC(slotDate,"IST",function(newDate,timeDiff){
 						if(newDate){
-							result[0].value = newDate.getHours()+":"+newDate.getMinutes();
+							var hrs = (newDate.getHours() < 10)?('0'+newDate.getHours()):newDate.getHours();
+							var mins = (newDate.getMinutes() < 10)?('0'+newDate.getMinutes()):newDate.getMinutes();
+							result[0].value =  hrs+":"+mins;
 							res.json({statusCode: 'S', msg: 'Successfully fetched.', results: result});
 						}
 						else{
@@ -2306,7 +2310,9 @@ module.exports.addParameter = function(req,res){//Add New
 		slotDate.setMinutes(parseInt((doc.value).split(':')[1]));
 		ctrlCommon.convertToUTC(slotDate,"IST",function(newDate){
 			if(newDate){
-				doc.value = newDate.getHours()+":"+newDate.getMinutes();
+				var hrs = (newDate.getHours() < 10)?('0'+newDate.getHours()):newDate.getHours();
+				var mins = (newDate.getMinutes() < 10)?('0'+newDate.getMinutes()):newDate.getMinutes();
+				doc.value = hrs+":"+mins;
 				let newParameter = new Parameter(doc);			
 				newParameter.save((err, result)=>{
 					if(err){
@@ -2342,7 +2348,9 @@ module.exports.updateParameter = function(req,res){//Update
 		slotDate.setMinutes(parseInt((doc.value).split(':')[1]));
 		ctrlCommon.convertToUTC(slotDate,"IST",function(newDate){
 			if(newDate){
-				doc.value = newDate.getHours()+":"+newDate.getMinutes();
+				var hrs = (newDate.getHours() < 10)?('0'+newDate.getHours()):newDate.getHours();
+				var mins = (newDate.getMinutes() < 10)?('0'+newDate.getMinutes()):newDate.getMinutes();
+				doc.value = hrs+":"+mins;
 				Parameter.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{
 					if(err){
 						res.json({statusCode: 'F', msg: 'Failed to update', error: err});
