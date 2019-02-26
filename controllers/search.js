@@ -977,7 +977,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 						var results = [];
 						
 						//Fetch Config parameters
-						Parameter.find({parameter:{"$in":["extra_life_time","to_ist"]}},function(params_err, params_result){
+						Parameter.find({parameter:{"$in":["bid_slot_from","bid_slot_to","bid_slot_days","extra_life_time","to_ist"]}},function(params_err, params_result){
 							if(params_result){
 								params_result.forEach(function(val,indx,arr){
 									that.params[val.parameter] = val.value;
@@ -1027,7 +1027,35 @@ module.exports.getTransactions = function(req,res){//Fetch
 											var search_complete = false;
 											if(that.excess_limit.bid > 0)
 												search_complete = true;
-											res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
+											
+											var nextBidMsg = '';
+											if(results && results.length==0){
+												var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];								
+												var bidSlotFrom = new Date();
+												bidSlotFrom.setHours(that.params['bid_slot_from'].split(':')[0]);
+												bidSlotFrom.setMinutes(that.params['bid_slot_from'].split(':')[1]);	
+												var bidSlotTo = new Date();
+												bidSlotTo.setHours(that.params['bid_slot_to'].split(':')[0]);
+												bidSlotTo.setMinutes(that.params['bid_slot_to'].split(':')[1]);	
+												while(that.params['bid_slot_days'].indexOf(daysInWeeks[bidSlotFrom.getDay()]) == -1){
+														bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
+														bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
+												}											
+												var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ bidSlotFrom.getMinutes();
+												if(parseInt(bidSlotTimeFrom.split(":")[0]) > 12)
+													bidSlotTimeFrom = (parseInt(bidSlotTimeFrom.split(":")[0]) - 12) +":"+ bidSlotTimeFrom.split(":")[1] +"PM";
+												else
+													bidSlotTimeFrom += "AM";
+												var bidSlotTimeTo = bidSlotTo.getHours() +":"+ bidSlotTo.getMinutes();
+												if(parseInt(bidSlotTimeTo.split(":")[0]) > 12)
+													bidSlotTimeTo = (parseInt(bidSlotTimeTo.split(":")[0]) - 12) +":"+ bidSlotTimeTo.split(":")[1] +"PM";
+												else
+													bidSlotTimeTo += "AM";
+											
+												var nextBidDate = bidSlotFrom.getDate()+"/"+(bidSlotFrom.getMonth() - (-1))+"/"+bidSlotFrom.getFullYear();
+												nextBidMsg = "The Next bidding slot is on "+nextBidDate+" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
+											}
+											res.json({statusCode:"S", results: results, error: null, nextBidMsg: nextBidMsg, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
 										}
 										else{
 											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
