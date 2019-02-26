@@ -1629,7 +1629,32 @@ module.exports.getProductSpec = function(req,res){//Fetch
 		query.deleted = {"$ne": true};
 	}
 	ProductSpec.find(query,function(err, productSpec){
-		res.json({results: productSpec, error: err});
+		if(productSpec && productSpec.length){
+			var prdTyp_query = {};
+			var product_type_name = (req.query.product_id).split('_')[0];
+			prdTyp_query.product_type_name = {"$eq": product_type_name};
+			prdTyp_query.deleted = {"$ne": true};
+			PrdTypSpecFieldMap.find(prdTyp_query,function(prdTypSpec_err, prdTypSpecFieldMap){
+				if(prdTypSpecFieldMap && prdTypSpecFieldMap.length){
+					var prdSpecResult = [];
+					prdTypSpecFieldMap.forEach(function(val,indx,arr){
+						for(var i=0; i<productSpec.length; i++){
+							if(productSpec[i].specification_field_id == val.specification_field_id){
+								prdSpecResult.push(productSpec[i]);
+								break;
+							}
+						}
+					});			
+					res.json({statusCode:"S", msg:"Successfully fetched Product Specifications.", results: prdSpecResult, error: prdTypSpec_err});
+				}
+				else{
+					res.json({statusCode:"F", msg:"Unable to fetch Product Type Specification Mapping." results: null, error: prdTypSpec_err});
+				}
+			});
+		}
+		else{
+			res.json({statusCode:"F", msg:"Unable to fetch Product Specifications." results: null, error: err});
+		}
 	});
 };
 module.exports.addProductSpec = function(req,res){//Add New
