@@ -53,6 +53,12 @@ var UserAlertSchema = new mongoose.Schema({
 	location:{
 		type: String 
 	},
+	place_of_reg:{
+		type: String 
+	},
+	accident_history:{
+		type: String 
+	},
 	price_from:{
 		type: Number 
 	},
