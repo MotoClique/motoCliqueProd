@@ -1648,12 +1648,12 @@ module.exports.getProductSpec = function(req,res){//Fetch
 					res.json({statusCode:"S", msg:"Successfully fetched Product Specifications.", results: prdSpecResult, error: prdTypSpec_err});
 				}
 				else{
-					res.json({statusCode:"F", msg:"Unable to fetch Product Type Specification Mapping." results: null, error: prdTypSpec_err});
+					res.json({statusCode:"F", msg:"Unable to fetch Product Type Specification Mapping.", results: null, error: prdTypSpec_err});
 				}
 			});
 		}
 		else{
-			res.json({statusCode:"F", msg:"Unable to fetch Product Specifications." results: null, error: err});
+			res.json({statusCode:"F", msg:"Unable to fetch Product Specifications.", results: null, error: err});
 		}
 	});
 };
