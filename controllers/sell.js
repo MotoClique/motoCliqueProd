@@ -152,7 +152,7 @@ module.exports.addSell = function(req,res){//Add New
 							});						
 							
 							//Trigger Notification
-							var entry = doc; entry.transactionType = "Sale";
+							var entry = doc; entry.transactionType = "Sale"; entry.sell_id = result.sell_id;
 							ctrlNotification.sendNotification(entry);
 						}
 					});

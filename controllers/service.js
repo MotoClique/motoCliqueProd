@@ -135,7 +135,7 @@ module.exports.addService = function(req,res){//Add New
 								});
 								
 								//Trigger Notification
-								var entry = doc; entry.transactionType = "Service";
+								var entry = doc; entry.transactionType = "Service"; entry.service_id = result.service_id;
 								ctrlNotification.sendNotification(entry);
 							}
 						});

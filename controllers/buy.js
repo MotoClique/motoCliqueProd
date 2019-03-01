@@ -149,7 +149,7 @@ module.exports.addBuy = function(req,res){//Add New
 							});						
 							
 							//Trigger Notification
-							var entry = doc; entry.transactionType = "Buy";
+							var entry = doc; entry.transactionType = "Buy"; entry.buy_req_id = result.buy_req_id;
 							ctrlNotification.sendNotification(entry);
 						}
 					});

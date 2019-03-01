@@ -349,7 +349,17 @@ module.exports.sendNotification = function(doc){//Send
 																Profile.find(query_profile,function(profile_err, profiles){
 																	if(profiles.length > 0){
 																		if(profiles[0].mobile){
-																			var msgBody = 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'.';
+																			var routePath = '/';
+																			if(doc.transactionType == 'Sale')
+																				routePath += 'Sell/'+doc.sell_id;
+																			else if(doc.transactionType == 'Buy')
+																				routePath += 'Buy/'+doc.buy_req_id;
+																			else if(doc.transactionType == 'Bid')
+																				routePath += 'Bid/'+doc.bid_id;
+																			else if(doc.transactionType == 'Service')
+																				routePath += 'Service/'+doc.service_id;
+																			var routeLink = 'https://motoclique.in/Container'+routePath;
+																			var msgBody = 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'. '+routeLink+' ';
 																			request.get({
 																				url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOCLIQ&route=6'
 																			},
@@ -383,7 +393,17 @@ module.exports.sendNotification = function(doc){//Send
 																Profile.find(query_profile,function(profile_err, profiles){
 																	if(profiles.length > 0){
 																		if(profiles[0].email){
+																			var routePath = '/';
+																			if(doc.transactionType == 'Sale')
+																				routePath += 'Sell/'+doc.sell_id;
+																			else if(doc.transactionType == 'Buy')
+																				routePath += 'Buy/'+doc.buy_req_id;
+																			else if(doc.transactionType == 'Bid')
+																				routePath += 'Bid/'+doc.bid_id;
+																			else if(doc.transactionType == 'Service')
+																				routePath += 'Service/'+doc.service_id;
 																			var msgBody = '<html>'+
+																							'<head><script>function openApp(){window.open("https://motoclique.in/Container'+routePath+'","_self");}</script></head>'+
 																								'<body>'+
 																									'<div style="border:1px solid #E71B03; height: 500px; width: 100%;">'+
 																									'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
@@ -396,7 +416,7 @@ module.exports.sendNotification = function(doc){//Send
 																									'<span>'+doc.model+'</span>'+
 																									'<span>'+doc.variant+'</span>'+
 																									'</div>'+
-																									'<div style="text-align: center;"><button style="border: none; background: #E71B03; color: white; width: 90%; line-height: 30px; cursor:pointer; outline:none;">OPEN</button></div>'+
+																									'<div style="text-align: center;"><button style="border: none; background: #E71B03; color: white; width: 90%; line-height: 30px; cursor:pointer; outline:none;" onclick="openApp()">OPEN</button></div>'+
 																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content: space-between; font-family: Arial;">'+
 																									'<div style="font-size: 14px;">'+
 																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
