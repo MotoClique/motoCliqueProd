@@ -403,7 +403,6 @@ module.exports.sendNotification = function(doc){//Send
 																			else if(doc.transactionType == 'Service')
 																				routePath += 'Service/'+doc.service_id;
 																			var msgBody = '<html>'+
-																							'<head><script>function openApp(){window.open("https://motoclique.in/Container'+routePath+'","_self");}</script></head>'+
 																								'<body>'+
 																									'<div style="border:1px solid #E71B03; height: 500px; width: 100%;">'+
 																									'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
@@ -416,7 +415,7 @@ module.exports.sendNotification = function(doc){//Send
 																									'<span>'+doc.model+'</span>'+
 																									'<span>'+doc.variant+'</span>'+
 																									'</div>'+
-																									'<div style="text-align: center;"><button style="border: none; background: #E71B03; color: white; width: 90%; line-height: 30px; cursor:pointer; outline:none;" onclick="openApp()">OPEN</button></div>'+
+																									'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; padding: 7px; padding-left: 45%;    padding-right: 45%;" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
 																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content: space-between; font-family: Arial;">'+
 																									'<div style="font-size: 14px;">'+
 																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
