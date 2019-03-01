@@ -386,9 +386,9 @@ module.exports.sendNotification = function(doc){//Send
 																			var msgBody = '<html>'+
 																								'<body>'+
 																									'<div style="border:1px solid #E71B03; height: 500px; width: 100%;">'+
-																									'<div style="padding-left: 100px; padding-right: 100px; padding-top: 50px; padding-bottom: 50px;">'+
+																									'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
 																									'<div style="min-height: 100px; text-align: center;">'+
-																									'<img style="max-width: 140px;" src="motoclique.png"></img>'+
+																									'<img style="max-width: 140px;" src="/assets/motoclique.png"></img>'+
 																									'</div>'+
 																									'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 25px; font-weight: bold; text-align: center; color: #E71B03;">'+doc.transactionType+'</div>'+
 																									'<div style="line-height: 50px; text-align: center; font-size: 16px; font-weight: 700; font-family: Arial;">'+
@@ -397,7 +397,7 @@ module.exports.sendNotification = function(doc){//Send
 																									'<span>'+doc.variant+'</span>'+
 																									'</div>'+
 																									'<div style="text-align: center;"><button style="border: none; background: #E71B03; color: white; width: 90%; line-height: 30px; cursor:pointer; outline:none;">OPEN</button></div>'+
-																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content:space-between; font-family: Arial;">'+
+																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content: space-between; font-family: Arial;">'+
 																									'<div style="font-size: 14px;">'+
 																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
 																									'<div style="line-height: 28px;">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_price+'</span></div>'+
