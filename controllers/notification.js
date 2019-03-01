@@ -400,7 +400,7 @@ module.exports.sendNotification = function(doc){//Send
 																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content: space-between; font-family: Arial;">'+
 																									'<div style="font-size: 14px;">'+
 																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
-																									'<div style="line-height: 28px;">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_price+'</span></div>'+
+																									'<div style="line-height: 28px;">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_amount+'</span></div>'+
 																									'<div style="line-height: 28px;">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
 																									'</div>'+
 																									'<div style="font-size: 14px;">'+
