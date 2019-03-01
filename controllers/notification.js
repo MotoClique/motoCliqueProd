@@ -2,6 +2,7 @@ var Mailgun = require('mailgun-js');
 const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
+const googleMailAPI = require('../gmail');
 
 //////////////////////////Send Notification////////////////////////////////
 var Profile = mongoose.model('Profile');
@@ -348,14 +349,9 @@ module.exports.sendNotification = function(doc){//Send
 																Profile.find(query_profile,function(profile_err, profiles){
 																	if(profiles.length > 0){
 																		if(profiles[0].mobile){
-																			request.post({
-																				url:'https://api.textlocal.in/send/?', 
-																				form: {
-																						  'apikey': params.sms_api_key, 
-																						  'message': 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'.',
-																						  'sender': 'TXTLCL',
-																						  'numbers': '91'+profiles[0].mobile
-																						}
+																			var msgBody = 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'.';
+																			request.get({
+																				url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOCLIQ&route=6'
 																			},
 																			function(err_sms,httpResponse,body){
 																				console.log(err_sms);
@@ -387,31 +383,43 @@ module.exports.sendNotification = function(doc){//Send
 																Profile.find(query_profile,function(profile_err, profiles){
 																	if(profiles.length > 0){
 																		if(profiles[0].email){
+																			var msgBody = '<html>'+
+																								'<body>'+
+																									'<div style="border:1px solid #E71B03; height: 500px; width: 100%;">'+
+																									'<div style="padding-left: 100px; padding-right: 100px; padding-top: 50px; padding-bottom: 50px;">'+
+																									'<div style="min-height: 100px; text-align: center;">'+
+																									'<img style="max-width: 140px;" src="motoclique.png"></img>'+
+																									'</div>'+
+																									'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 25px; font-weight: bold; text-align: center; color: #E71B03;">'+doc.transactionType+'</div>'+
+																									'<div style="line-height: 50px; text-align: center; font-size: 16px; font-weight: 700; font-family: Arial;">'+
+																									'<span>'+doc.brand_name+'</span>'+
+																									'<span>'+doc.model+'</span>'+
+																									'<span>'+doc.variant+'</span>'+
+																									'</div>'+
+																									'<div style="text-align: center;"><button style="border: none; background: #E71B03; color: white; width: 90%; line-height: 30px; cursor:pointer; outline:none;">OPEN</button></div>'+
+																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content:space-between; font-family: Arial;">'+
+																									'<div style="font-size: 14px;">'+
+																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
+																									'<div style="line-height: 28px;">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_price+'</span></div>'+
+																									'<div style="line-height: 28px;">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
+																									'</div>'+
+																									'<div style="font-size: 14px;">'+
+																									'<div style="line-height: 28px;">Year of Registration: <span style="font-size: 15px; font-weight: 600;">'+doc.year_of_reg+'</span></div>'+
+																									'<div style="line-height: 28px;">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
+																									'</div>'+
+																									'</div>'+
+																									'</div>'+
+																									'</div>'+
+																								'</body>'+
+																							'</html>';
+																			
+																			
 																			var data = {
-																							"from":"MotoClick <no-reply@motoClick.com>",
-																							"to": profiles[0].email,
-																							"subject": doc.brand_name+' '+doc.model,
-																							"text": 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'.'
-																			};
-																			mailgun.messages().send(data, function (err, body) {
-																				console.log("Error in email: ", err);
-																				console.log("Success in email: ", body);
-																			});
-																			/*request.post({
-																				url:'https://api.mailgun.net/v3/'+ params.email_api_id
-																						+'/messages', 
-																				form: data,
-																				headers: {
-																					'Authorization': 'Basic '+Buffer.from('api:key-'+params.email_api_key).toString('base64')
-																					
-																				  }
-																			},
-																			function(err_email,httpResponse,body){
-																				console.log("email triggered to "+profiles[0].email);
-																				console.log(err_email);
-																				console.log(httpResponse);
-																				console.log(body);
-																			});*/
+																					to: profiles[0].email,
+																					subject: doc.brand_name+' '+doc.model,
+																					message: msgBody
+																				};
+																			googleMailAPI.sendEmail(data);
 																			email_sent = true;
 																		}
 																	}
