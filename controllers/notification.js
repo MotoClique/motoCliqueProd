@@ -388,7 +388,7 @@ module.exports.sendNotification = function(doc){//Send
 																									'<div style="border:1px solid #E71B03; height: 500px; width: 100%;">'+
 																									'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
 																									'<div style="min-height: 100px; text-align: center;">'+
-																									'<img style="max-width: 140px;" src="/assets/motoclique.png"></img>'+
+																									'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
 																									'</div>'+
 																									'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 25px; font-weight: bold; text-align: center; color: #E71B03;">'+doc.transactionType+'</div>'+
 																									'<div style="line-height: 50px; text-align: center; font-size: 16px; font-weight: 700; font-family: Arial;">'+
