@@ -84,7 +84,7 @@ app.use(express.static(path.join(__dirname, 'views')));
 app.use(passport.initialize());
 app.use('/api',route);
 
-
+var googleMailAPI = require('./gmail');
 
 // MongoDB Connection
   var prdDBUrl = "mongodb:///opt/bitnami/mongodb/tmp/mongodb-27017.sock/"+databaseName; //"mongodb://motoadmin:Moto1234@ds217002.mlab.com:17002/motodb";
@@ -94,7 +94,7 @@ app.use('/api',route);
   var mongodb = require('mongodb');
   
   mongoose.connect(mongoURL,{user:databaseUser, pass:databasePassword}).then(
-  (res) => { console.log(res); },
+  (res) => { console.log(res); googleMailAPI.init(); },
   (err) => { console.log(err); }
 );
 
