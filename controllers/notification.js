@@ -359,7 +359,7 @@ module.exports.sendNotification = function(doc){//Send
 																			else if(doc.transactionType == 'Service')
 																				routePath += 'Service/'+doc.service_id;
 																			var routeLink = 'https://motoclique.in/Container'+routePath;
-																			var msgBody = 'Check out the new '+doc.brand_name+' '+doc.model+' posted for '+doc.transactionType+'. '+routeLink+' ';
+																			var msgBody = 'Check out the new '+doc.transactionType+' post of '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+doc.fuel_type+', priced at Rs.'+doc.display_amount+', registered on '+doc.year_of_reg+', '+doc.km_done+'km runned, located at '+doc.location+'. '+routeLink+' ';
 																			request.get({
 																				url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOCLIQ&route=6'
 																			},
@@ -415,7 +415,7 @@ module.exports.sendNotification = function(doc){//Send
 																									'<span>'+doc.model+'</span>'+
 																									'<span>'+doc.variant+'</span>'+
 																									'</div>'+
-																									'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; padding: 7px; padding-left: 45%;    padding-right: 45%;" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
+																									'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; width: 90%; -webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none;" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
 																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content: space-between; font-family: Arial;">'+
 																									'<div style="font-size: 14px;">'+
 																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
