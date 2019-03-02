@@ -404,25 +404,23 @@ module.exports.sendNotification = function(doc){//Send
 																				routePath += 'Service/'+doc.service_id;
 																			var msgBody = '<html>'+
 																								'<body>'+
-																									'<div style="border:1px solid #E71B03; height: 500px; width: 100%;">'+
+																									'<div style="min-height: 500px; width: 100%;">'+
 																									'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
 																									'<div style="min-height: 100px; text-align: center;">'+
 																									'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
 																									'</div>'+
-																									'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 25px; font-weight: bold; text-align: center; color: #E71B03;">'+doc.transactionType+'</div>'+
-																									'<div style="line-height: 50px; text-align: center; font-size: 16px; font-weight: 700; font-family: Arial;">'+
+																									'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">'+doc.transactionType+'</div>'+
+																									'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
 																									'<span>'+doc.brand_name+'</span>'+
 																									'<span>'+doc.model+'</span>'+
 																									'<span>'+doc.variant+'</span>'+
 																									'</div>'+
 																									'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; width: 90%; -webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none;" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
-																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; display:flex; justify-content: space-between; font-family: Arial;">'+
-																									'<div style="font-size: 14px;">'+
+																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; font-family: Arial;">'+
+																									'<div style="font-size: 14px; width: 200px; margin-left: auto; margin-right: auto;">'+
 																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
 																									'<div style="line-height: 28px;">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_amount+'</span></div>'+
 																									'<div style="line-height: 28px;">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
-																									'</div>'+
-																									'<div style="font-size: 14px;">'+
 																									'<div style="line-height: 28px;">Year of Registration: <span style="font-size: 15px; font-weight: 600;">'+doc.year_of_reg+'</span></div>'+
 																									'<div style="line-height: 28px;">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
 																									'</div>'+
