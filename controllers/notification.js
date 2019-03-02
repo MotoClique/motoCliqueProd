@@ -359,7 +359,15 @@ module.exports.sendNotification = function(doc){//Send
 																			else if(doc.transactionType == 'Service')
 																				routePath += 'Service/'+doc.service_id;
 																			var routeLink = 'https://motoclique.in/Container'+routePath;
-																			var msgBody = 'Check out the new '+doc.transactionType+' post of '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+doc.fuel_type+', priced at Rs.'+doc.display_amount+', registered on '+doc.year_of_reg+', '+doc.km_done+'km runned, located at '+doc.location+'. '+routeLink+' ';
+																			var msgBody = 'Check out the new '+doc.transactionType+
+																			' post of '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																			((doc.fuel_type)?doc.fuel_type:'')+
+																			((doc.display_amount)?(', priced at Rs.'+doc.display_amount):'')+
+																			((doc.year_of_reg)?(', registered on '+doc.year_of_reg):'')+
+																			((doc.km_done)?(', '+doc.km_done+'km runned'):'')+
+																			((doc.location)?(', located at '+doc.location):'')+
+																			'. '+
+																			routeLink+' ';
 																			request.get({
 																				url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOCLIQ&route=6'
 																			},
@@ -411,18 +419,18 @@ module.exports.sendNotification = function(doc){//Send
 																									'</div>'+
 																									'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">'+doc.transactionType+'</div>'+
 																									'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
-																									'<span>'+doc.brand_name+'</span>'+
-																									'<span>'+doc.model+'</span>'+
-																									'<span>'+doc.variant+'</span>'+
+																									'<span style="display:'+((doc.brand_name)?"block;":"none;")+'">'+doc.brand_name+'</span>'+
+																									'<span style="display:'+((doc.model)?"block;":"none;")+'">'+doc.model+'</span>'+
+																									'<span style="display:'+((doc.variant)?"block;":"none;")+'">'+doc.variant+'</span>'+
 																									'</div>'+
 																									'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; width: 90%; -webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none;" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
 																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; font-family: Arial;">'+
 																									'<div style="font-size: 14px; width: 200px; margin-left: auto; margin-right: auto;">'+
-																									'<div style="line-height: 28px;">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
-																									'<div style="line-height: 28px;">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_amount+'</span></div>'+
-																									'<div style="line-height: 28px;">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
-																									'<div style="line-height: 28px;">Year of Registration: <span style="font-size: 15px; font-weight: 600;">'+doc.year_of_reg+'</span></div>'+
-																									'<div style="line-height: 28px;">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
+																									'<div style="line-height: 28px; display:'+((doc.fuel_type)?"block;":"none;")+'">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
+																									'<div style="line-height: 28px; display:'+((doc.display_amount)?"block;":"none;")+'">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_amount+'</span></div>'+
+																									'<div style="line-height: 28px; display:'+((doc.location)?"block;":"none;")+'">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
+																									'<div style="line-height: 28px; display:'+((doc.year_of_reg)?"block;":"none;")+'">Year of Registration: <span style="font-size: 15px; font-weight: 600;">'+doc.year_of_reg+'</span></div>'+
+																									'<div style="line-height: 28px; display:'+((doc.km_done)?"block;":"none;")+'">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
 																									'</div>'+
 																									'</div>'+
 																									'</div>'+
