@@ -369,7 +369,7 @@ module.exports.sendNotification = function(doc){//Send
 																			'. '+
 																			routeLink+' ';
 																			request.get({
-																				url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOCLIQ&route=6'
+																				url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 																			},
 																			function(err_sms,httpResponse,body){
 																				console.log(err_sms);

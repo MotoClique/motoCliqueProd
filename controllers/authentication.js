@@ -5,6 +5,7 @@ var Profile = mongoose.model('Profile');
 var Otp = mongoose.model('Otp');
 var Counter = mongoose.model('Counter');
 var DeviceReg = mongoose.model('DeviceReg');
+var Parameter = mongoose.model('Parameter');
 const async = require("async");
 const request = require('request');
 
@@ -16,8 +17,8 @@ module.exports.register = function(req, res) {
 		if(err_otp){
 			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 		}
-		//else if(otps.length>0){
-		else if(req.body.otp === '7654'){
+		else if(otps.length>0){
+		//else if(req.body.otp === '7654'){
 			User.find({ mobile: {"$eq":req.body.mobile} }, function (err_user, result_user) {
 				if(err_user){
 					res.json({"statusCode":"F","msg":"Unable to register.","error":err_user});
@@ -181,39 +182,43 @@ module.exports.login = function(req, res) {
 module.exports.sendOTP = function(req,res){	
 	var mobile = req.query.mobile;
 	if(mobile){
-		
-				var randomNum = Math.floor(1000 + Math.random() * 9000);
-				request.post({
-					url:'https://api.textlocal.in/send/?', 
-					form: {
-							  'apikey': 'MN/ELO/CKoU-bT0VHaKrMJ3hPcLreDUlNj90PY0MqC',
-							  'message': 'Please use the OTP '+randomNum+' to login.',
-							  'sender': 'TXTLCL',
-							  'numbers': '91'+mobile
-							}
-				},
-				function(err,httpResponse,body){
-					var n = randomNum + "";
-					var t = (new Date()).toString();
-					var item = {
-						mobile: req.query.mobile,
-						otp: n,
-						time: t
-					};
-					Otp.update({mobile: req.query.mobile},item,{upsert:true}, function(update_err, update_res){
-						res.json({statusCode:"S", response: httpResponse, error: err, body: body, updateError: update_err});
-					});
-					/*let newOtp = new Otp({
-						mobile: req.query.mobile,
-						otp: n,
-						time: t
-					});			
-					newOtp.save((err, otp)=>{
-						
-					});*/
-					//res.json({status:"S", response: httpResponse, error: err, body: body});
-				});	
-		
+		Parameter.find({},function(params_err, result){
+			var params = {};
+			if(result){
+					for(var p =0; p<result.length; p++){
+						params[result[p].parameter] = result[p].value;
+					}
+					var randomNum = Math.floor(1000 + Math.random() * 9000);
+					var msgBody = 'Please use the OTP '+randomNum+' to complete your authentication.',
+					request.get({
+						url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+					},
+					function(err,httpResponse,body){
+						var n = randomNum + "";
+						var t = (new Date()).toString();
+						var item = {
+							mobile: req.query.mobile,
+							otp: n,
+							time: t
+						};
+						Otp.update({mobile: req.query.mobile},item,{upsert:true}, function(update_err, update_res){
+							res.json({statusCode:"S", response: httpResponse, error: err, body: body, updateError: update_err});
+						});
+						/*let newOtp = new Otp({
+							mobile: req.query.mobile,
+							otp: n,
+							time: t
+						});			
+						newOtp.save((err, otp)=>{
+							
+						});*/
+						//res.json({status:"S", response: httpResponse, error: err, body: body});
+					});	
+			}
+			else{
+				res.json({statusCode:"F", msg:"No SMS API key found.", error: params_err});
+			}
+		});
 	}
 	else{
 		res.json({statusCode:"F", msg:"Invalid Number."});
@@ -234,8 +239,8 @@ module.exports.loginByOtp = function(req,res){//get mobile & Otp combination
 					if(err_otp){
 						res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 					}
-					//else if(otps.length>0){
-					else if(req.body.otp === '7654'){
+					else if(otps.length>0){
+					//else if(req.body.otp === '7654'){
 						var user = new User();
 						user.user_id = users[0].user_id;
 						user.mobile = users[0].mobile;
@@ -304,8 +309,8 @@ module.exports.verifyOTP = function(req, res) {
 		if(err_otp){
 			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 		}
-		//else if(otps.length>0){
-		else if(req.body.otp === '7654'){
+		else if(otps.length>0){
+		//else if(req.body.otp === '7654'){
 			User.find({ mobile: {"$eq":req.body.mobile} }, function (err_user, result_user) {
 				if(err_user){
 					res.json({"statusCode":"F","msg":"User not found.","user": null,"error":err_user});
@@ -336,8 +341,8 @@ module.exports.changePassword = function(req, res) {
 		if(err_otp){
 			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
 		}
-		//else if(otps.length>0){
-		else if(req.body.otp === '7654'){
+		else if(otps.length>0){
+		//else if(req.body.otp === '7654'){
 			if(req.body.password){
 				var user = new User();							  
 				user.setPassword(req.body.password);
