@@ -419,11 +419,11 @@ module.exports.sendNotification = function(doc){//Send
 																									'</div>'+
 																									'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">'+doc.transactionType+'</div>'+
 																									'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
-																									'<span style="display:'+((doc.brand_name)?"block;":"none;")+'">'+doc.brand_name+'</span>'+
-																									'<span style="display:'+((doc.model)?"block;":"none;")+'">'+doc.model+'</span>'+
-																									'<span style="display:'+((doc.variant)?"block;":"none;")+'">'+doc.variant+'</span>'+
+																									'<span style="display:'+((doc.brand_name)?"inline;":"none;")+'">'+doc.brand_name+'</span>'+
+																									'<span style="display:'+((doc.model)?"inline;":"none;")+'">'+doc.model+'</span>'+
+																									'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
 																									'</div>'+
-																									'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; width: 90%; -webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none;" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
+																									'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; width: 90%; text-decoration: none; padding-top: 8px; padding-bottom: 8px; padding-left: calc(50% - 50px); padding-right: calc(50% - 50px);" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
 																									'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; font-family: Arial;">'+
 																									'<div style="font-size: 14px; width: 200px; margin-left: auto; margin-right: auto;">'+
 																									'<div style="line-height: 28px; display:'+((doc.fuel_type)?"block;":"none;")+'">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
