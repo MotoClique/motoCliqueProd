@@ -171,6 +171,9 @@ module.exports.getBid = function(req,res){//Fetch
 							var hrs = diffSplit[0]; var mins = diffSplit[1];
 							if(currentValue.bid_valid_from <= (new Date()) && currentValue.bid_valid_to >= (new Date())){
 								currentValue.live = true;
+								var bidSlotFromDateObj = currentValue.bid_valid_from;
+								bidSlotFromDateObj.setHours(bidSlotFromDateObj.getHours() - (- hrs));
+								bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
 							}
 							else if(currentValue.bid_valid_from > (new Date())){
 								currentValue.live = false;
@@ -203,6 +206,9 @@ module.exports.getBid = function(req,res){//Fetch
 							else{
 								currentValue.live = false;
 								currentValue.liveMsg = "";
+								var bidSlotFromDateObj = currentValue.bid_valid_from;
+								bidSlotFromDateObj.setHours(bidSlotFromDateObj.getHours() - (- hrs));
+								bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
 							}
 							currentValue.bid_valid_to = newDate;
 							
