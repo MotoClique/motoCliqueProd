@@ -46,7 +46,11 @@ module.exports.profileRead = function(req,res){//Fetch
 					var result = JSON.parse(JSON.stringify(profiles));
 					console.log(result);
 					result[0].screenAccess = [];
-					UserSubMap.find({user_id: {"$eq":result[0].user_id}},function(sub_err, subs){
+					var query_sub = {}
+					query_sub.user_id = {"$eq": result[0].user_id};
+					query_sub.active = {"$eq": "X"};
+					query_sub.deleted = {"$ne": true};
+					UserSubMap.find(query_sub,function(sub_err, subs){
 						if(sub_err){
 							res.json({statusCode:"F", msg:"Failed to retrieve user subscription", results: result,error: sub_err});		
 						}
