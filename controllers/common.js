@@ -6,7 +6,8 @@ var mongoose = require('mongoose');
 var Profile = mongoose.model('Profile');
 var Parameter = mongoose.model('Parameter');
 
-module.exports.convertFromUTC = function(date,to,callback){//convert from utc
+module.exports.convertFromUTC = function(from_date,to,callback){//convert from utc
+	var date = new Date(from_date.getTime());
 	if(to === 'IST'){
 		Parameter.find({parameter:{"$eq":"to_ist"}},function(params_err, params_result){
 			if(params_result && params_result.length>0){
@@ -34,7 +35,8 @@ module.exports.convertFromUTC = function(date,to,callback){//convert from utc
 	}
 };
 
-module.exports.convertToUTC = function(date,from,callback){//convert to utc
+module.exports.convertToUTC = function(from_date,from,callback){//convert to utc
+	var date = new Date(from_date.getTime());
 	if(from === 'IST'){
 		Parameter.find({parameter:{"$eq":"to_ist"}},function(params_err, params_result){
 			if(params_result && params_result.length>0){
@@ -63,7 +65,8 @@ module.exports.convertToUTC = function(date,from,callback){//convert to utc
 };
 
 
-module.exports.convertDateTime = function(date,diff){//convert the date and time zone
+module.exports.convertDateTime = function(from_date,diff){//convert the date and time zone
+	var date = new Date(from_date.getTime());
 	if(diff){
 		var diffSplit = diff.split(':');
 		var hrs = diffSplit[0]; var mins = diffSplit[1];
