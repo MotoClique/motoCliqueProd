@@ -188,7 +188,7 @@ module.exports.sendOTP = function(req,res){
 					for(var p =0; p<result.length; p++){
 						params[result[p].parameter] = result[p].value;
 					}
-					var randomNum = Math.floor(1000 + Math.random() * 9000);
+					var randomNum = Math.floor(100000 + Math.random() * 900000);
 					var msgBody = 'Please use the OTP '+randomNum+' to complete your authentication.';
 					request.get({
 						url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
