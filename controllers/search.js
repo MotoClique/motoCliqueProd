@@ -991,6 +991,22 @@ module.exports.getTransactions = function(req,res){//Fetch
 							module.exports.getUserFilters(req,query,results,function(status,rt_query){
 								if(status)
 									query = rt_query;						
+								var bidIsLive = '';
+								var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];								
+								var bidSlotFrom = new Date();
+								bidSlotFrom.setHours(that.params['bid_slot_from'].split(':')[0]);
+								bidSlotFrom.setMinutes(that.params['bid_slot_from'].split(':')[1]);	
+								var bidSlotTo = new Date();
+								bidSlotTo.setHours(that.params['bid_slot_to'].split(':')[0]);
+								bidSlotTo.setMinutes(that.params['bid_slot_to'].split(':')[1]);	
+								while(that.params['bid_slot_days'].indexOf(daysInWeeks[bidSlotFrom.getDay()]) == -1){
+									bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
+									bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
+								}
+								if(bidSlotFrom <= new Date() && bidSlotTo >= new Date()){
+									bidIsLive = 'Bid is Live!';   
+								}
+								
 								
 								if(type === "Sale"){
 									module.exports.fetchSell(req,query,results,function(rt_status,rt_sell,rt_params,rt_err){
@@ -999,7 +1015,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 											var search_complete = false;
 											if(that.excess_limit.sale > 0)
 												search_complete = true;
-											res.json({statusCode:"S", results: results, error: null, sale:rt_params, buy:{}, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
+											res.json({statusCode:"S", results: results, error: null, bidIsLive: bidIsLive, sale:rt_params, buy:{}, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
 										}
 										else{
 											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
@@ -1013,7 +1029,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 											var search_complete = false;
 											if(that.excess_limit.buy > 0)
 												search_complete = true;
-											res.json({statusCode:"S", results: results, error: null, sale:{}, buy:rt_params, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
+											res.json({statusCode:"S", results: results, error: null, bidIsLive: bidIsLive, sale:{}, buy:rt_params, bid:{}, service:{}, completed:search_complete, chatCount:new_chat});
 										}
 										else{
 											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
@@ -1029,7 +1045,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 												search_complete = true;
 											
 											var nextBidMsg = '';
-											if(results && results.length==0){
+											//if(results && results.length==0){
 												var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];								
 												var bidSlotFrom = new Date();
 												bidSlotFrom.setHours(that.params['bid_slot_from'].split(':')[0]);
@@ -1040,7 +1056,8 @@ module.exports.getTransactions = function(req,res){//Fetch
 												while(that.params['bid_slot_days'].indexOf(daysInWeeks[bidSlotFrom.getDay()]) == -1){
 														bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
 														bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
-												}											
+												}
+											if(bidSlotFrom > new Date() || bidSlotTo < new Date()){
 												var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ ((bidSlotFrom.getMinutes()<10)?('0'+bidSlotFrom.getMinutes()):bidSlotFrom.getMinutes());
 												if(parseInt(bidSlotTimeFrom.split(":")[0]) > 12)
 													bidSlotTimeFrom = (parseInt(bidSlotTimeFrom.split(":")[0]) - 12) +":"+ bidSlotTimeFrom.split(":")[1] +"PM";
@@ -1055,7 +1072,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 												var nextBidDate = bidSlotFrom.getDate()+"/"+(bidSlotFrom.getMonth() - (-1))+"/"+bidSlotFrom.getFullYear();
 												nextBidMsg = "The Next bidding slot is on "+nextBidDate+" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
 											}
-											res.json({statusCode:"S", results: results, error: null, nextBidMsg: nextBidMsg, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
+											res.json({statusCode:"S", results: results, error: null, nextBidMsg: nextBidMsg, bidIsLive: bidIsLive, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
 										}
 										else{
 											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
@@ -1069,7 +1086,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 											var search_complete = false;
 											if(that.excess_limit.service > 0)
 												search_complete = true;
-											res.json({statusCode:"S", results: results, error: null, sale:{}, buy:{}, bid:{}, service:rt_params, completed:search_complete, chatCount:new_chat});
+											res.json({statusCode:"S", results: results, error: null, bidIsLive: bidIsLive, sale:{}, buy:{}, bid:{}, service:rt_params, completed:search_complete, chatCount:new_chat});
 										}
 										else{
 											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
@@ -1107,7 +1124,8 @@ module.exports.getTransactions = function(req,res){//Fetch
 														res.json({
 															statusCode:"S", 
 															results: results, 
-															error: null, 
+															error: null,
+															bidIsLive: bidIsLive,
 															sale:rt_sell_params, 
 															buy:rt_buy_params, 
 															bid:rt_bid_params, 
