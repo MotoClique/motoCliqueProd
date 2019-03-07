@@ -293,12 +293,14 @@ module.exports.addBid = function(req,res){//Add New
 									bidSlotFrom.setHours(Number(config_params['bid_slot_from'].split(':')[0]));
 									bidSlotFrom.setMinutes(Number(config_params['bid_slot_from'].split(':')[1]));
 									bidSlotFrom.setSeconds(00);
+									bidSlotFrom.setMilliseconds(000);
 								}
 								var bidSlotTo = new Date();
 								if(config_params['bid_slot_to']){
 									bidSlotTo.setHours(Number(config_params['bid_slot_to'].split(':')[0]));
 									bidSlotTo.setMinutes(Number(config_params['bid_slot_to'].split(':')[1]));
 									bidSlotTo.setSeconds(00);
+									bidSlotTo.setMilliseconds(000);
 								}
 								var bidValidFrom = bidSlotFrom;
 								var bidValidTo = bidSlotTo;
