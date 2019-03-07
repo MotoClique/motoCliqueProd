@@ -25,6 +25,7 @@ module.exports.sendNotification = function(doc){//Send
 				//Trigger Notification	
 				var query_alert = {"$and":[]};
 				var andCondtn = [
+					{user_id: {"$ne": doc.user_id}},
 					{deleted: {"$ne": true}},
 					{active: {"$eq": true}}
 				];
