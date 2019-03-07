@@ -563,7 +563,7 @@ module.exports.updateBid = function(req,res){//Update
 		doc.active = "";
 	}
 	
-	Bid.findOneAndUpdate({_id:doc._id},{$set: doc},{},(err, updated)=>{
+	Bid.findOneAndUpdate({_id:doc._id},{$set: doc},{new: true},(err, updated)=>{
 		if(err){
 			res.json({statusCode: 'F', msg: 'Failed to update', error: err});
 		}
@@ -571,6 +571,7 @@ module.exports.updateBid = function(req,res){//Update
 			if(doc.msg === 'D'){
 				ChatInbox.update({post_id: doc.bid_id}, {"$set": {post_deletion: true}}, {multi: true}, (updateChat_err, updateChat_res)=>{ });
 				Fav.remove({bid_sell_buy_id: doc.bid_id}, function(fav_err,fav_result){ });
+				ctrlNotification.sendBidClosedNotification(updated);
 			}
 			res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
 		}
