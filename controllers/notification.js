@@ -11,6 +11,7 @@ var UserAlert = mongoose.model('UserAlert');
 var Parameter = mongoose.model('Parameter');
 var DeviceReg = mongoose.model('DeviceReg');
 var ChatInbox = mongoose.model('ChatInbox');
+var BidBy = mongoose.model('BidBy');
 
 module.exports.sendNotification = function(doc){//Send
 	//Get API Keys
@@ -627,7 +628,315 @@ module.exports.getNewChatCount = function(user_id,callback){//Fetch the count of
 	});
 };
 
+module.exports.sendBidClosedNotification = function(doc){//Send
+	var bidby_query = {};
+	bidby_query.bid_id = {"$eq":doc.bid_id};
+	bidby_query.deleted = {"$ne": true};
+	BidBy.find(bidby_query,function(bidby_err, bidby_result){
+		if(bidby_result && bidby_result.length>0){
+			bidby_result.sort(function(a,b){
+				if (a.bid_date_time < b.bid_date_time)
+					return 1;
+				if (a.bid_date_time > b.bid_date_time)
+					return -1;
+				return 0;
+			});//descending sort
+							var bidWinner = bidby_result[0];
+							//Get API Keys
+							Parameter.find({},function(params_err, params_result){
+								var params = {};
+								if(params_result){
+										for(var p =0; p<params_result.length; p++){
+											params[params_result[p].parameter] = params_result[p].value;
+										}			
+										
+										var creator_query = {};
+										creator_query.user_id = {"$eq": doc.user_id};
+										creator_query.deleted = {"$ne": true};
+										Profile.find(creator_query,function(creator_profile_err, creator_profiles){
+											if(creator_profiles && creator_profiles.length > 0){
+												var query_profile = {};
+												query_profile.user_id = {"$eq": bidWinner.bid_by_user_id};
+												query_profile.deleted = {"$ne": true};
+												Profile.find(query_profile,function(profile_err, profiles){
+													if(profiles && profiles.length > 0){
+														
+														//Send SMS (to participant)
+														if(profiles[0].mobile){																			
+															var msgBody = 'Congratulation '+profiles[0].name+
+																			', you have won the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																			((doc.fuel_type)?doc.fuel_type:'')+
+																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
+																			' Please contact '+creator_profiles[0].name+
+																			' for further process of delivery and transitions. - Team MotoClique';
+															request.get({
+																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+															},
+															function(err_sms,httpResponse,body){
+																console.log(err_sms);
+															});
+														}
+														//Send SMS (to creator)
+														if(creator_profiles[0].mobile){																			
+															var msgBody = 'Congratulation '+profiles[0].name+
+																			', you have won the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																			((doc.fuel_type)?doc.fuel_type:'')+
+																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
+																			' Please contact '+creator_profiles[0].name+
+																			' for further process of delivery and transitions. - Team MotoClique';
+															request.get({
+																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+															},
+															function(err_sms,httpResponse,body){
+																console.log(err_sms);
+															});
+														}
+														
+														//Send EMAIL (to participant)
+														if(profiles[0].email){														
+															var msgBody = '<html>'+
+																				'<body>'+
+																					'<div style="min-height: 500px; width: 100%;">'+
+																					'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+																					'<div style="min-height: 100px; text-align: center;">'+
+																					'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+																					'</div>'+
+																					'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Congratulation</div>'+
+																					'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+																					'Congratulation '+profiles[0].name+', you have won the BID for '+
+																					'<span style="display:'+((doc.brand_name)?"inline;":"none;")+'">'+doc.brand_name+'</span>'+
+																					'<span style="display:'+((doc.model)?"inline;":"none;")+'">'+doc.model+'</span>'+
+																					'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
+																					', with the Final Amount Rs.'+
+																					'<span style="display:'+((doc.display_amount)?"inline;":"none;")+'">'+doc.display_amount+'</span>. '+
+																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transitions. - Team MotoClique'+
+																					'</div>'+
+																					'</div>'+
+																					'</div>'+
+																				'</body>'+
+																			'</html>';
+																			
+																			
+															var data = {
+																		to: profiles[0].email,
+																		subject: 'Congratulation!',
+																		message: msgBody
+																	};
+															googleMailAPI.sendEmail(data);
+														}
+														//Send EMAIL (to creator)
+														if(creator_profiles[0].email){														
+															var msgBody = '<html>'+
+																				'<body>'+
+																					'<div style="min-height: 500px; width: 100%;">'+
+																					'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+																					'<div style="min-height: 100px; text-align: center;">'+
+																					'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+																					'</div>'+
+																					'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Congratulation</div>'+
+																					'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+																					'Congratulation '+profiles[0].name+', you have won the BID for '+
+																					'<span style="display:'+((doc.brand_name)?"inline;":"none;")+'">'+doc.brand_name+'</span>'+
+																					'<span style="display:'+((doc.model)?"inline;":"none;")+'">'+doc.model+'</span>'+
+																					'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
+																					', with the Final Amount Rs.'+
+																					'<span style="display:'+((doc.display_amount)?"inline;":"none;")+'">'+doc.display_amount+'</span>. '+
+																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transitions. - Team MotoClique'+
+																					'</div>'+
+																					'</div>'+
+																					'</div>'+
+																				'</body>'+
+																			'</html>';
+																			
+																			
+															var data = {
+																		to: creator_profiles[0].email,
+																		subject: 'Congratulation!',
+																		message: msgBody
+																	};
+															googleMailAPI.sendEmail(data);
+														}
+														
+														//Send App Alert (to participant)
+														doc.to_user = profiles[0].user_id;
+														module.exports.sendBidClosedPushNotification(doc);
+														//Send App Alert (to creator)
+														doc.to_user = creator_profiles[0].user_id;
+														module.exports.sendBidClosedPushNotification(doc);
+													}
+												});
+											}
+										});
+								}
+							});
+		}
+	});		
+};
 
+module.exports.sendBidClosedPushNotification = function(doc){//Send push notification to app for bid closed			
+	var not_id = 2;
+	var alert_title = 'Congratulation';
+	module.exports.sendAppPushNotification(
+				{
+					"to": "-",
+					"data": {
+						"title": alert_title,
+						"message": 'Congratulation, you have won the BID for '+ doc.brand_name +' '+ doc.model +' '+ doc.variant,
+						"notId": not_id,
+						'content-available': '1'
+					}
+				},
+				doc.to_user
+	);
+};
+
+
+module.exports.sendBidPaticipateNotification = function(doc){//Send
+							//Get API Keys
+							Parameter.find({},function(params_err, params_result){
+								var params = {};
+								if(params_result){
+										for(var p =0; p<params_result.length; p++){
+											params[params_result[p].parameter] = params_result[p].value;
+										}			
+										
+										var creator_query = {};
+										creator_query.user_id = {"$eq": doc.user_id};
+										creator_query.deleted = {"$ne": true};
+										Profile.find(creator_query,function(creator_profile_err, creator_profiles){
+											if(creator_profiles && creator_profiles.length > 0){
+												var query_profile = {};
+												query_profile.user_id = {"$eq": doc.bid_by_user_id};
+												query_profile.deleted = {"$ne": true};
+												Profile.find(query_profile,function(profile_err, profiles){
+													if(profiles && profiles.length > 0){
+														
+														//Send SMS (to participant)
+														if(profiles[0].mobile){																			
+															var msgBody = 'You have participated in the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																			((doc.fuel_type)?doc.fuel_type:'')+
+																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
+																			((doc.current_bid_amount)?('Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
+																			' - Team MotoClique';
+															request.get({
+																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+															},
+															function(err_sms,httpResponse,body){
+																console.log(err_sms);
+															});
+														}
+														//Send SMS (to creator)
+														if(creator_profiles[0].mobile){																			
+															var msgBody = profiles[0].name+
+																			' has participated in your BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																			((doc.fuel_type)?doc.fuel_type:'')+
+																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
+																			((doc.current_bid_amount)?('Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
+																			' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+
+																			' for further process of delivery and transitions. - Team MotoClique';
+															request.get({
+																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+															},
+															function(err_sms,httpResponse,body){
+																console.log(err_sms);
+															});
+														}
+														
+														//Send EMAIL (to participant)
+														if(profiles[0].email){														
+															var msgBody = '<html>'+
+																				'<body>'+
+																					'<div style="min-height: 500px; width: 100%;">'+
+																					'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+																					'<div style="min-height: 100px; text-align: center;">'+
+																					'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+																					'</div>'+
+																					'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Confirmation</div>'+
+																					'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+																					'You have participated in the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																					((doc.fuel_type)?doc.fuel_type:'')+
+																					((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
+																					((doc.current_bid_amount)?('Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
+																					' - Team MotoClique'+
+																					'</div>'+
+																					'</div>'+
+																					'</div>'+
+																				'</body>'+
+																			'</html>';
+																			
+																			
+															var data = {
+																		to: profiles[0].email,
+																		subject: 'Confirmation!',
+																		message: msgBody
+																	};
+															googleMailAPI.sendEmail(data);
+														}
+														//Send EMAIL (to creator)
+														if(creator_profiles[0].email){														
+															var msgBody = '<html>'+
+																				'<body>'+
+																					'<div style="min-height: 500px; width: 100%;">'+
+																					'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+																					'<div style="min-height: 100px; text-align: center;">'+
+																					'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+																					'</div>'+
+																					'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Confirmation</div>'+
+																					'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+																					profiles[0].name+
+																					' has participated in your BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																					((doc.fuel_type)?doc.fuel_type:'')+
+																					((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
+																					((doc.current_bid_amount)?('Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
+																					' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+
+																					' for further process of delivery and transitions. - Team MotoClique'+
+																					'</div>'+
+																					'</div>'+
+																					'</div>'+
+																				'</body>'+
+																			'</html>';
+																			
+																			
+															var data = {
+																		to: creator_profiles[0].email,
+																		subject: 'Confirmation!',
+																		message: msgBody
+																	};
+															googleMailAPI.sendEmail(data);
+														}
+														
+														//Send App Alert (to participant)
+														//doc.to_user = profiles[0].user_id;
+														//doc.msg = 'Congratulation, you have won the BID for '+ doc.brand_name +' '+ doc.model +' '+ doc.variant;
+														//module.exports.sendBidParticipatePushNotification(doc);
+														//Send App Alert (to creator)
+														doc.to_user = creator_profiles[0].user_id;
+														doc.msg = profiles[0].name+' has participated in your BID for '+ doc.brand_name +' '+ doc.model +' '+ doc.variant;
+														module.exports.sendBidParticipatePushNotification(doc);
+													}
+												});
+											}
+										});
+								}
+							});
+};
+
+module.exports.sendBidParticipatePushNotification = function(doc){//Send push notification to app for bid participation			
+	var not_id = 3;
+	var alert_title = 'Confirmation';
+	module.exports.sendAppPushNotification(
+				{
+					"to": "-",
+					"data": {
+						"title": alert_title,
+						"message": doc.msg,
+						"notId": not_id,
+						'content-available': '1'
+					}
+				},
+				doc.to_user
+	);
+};
 
 
 
