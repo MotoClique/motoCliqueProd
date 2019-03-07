@@ -8,6 +8,7 @@ var UserSubMap = mongoose.model('UserSubMap');
 var Counter = mongoose.model('Counter');
 var DeviceReg = mongoose.model('DeviceReg');
 var ctrlCommon = require('./common');
+var ctrlSchedule = require('../schedule');
 
 //////////////////////////Users Profile Master Table////////////////////////////////
 var Profile = mongoose.model('Profile');
@@ -2323,6 +2324,7 @@ module.exports.addParameter = function(req,res){//Add New
 						res.json({statusCode: 'F', msg: 'Failed to add', error: err});
 					}
 					else{
+						ctrlSchedule.scheduleBidClosedCheckJob();
 						res.json({statusCode: 'S', msg: 'Entry added', result: result});							
 					}
 				});
@@ -2339,6 +2341,8 @@ module.exports.addParameter = function(req,res){//Add New
 				res.json({statusCode: 'F', msg: 'Failed to add', error: err});
 			}
 			else{
+				if(doc.parameter == 'bid_slot_days')
+				   ctrlSchedule.scheduleBidClosedCheckJob();
 				res.json({statusCode: 'S', msg: 'Entry added', result: result});							
 			}
 		});
@@ -2360,6 +2364,7 @@ module.exports.updateParameter = function(req,res){//Update
 						res.json({statusCode: 'F', msg: 'Failed to update', error: err});
 					}
 					else{
+						ctrlSchedule.scheduleBidClosedCheckJob();
 						res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
 					}
 				});				
@@ -2375,6 +2380,8 @@ module.exports.updateParameter = function(req,res){//Update
 				res.json({statusCode: 'F', msg: 'Failed to update', error: err});
 			}
 			else{
+				if(doc.parameter == 'bid_slot_days')
+				   ctrlSchedule.scheduleBidClosedCheckJob();
 				res.json({statusCode: 'S', msg: 'Entry updated', updated: updated});
 			}
 		});
