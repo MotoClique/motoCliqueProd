@@ -56,7 +56,8 @@ module.exports.checkBidClosed = function(params){//
 	var bid_slot_to = new Date();
 	bid_slot_to.setHours(hr);
 	bid_slot_to.setMinutes(min);
-	bid_slot_to.setSeconds(0);
+	bid_slot_to.setSeconds(00);
+	bid_slot_to.setMilliseconds(000);
 	var query = {};
 	query.deleted = {"$ne": true};
 	query.bid_valid_to = {"$eq": bid_slot_to};
