@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var Profile = mongoose.model('Profile');
 var ctrlBid = require('./bid');
 var ctrlCommon = require('./common');
+var ctrlNotification = require('./notification');
 
 //////////////////////////Bid By////////////////////////////////
 const BidBy = mongoose.model('BidBy');
@@ -68,33 +69,15 @@ module.exports.addBidBy = function(req,res){//Add New
 		query_bid.deleted = {"$ne": true};		
 		Bid.find(query_bid,function(err_bid, result_bid){
 			if(result_bid.length > 0){
-				//var date_split = [];
-				//var time_split = [];
-				var validTo = new Date();
-										
+				var validTo = new Date();										
 				if(result_bid[0].bid_valid_to){
-					/*var date_part = ((result_bid[0].bid_valid_to).split('T'))[0];
-					var time_part = ((result_bid[0].bid_valid_to).split('T'))[1];
-					if(date_part)
-						date_split = (date_part).split('/');
-					if(time_part)
-						time_split = (time_part).split(':');
-							
-					if(date_split[0] && date_split[1] && date_split[2] && time_split[0] && time_split[1])
-						validTo = new Date(date_split[1]+'/'+date_split[0]+'/'+date_split[2] +' '+ time_split[0]+':'+time_split[1]+':00');*/
 					validTo = result_bid[0].bid_valid_to;
 				}
-				
-				//var to = (result_bid[0].bid_valid_to).split('/');
-				//var toDateObj = new Date(to[2]+'-'+to[1]+'-'+to[0]);
-				console.log(validTo);
-				
+								
 				var currentDateObj = new Date();
-				console.log(currentDateObj);
-				if(validTo>currentDateObj && result_bid[0].bid_status === 'Active'){
-
-					if(result_bid[0].current_bid_amount == req.body.bid_amount){
-						
+				var validFrom =  result_bid[0].bid_valid_from;
+				if((validFrom<=currentDateObj && validTo>=currentDateObj) && result_bid[0].bid_status === 'Active'){
+					if(result_bid[0].current_bid_amount == req.body.bid_amount){						
 						var query = {};
 						query.user_id = {"$eq":req.payload.user_id};
 						Profile.find(query,function(profile_err, users){
@@ -129,6 +112,11 @@ module.exports.addBidBy = function(req,res){//Add New
 										updatedBid.bid_valid_to = bidValidDateObj.getDate() +"/"+ (bidValidDateObj.getMonth() - (-1)) +"/"+ bidValidDateObj.getFullYear() +"T"+ bidValidHrs +":"+ bidValidMins +":"+ bidValidSecs;*/
 										ctrlBid.updateBid({body:updatedBid, payload:req.payload, bidValidTo: (updatedBid.bid_valid_to).getTime()},res);
 										//res.json({statusCode: 'S', msg: 'Entry added', result: result});
+										var bid_complete_details = JSON.parse(JSON.stringify(result_bid[0]));
+										bid_complete_details['bid_by_user_id'] = result.bid_by_user_id;
+										bid_complete_details['bid_hike_by'] = result.bid_hike_by;
+										bid_complete_details['current_bid_amount'] = result.current_bid_amount;
+										ctrlNotification.sendBidPaticipateNotification(bid_complete_details);
 									}
 								});
 							}
