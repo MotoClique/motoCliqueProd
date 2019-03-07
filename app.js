@@ -98,6 +98,9 @@ var googleMailAPI = require('./gmail');
   (err) => { console.log(err); }
 );
 
+//Cron Job
+var job_schedule = require('./schedule');
+job_schedule.scheduleBidClosedCheckJob();
 
 app.get('/', function (req, res) {
   res.render('index.html', { pageCountMessage : null});
