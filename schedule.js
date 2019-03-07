@@ -2,6 +2,8 @@
 var cron = require('node-cron');
 var bidClosedChecktask = null;
 var Parameter = mongoose.model('Parameter');
+var ctrlNotification = require('./controllers/notification');
+var Bid = mongoose.model('Bid');
 
 module.exports.scheduleBidClosedCheckJob = function(){//
 	//Get Config
@@ -15,13 +17,17 @@ module.exports.scheduleBidClosedCheckJob = function(){//
 					var min = (params['bid_slot_to']).split(':')[1]; min = (min - (-5)).toString();
 					var hr = (params['bid_slot_to']).split(':')[0];
 					var day = (params['bid_slot_days']).replace(/\//g,",");
-					module.exports.scheduleJob(min.trim(),hr.trim(),'','',day.trim(),bidClosedChecktask);
+					
+					var checkBidClosed_func = function(){
+						module.exports.checkBidClosed(params);
+					};
+					module.exports.scheduleJob(min.trim(),hr.trim(),'','',day.trim(),bidClosedChecktask,checkBidClosed_func);
 				}
 		}
 	});
 };
 
-module.exports.scheduleJob = function(min,hr,date,month,day,task){//
+module.exports.scheduleJob = function(min,hr,date,month,day,task,task_func){//
 	if(task)
 		task.destroy();
 	var timeExpression = ''+((min)?min:"*")+
@@ -30,7 +36,7 @@ module.exports.scheduleJob = function(min,hr,date,month,day,task){//
 						' '+((month)?month:"*")+
 						' '+((day)?day:"*");
 	task = cron.schedule(timeExpression, () =>  {
-		  console.log('executed task');
+		  task_func();
 	},
 	{
 	  scheduled: false
@@ -42,3 +48,25 @@ module.exports.scheduleJob = function(min,hr,date,month,day,task){//
 module.exports.stopBidClosedCheckJob = function(){//
 	bidClosedChecktask.stop();
 };
+
+module.exports.checkBidClosed = function(params){//
+	var min = (params['bid_slot_to']).split(':')[1];
+	var hr = (params['bid_slot_to']).split(':')[0];
+	var bid_slot_to = new Date();
+	bid_slot_to.setHours(hr);
+	bid_slot_to.setMinutes(min);
+	bid_slot_to.setSeconds(0);
+	var query = {};
+	query.deleted = {"$ne": true};
+	query.bid_valid_to = {"$eq": bid_slot_to};
+	Bid.find(query, function(bid_err, bid_result){
+		if(bid_result && bid_result.length>0){
+			var results = [];
+			var loopCount = 0;				
+			bid_result.forEach(function(currentValue, index, arr){	
+				ctrlNotification.sendBidClosedNotification(currentValue);
+			});
+		}
+	});
+};
+
