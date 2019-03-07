@@ -36,6 +36,7 @@ module.exports.scheduleJob = function(min,hr,date,month,day,task,task_func){//
 						' '+((date)?date:"*")+
 						' '+((month)?month:"*")+
 						' '+((day)?day:"*");
+	console.log("Job scheduled on: "+timeExpression);
 	task = cron.schedule(timeExpression, () =>  {
 		  task_func();
 	},
