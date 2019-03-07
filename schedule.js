@@ -1,5 +1,6 @@
 //Schedule Job Here
 var cron = require('node-cron');
+var mongoose = require('mongoose');
 var bidClosedChecktask = null;
 var Parameter = mongoose.model('Parameter');
 var ctrlNotification = require('./controllers/notification');
