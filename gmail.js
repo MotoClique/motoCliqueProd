@@ -101,6 +101,7 @@ function listLabels(auth) {
 module.exports.sendEmail = function(req){
 	var headers_obj = {
 		  'To': req.to,
+		'From': "'Team MotoClique' <support@motoclique.in>",
 		  'Subject': req.subject
 		};
 	var	message = req.message;
