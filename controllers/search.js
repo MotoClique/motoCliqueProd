@@ -1049,15 +1049,19 @@ module.exports.getTransactions = function(req,res){//Fetch
 												var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];								
 												var bidSlotFrom = new Date();
 												bidSlotFrom.setHours(that.params['bid_slot_from'].split(':')[0]);
-												bidSlotFrom.setMinutes(that.params['bid_slot_from'].split(':')[1]);	
+												bidSlotFrom.setMinutes(that.params['bid_slot_from'].split(':')[1]);
+												bidSlotFrom = ctrlCommon.convertDateTime(bidSlotFrom, that.params.to_ist);
 												var bidSlotTo = new Date();
 												bidSlotTo.setHours(that.params['bid_slot_to'].split(':')[0]);
-												bidSlotTo.setMinutes(that.params['bid_slot_to'].split(':')[1]);	
+												bidSlotTo.setMinutes(that.params['bid_slot_to'].split(':')[1]);
+												bidSlotTo = ctrlCommon.convertDateTime(bidSlotTo, that.params.to_ist);
 												while(that.params['bid_slot_days'].indexOf(daysInWeeks[bidSlotFrom.getDay()]) == -1){
 														bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
 														bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
 												}
-											if(bidSlotFrom > new Date() || bidSlotTo < new Date()){
+												var currentDateTimeIST = new Date();
+												currentDateTimeIST = ctrlCommon.convertDateTime(currentDateTimeIST, that.params.to_ist);
+											if(bidSlotFrom > currentDateTimeIST || bidSlotTo < currentDateTimeIST){
 												var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ ((bidSlotFrom.getMinutes()<10)?('0'+bidSlotFrom.getMinutes()):bidSlotFrom.getMinutes());
 												if(parseInt(bidSlotTimeFrom.split(":")[0]) > 12)
 													bidSlotTimeFrom = (parseInt(bidSlotTimeFrom.split(":")[0]) - 12) +":"+ bidSlotTimeFrom.split(":")[1] +"PM";
