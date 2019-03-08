@@ -305,15 +305,16 @@ module.exports.addBid = function(req,res){//Add New
 								var bidValidFrom = bidSlotFrom;
 								var bidValidTo = bidSlotTo;
 								var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-								if(bidSlotFrom <= (new Date())){
+								if(bidSlotTo <= (new Date())){
 									bidValidFrom.setDate(bidValidFrom.getDate() - (-1));
 									bidValidTo.setDate(bidValidTo.getDate() - (-1));
+								}
 									
 									while(config_params['bid_slot_days'].indexOf(daysInWeeks[bidValidFrom.getDay()]) == -1){
 										bidValidFrom.setDate(bidValidFrom.getDate() - (-1));
 										bidValidTo.setDate(bidValidTo.getDate() - (-1));
 									}
-								}
+								
 								
 								var index_count = sequence.sequence_value;//1;
 								var d = new Date();

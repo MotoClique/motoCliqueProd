@@ -999,6 +999,12 @@ module.exports.getTransactions = function(req,res){//Fetch
 								var bidSlotTo = new Date();
 								bidSlotTo.setHours(that.params['bid_slot_to'].split(':')[0]);
 								bidSlotTo.setMinutes(that.params['bid_slot_to'].split(':')[1]);	
+								
+								if(bidSlotTo < new Date()){
+									bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
+									bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
+								}
+								
 								while(that.params['bid_slot_days'].indexOf(daysInWeeks[bidSlotFrom.getDay()]) == -1){
 									bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
 									bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
@@ -1055,12 +1061,20 @@ module.exports.getTransactions = function(req,res){//Fetch
 												bidSlotTo.setHours(that.params['bid_slot_to'].split(':')[0]);
 												bidSlotTo.setMinutes(that.params['bid_slot_to'].split(':')[1]);
 												bidSlotTo = ctrlCommon.convertDateTime(bidSlotTo, that.params.to_ist);
+												
+												var currentDateTimeIST = new Date();
+												currentDateTimeIST = ctrlCommon.convertDateTime(currentDateTimeIST, that.params.to_ist);
+												
+												if(bidSlotTo < currentDateTimeIST){
+													bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
+													bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
+												}
+												
 												while(that.params['bid_slot_days'].indexOf(daysInWeeks[bidSlotFrom.getDay()]) == -1){
 														bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
 														bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
 												}
-												var currentDateTimeIST = new Date();
-												currentDateTimeIST = ctrlCommon.convertDateTime(currentDateTimeIST, that.params.to_ist);
+												
 											if(bidSlotFrom > currentDateTimeIST || bidSlotTo < currentDateTimeIST){
 												var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ ((bidSlotFrom.getMinutes()<10)?('0'+bidSlotFrom.getMinutes()):bidSlotFrom.getMinutes());
 												if(parseInt(bidSlotTimeFrom.split(":")[0]) > 12)
