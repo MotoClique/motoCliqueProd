@@ -1087,8 +1087,16 @@ module.exports.getTransactions = function(req,res){//Fetch
 												else
 													bidSlotTimeTo += "AM";
 											
-												var nextBidDate = bidSlotFrom.getDate()+"/"+(bidSlotFrom.getMonth() - (-1))+"/"+bidSlotFrom.getFullYear();
-												nextBidMsg = "The Next bidding slot is on "+nextBidDate+" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
+												var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+												var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+												nextBidMsg = "Next bidding slot is on "+
+																months[bidSlotFrom.getMonth()]+" "+
+																bidSlotFrom.getDate()+", "+
+																bidSlotFrom.getFullYear()+" "+
+																days[bidSlotFrom.getDay()]+
+																" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
+												//var nextBidDate = bidSlotFrom.getDate()+"/"+(bidSlotFrom.getMonth() - (-1))+"/"+bidSlotFrom.getFullYear();
+												//nextBidMsg = "The Next bidding slot is on "+nextBidDate+" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
 											}
 											res.json({statusCode:"S", results: results, error: null, nextBidMsg: nextBidMsg, bidIsLive: bidIsLive, sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
 										}
