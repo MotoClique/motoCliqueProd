@@ -963,6 +963,48 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 					query_userSub.active = {"$eq": "X"};
 					query_userSub.deleted = {"$ne": true};
 					UserSubMap.find(query_userSub,function(err_userSub, result_userSub){
+						var nextBidMsg = '';
+						var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];								
+						var bidSlotFrom = new Date();
+						bidSlotFrom.setHours(params['bid_slot_from'].split(':')[0]);
+						bidSlotFrom.setMinutes(params['bid_slot_from'].split(':')[1]);
+						bidSlotFrom = ctrlCommon.convertDateTime(bidSlotFrom, params.to_ist);
+						var bidSlotTo = new Date();
+						bidSlotTo.setHours(params['bid_slot_to'].split(':')[0]);
+						bidSlotTo.setMinutes(params['bid_slot_to'].split(':')[1]);
+						bidSlotTo = ctrlCommon.convertDateTime(bidSlotTo, params.to_ist);
+						var currentDateTimeIST = new Date();
+						currentDateTimeIST = ctrlCommon.convertDateTime(currentDateTimeIST, params.to_ist);
+						if(bidSlotTo < currentDateTimeIST){
+							bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
+							bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
+						}					
+						while(params['bid_slot_days'].indexOf(daysInWeeks[bidSlotFrom.getDay()]) == -1){
+							bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
+							bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
+						}
+						if(bidSlotFrom > currentDateTimeIST || bidSlotTo < currentDateTimeIST){
+							var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ ((bidSlotFrom.getMinutes()<10)?('0'+bidSlotFrom.getMinutes()):bidSlotFrom.getMinutes());
+							if(parseInt(bidSlotTimeFrom.split(":")[0]) > 12)
+								bidSlotTimeFrom = (parseInt(bidSlotTimeFrom.split(":")[0]) - 12) +":"+ bidSlotTimeFrom.split(":")[1] +"PM";
+							else
+								bidSlotTimeFrom += "AM";
+							var bidSlotTimeTo = bidSlotTo.getHours() +":"+ ((bidSlotTo.getMinutes()<10)?('0'+bidSlotTo.getMinutes()):bidSlotTo.getMinutes());
+							if(parseInt(bidSlotTimeTo.split(":")[0]) > 12)
+								bidSlotTimeTo = (parseInt(bidSlotTimeTo.split(":")[0]) - 12) +":"+ bidSlotTimeTo.split(":")[1] +"PM";
+							else
+								bidSlotTimeTo += "AM";
+										
+							var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+							var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+							nextBidMsg = "Participate at next bidding slot on "+
+										months[bidSlotFrom.getMonth()]+" "+
+										bidSlotFrom.getDate()+", "+
+										bidSlotFrom.getFullYear()+" "+
+										days[bidSlotFrom.getDay()]+
+										" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
+						}
+						
 						if(result_userSub && result_userSub.length>0){
 							result_userSub.forEach(function(currentValue, indx, arr){
 								var query_profile = {};
@@ -982,6 +1024,7 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 															((doc.km_done)?(', '+doc.km_done+'km runned'):'')+
 															((doc.location)?(', located at '+doc.location):'')+
 															'. '+
+												    			nextBidMsg+' '+
 															routeLink+' ';
 												request.get({
 															url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
@@ -1017,7 +1060,7 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 																		'<div style="line-height: 28px; display:'+((doc.km_done)?"block;":"none;")+'">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
 																		'</div>'+
 																		'</div>'+
-																										
+																		'<div>'+nextBidMsg+'</div>'+							
 																		'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																										
 																		'</div>'+
