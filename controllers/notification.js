@@ -939,6 +939,109 @@ module.exports.sendBidParticipatePushNotification = function(doc){//Send push no
 	);
 };
 
-
+module.exports.sendNewBidNotification = function(doc){//Send New Bid Notification
+	//Get API Keys
+	Parameter.find({},function(params_err, params_result){
+		var params = {};
+		if(params_result){
+			for(var p =0; p<params_result.length; p++){
+				params[params_result[p].parameter] = params_result[p].value;
+			}			
+			var rights_query = {};
+			rights_query.screen = {"$eq": 'Bid'};
+			rights_query.field = {"$eq": "-"};
+			rights_query.deleted = {"$ne": true};	
+			AppScrFieldsRights.find(rights_query,function(rights_err, rights_result){
+				if(rights_result && rights_result.length>0){					
+					var query_userSub = {};
+					query_userSub.role_id = {"$eq": rights_result[0].role_id};
+					query_userSub.active = {"$eq": "X"};
+					query_userSub.deleted = {"$ne": true};
+					UserSubMap.find(query_userSub,function(err_userSub, result_userSub){
+						if(result_userSub && result_userSub.length>0){
+							result_userSub.forEach(function(currentValue, indx, arr){
+								var query_profile = {};
+								query_profile.user_id = {"$eq": currentValue.user_id};
+								query_profile.deleted = {"$ne": true};
+								Profile.find(query_profile,function(profile_err, profiles){
+									if(profiles.length > 0){											
+											//Send SMS
+											if(profiles[0].mobile && currentValue.notification_sms === 'X'){
+												var routePath = '/Bid/'+doc.bid_id;
+												var routeLink = 'https://motoclique.in/Container'+routePath;
+												var msgBody = 'Check out the new '+doc.transactionType+
+															' post of '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+															((doc.fuel_type)?doc.fuel_type:'')+
+															((doc.display_amount)?(', priced at Rs.'+doc.display_amount):'')+
+															((doc.year_of_reg)?(', registered on '+doc.year_of_reg):'')+
+															((doc.km_done)?(', '+doc.km_done+'km runned'):'')+
+															((doc.location)?(', located at '+doc.location):'')+
+															'. '+
+															routeLink+' ';
+												request.get({
+															url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+												},
+												function(err_sms,httpResponse,body){
+													console.log(err_sms);
+												});										
+											}
+											
+											//Send EMAIL
+											if(profiles[0].email && currentValue.notification_email === 'X'){
+												var routePath = '/Bid/'+doc.bid_id';
+												var msgBody = '<html>'+
+																	'<body>'+
+																		'<div style="min-height: 500px; width: 100%;">'+
+																		'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+																		'<div style="min-height: 100px; text-align: center;">'+
+																		'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+																		'</div>'+
+																		'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">'+doc.transactionType+'</div>'+
+																		'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+																		'<span style="display:'+((doc.brand_name)?"inline;":"none;")+'">'+doc.brand_name+'</span>'+
+																		'<span style="display:'+((doc.model)?"inline;":"none;")+'">'+doc.model+'</span>'+
+																		'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
+																		'</div>'+
+																		'<div style="text-align: center;"><a style="background:#e71b03; color: white !important;  line-height: 30px; width: 90%; text-decoration: none; padding-top: 8px; padding-bottom: 8px; padding-left: calc(50% - 50px); padding-right: calc(50% - 50px);" href="https://motoclique.in/Container'+routePath+'">OPEN</a></div>'+
+																		'<div style="border: 1px dashed #E71B03; margin: 20px; padding: 10px; font-family: Arial;">'+
+																		'<div style="font-size: 14px; width: 200px; margin-left: auto; margin-right: auto;">'+
+																		'<div style="line-height: 28px; display:'+((doc.fuel_type)?"block;":"none;")+'">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
+																		'<div style="line-height: 28px; display:'+((doc.display_amount)?"block;":"none;")+'">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_amount+'</span></div>'+
+																		'<div style="line-height: 28px; display:'+((doc.location)?"block;":"none;")+'">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
+																		'<div style="line-height: 28px; display:'+((doc.year_of_reg)?"block;":"none;")+'">Year of Registration: <span style="font-size: 15px; font-weight: 600;">'+doc.year_of_reg+'</span></div>'+
+																		'<div style="line-height: 28px; display:'+((doc.km_done)?"block;":"none;")+'">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
+																		'</div>'+
+																		'</div>'+
+																										
+																		'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
+																										
+																		'</div>'+
+																		'</div>'+
+																	'</body>'+
+																'</html>';
+																					
+												var data = {
+															to: profiles[0].email,
+															subject: doc.brand_name+' '+doc.model,
+															message: msgBody
+												};
+												googleMailAPI.sendEmail(data);
+											}
+											
+											//Send App Alert
+											if(currentValue.notification_app === 'X'){
+												doc.to_user = profiles[0].user_id;
+												module.exports.sendAlertPushNotification(doc);
+											}
+									}
+								});										
+							});
+						}
+					});
+				}
+			});
+		}
+	});	
+};
 
 
