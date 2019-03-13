@@ -435,6 +435,8 @@ module.exports.sendNotification = function(doc){//Send
 																									'<div style="line-height: 28px; display:'+((doc.km_done)?"block;":"none;")+'">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
 																									'</div>'+
 																									'</div>'+
+																									'<div style="font-size:12px; color:#A4A4A4; padding:2px;">You have received this mail because you have created an alert at MotoClique application. You can always unsubscribe from the alert, by deleting or changing the alert.</div>'+
+																									'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																									'</div>'+
 																									'</div>'+
 																								'</body>'+
@@ -744,6 +746,7 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																					'<span style="display:'+((doc.display_amount)?"inline;":"none;")+'">'+doc.display_amount+'</span>. '+
 																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transitions. - Team MotoClique'+
 																					'</div>'+
+															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																					'</div>'+
 																					'</div>'+
 																				'</body>'+
@@ -860,6 +863,7 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																					((doc.current_bid_amount)?('Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
 																					' - Team MotoClique'+
 																					'</div>'+
+															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																					'</div>'+
 																					'</div>'+
 																				'</body>'+
@@ -892,6 +896,7 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																					' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+
 																					' for further process of delivery and transitions. - Team MotoClique'+
 																					'</div>'+
+															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																					'</div>'+
 																					'</div>'+
 																				'</body>'+
