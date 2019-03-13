@@ -993,7 +993,7 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 											
 											//Send EMAIL
 											if(profiles[0].email && currentValue.notification_email === 'X'){
-												var routePath = '/Bid/'+doc.bid_id';
+												var routePath = '/Bid/'+doc.bid_id;
 												var msgBody = '<html>'+
 																	'<body>'+
 																		'<div style="min-height: 500px; width: 100%;">'+
