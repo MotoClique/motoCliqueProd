@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 
 var UserSubMapSchema = new mongoose.Schema({
+	ORDERID:{
+		type: String 
+	},
 	user_id:{
 		type: String,
 		required: true 
