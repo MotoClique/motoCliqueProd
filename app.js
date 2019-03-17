@@ -65,6 +65,7 @@ require('./models/enduser/thumbs_down');
 require('./models/enduser/counter');
 require('./models/enduser/chat_inbox');
 require('./models/enduser/chat_details');
+require('./models/enduser/payment_txn_log');
 
 var mongoose = require('mongoose');
 var passport = require('passport');
