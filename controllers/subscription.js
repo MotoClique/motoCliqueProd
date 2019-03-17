@@ -2,6 +2,20 @@
 const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
+var success_html = '<html>'+
+'<head></head> '+
+'<body style=""> '+
+'<div style="width:100%; height:100%; display:flex; flex-direction: column; justify-content:center; align-items:center;"> '+
+'<div style="width: 110px; text-align: center; border: 2px solid #E71B03; border-radius: 60px; line-height: 110px;">'+
+'	<span style="font-size:60px; color:#E71B03;">&#10004;</span>'+
+'</div>'+
+'<div style="font-size:20px; color:#E71B03;">Transaction Successful!</div>'+
+'</div>	 '+
+'<script>'+
+''+		
+'</script>'+
+'</body> '+
+'</html>';
 
 //////////////////////////User Subscription Mapping Table////////////////////////////////
 const UserSubMap = mongoose.model('UserSubMap');
@@ -25,45 +39,44 @@ module.exports.getUserSubMap = function(req,res){//Fetch
 	});
 };
 module.exports.addUserSubMap = function(req,res){//Add New
-	var tdyObj = new Date();
-	var valid_from = tdyObj.getDate() +"/"+ (tdyObj.getMonth() - (-1)) +"/"+ tdyObj.getFullYear() ;
-	var valid_to = "";
-	var validity_unit = req.body.validity_unit.toLowerCase();
-	if(validity_unit.includes("hour")){
-		var d = new Date();
-		d.setTime(d.getTime() + (parseInt(req.body.validity_period)*60*60*1000)); 
-		valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-	}
-	else if(validity_unit.includes("day")){
-		var d = new Date();
-		d.setDate(d.getDate() + parseInt(req.body.validity_period));
-		valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-	}
-	else if(validity_unit.includes("month")){
-		var d = new Date();
-		d.setMonth(d.getMonth() + parseInt(req.body.validity_period));
-		valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-	}
-	else if(validity_unit.includes("year")){
-		var d = new Date();
-		d.setFullYear(d.getFullYear() + parseInt(req.body.validity_period));
-		valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
-	}
 	var Subscription = mongoose.model('Subscription');
-	var query = {"subscription_id":{"$eq":req.body.subscription_id}};
-	
+	var query = {"subscription_id":{"$eq":req.body.subscription_id}};	
 	Subscription.find(query,function(err, result){
 		if(err){
-			res.json({statusCode: 'F', msg: 'Failed to add', error: err});
+			res.json({statusCode: 'F', msg: 'Failed to add Subscription.', error: err});
 		}else if(result.length && result.length > 0){
-			var d = new Date();
-			var at = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+			var tdyObj = new Date();
+			var valid_from = tdyObj.getDate() +"/"+ (tdyObj.getMonth() - (-1)) +"/"+ tdyObj.getFullYear() ;
+			var valid_to = "";
+			var validity_unit = result[0].validity_unit.toLowerCase();
+			if(validity_unit.includes("hour")){
+				var d = new Date();
+				d.setTime(d.getTime() + (parseInt(result[0].validity_period)*60*60*1000)); 
+				valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+			}
+			else if(validity_unit.includes("day")){
+				var d = new Date();
+				d.setDate(d.getDate() + parseInt(result[0].validity_period));
+				valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+			}
+			else if(validity_unit.includes("month")){
+				var d = new Date();
+				d.setMonth(d.getMonth() + parseInt(result[0].validity_period));
+				valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+			}
+			else if(validity_unit.includes("year")){
+				var d = new Date();
+				d.setFullYear(d.getFullYear() + parseInt(result[0].validity_period));
+				valid_to = d.getDate() +"/"+ (d.getMonth() - (-1)) +"/"+ d.getFullYear() ;
+			}
+			
 			let newSubscription = new UserSubMap({
+				ORDERID: req.body.ORDERID,
 				user_id: req.body.user_id,
 				subscription_id: req.body.subscription_id,
-				subscription_name: req.body.subscription_name,
-				app_id: req.body.app_id,
-				app_name: req.body.app_name,
+				subscription_name: result[0].subscription_name,
+				app_id: result[0].app_id,
+				app_name: result[0].app_name,
 				role_id: result[0].role_id,
 				valid_from: valid_from, 
 				valid_to: valid_to,
@@ -78,24 +91,27 @@ module.exports.addUserSubMap = function(req,res){//Add New
 				notification_email: result[0].notification_email,
 				notification_app: result[0].notification_app,
 				active: "X",
-				createdBy: req.payload.user_id,
-				createdAt: d,
-				changedBy: req.payload.user_id,
-				changedAt: d,
-				deleted: req.body.deleted
+				createdBy: req.body.user_id,
+				createdAt: tdyObj,
+				changedBy: req.body.user_id,
+				changedAt: tdyObj,
+				deleted: false
 			});
 			
 			UserSubMap.updateMany({"user_id": {$eq: req.body.user_id}},{$set: {"active": "-"}},{upsert: false},(update_err, update_result)=>{
 				if(update_err){
-					res.json({statusCode: 'F', msg: 'Failed to add', error: update_err});
+					res.json({statusCode: 'F', msg: 'Failed to add Subscription.', error: update_err});
 				}
 				else{
 					newSubscription.save((save_err, save_result)=>{
 						if(save_err){
-							res.json({statusCode: 'F', msg: 'Failed to add', error: save_err});
+							res.json({statusCode: 'F', msg: 'Failed to add Subscription.', error: save_err});
 						}
 						else{
-							res.json({statusCode: 'S', msg: 'Entry added', results: save_result});
+							//res.json({statusCode: 'S', msg: 'Entry added', results: save_result});
+							res.writeHead(200, {'Content-Type': 'text/html'});
+							res.write(success_html);
+							res.end();
 						}
 					});
 				}
