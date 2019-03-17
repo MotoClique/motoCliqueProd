@@ -144,7 +144,7 @@ module.exports.buySubscription = function(req,res){//Buy Subscription
 					website: "WEBSTAGING",
 					industry_type: "Retail",
 					channel: "WEB",
-					callback: "https://motoclique.in/api/callback"
+					callback: "https://motoclique.in/api/paymentCallback"
 				}
 				
 				var order = {};
@@ -253,7 +253,7 @@ module.exports.buySubscriptionCallback = function(req,res){//Buy Subscription
 							website: "WEBSTAGING",
 							industry_type: "Retail",
 							channel: "WEB",
-							callback: "http://localhost:3000/callback"
+							callback: "https://motoclique.in/api/paymentCallback"
 						};
 
 						// verify the checksum
@@ -305,7 +305,7 @@ module.exports.buySubscriptionTxnVerification = function(req,res){//Buy Subscrip
 							website: "WEBSTAGING",
 							industry_type: "Retail",
 							channel: "WEB",
-							callback: "http://localhost:3000/callback"
+							callback: "https://motoclique.in/api/paymentCallback"
 			};
 						
 			var post_data = '';
