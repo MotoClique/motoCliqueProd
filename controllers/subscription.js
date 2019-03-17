@@ -12,7 +12,12 @@ var success_html = '<html>'+
 '<div style="font-size:20px; color:#E71B03;">Transaction Successful!</div>'+
 '</div>	 '+
 '<script>'+
-''+		
+' setTimeout(function(){ '+
+	'if(window.cordova) '+
+		'window.location.replace("file:///android_asset/www/index.html"); '+
+	'else '+
+		'window.location.replace("https://motoclique.in"); '+
+'},3000); '+		
 '</script>'+
 '</body> '+
 '</html>';
