@@ -261,5 +261,11 @@ var ctrlExportImportTable = require('./controllers/export_import_table');
 router.get('/exportToCsv/:id', ctrlExportImportTable.exportToCsv);
 router.post('/importFromCsv', ctrlExportImportTable.importFromCsv);
 
+//PAYMENT TRANSACTION
+var ctrlPayment = require('./controllers/payment_txn');
+router.get('/paymentTxn', ctrlPayment.getPaymentTxn);
+router.post('/buySubscription', ctrlPayment.buySubscription);
+router.post('/paymentCallback', ctrlPayment.buySubscriptionCallback);
+
 
 module.exports = router;
