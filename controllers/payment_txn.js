@@ -16,7 +16,12 @@ var success_html = '<html>'+
 '<div style="font-size:20px; color:#E71B03;">Transaction Successful!</div>'+
 '</div>	 '+
 '<script>'+
-''+		
+' setTimeout(function(){ '+
+	'if(window.cordova) '+
+		'window.location.replace("file:///android_asset/www/index.html"); '+
+	'else '+
+		'window.location.replace("https://motoclique.in"); '+
+'},3000); '+		
 '</script>'+
 '</body> '+
 '</html>';
@@ -31,7 +36,12 @@ var pending_html = '<html>'+
 '<div style="font-size:20px; color:#E71B03;">Transaction Pending!</div>'+
 '</div>	 '+
 '<script>'+
-''+		
+' setTimeout(function(){ '+
+	'if(window.cordova) '+
+		'window.location.replace("file:///android_asset/www/index.html"); '+
+	'else '+
+		'window.location.replace("https://motoclique.in"); '+
+'},3000); '+	
 '</script>'+
 '</body> '+
 '</html>';
@@ -46,7 +56,12 @@ var failed_html = '<html>'+
 '<div style="font-size:20px; color:#E71B03;">Transaction Failed!</div>'+
 '</div>	 '+
 '<script>'+
-''+		
+' setTimeout(function(){ '+
+	'if(window.cordova) '+
+		'window.location.replace("file:///android_asset/www/index.html"); '+
+	'else '+
+		'window.location.replace("https://motoclique.in"); '+
+'},3000); '+		
 '</script>'+
 '</body> '+
 '</html>';
@@ -128,7 +143,7 @@ module.exports.buySubscription = function(req,res){//Buy Subscription
 					website: "WEBSTAGING",
 					industry_type: "Retail",
 					channel: "WEB",
-					callback: "http://localhost:3000/callback"
+					callback: "https://motoclique.in/api/callback"
 				}
 				
 				var order = {};
