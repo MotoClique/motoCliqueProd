@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 const checksum_lib = require('../checksum/checksum.js');
 const https = require('https');
 var userSubMap = require('./subscription');
+var Parameter = mongoose.model('Parameter');
 var prd_env = false;
 
 var success_html = '<html>'+
