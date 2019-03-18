@@ -2,6 +2,7 @@
 const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
+const PaymentTxn = mongoose.model('PaymentTxn');
 var success_html = '<html>'+
 '<head></head> '+
 '<body style=""> '+
@@ -17,7 +18,7 @@ var success_html = '<html>'+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
 		'window.location.replace("https://motoclique.in"); '+
-'},3000); '+		
+'},10000); '+		
 '</script>'+
 '</body> '+
 '</html>';
@@ -113,10 +114,15 @@ module.exports.addUserSubMap = function(req,res){//Add New
 							res.json({statusCode: 'F', msg: 'Failed to add Subscription.', error: save_err});
 						}
 						else{
+							var payment = {};
+							payment.ORDERID = save_result.ORDERID;
+							payment.sub_mapping_verified = true;
+							PaymentTxn.findOneAndUpdate({ORDERID: payment.ORDERID},{$set: payment},{new:true},(payment_err, payment_result)=>{
 							//res.json({statusCode: 'S', msg: 'Entry added', results: save_result});
 							res.writeHead(200, {'Content-Type': 'text/html'});
 							res.write(success_html);
 							res.end();
+							});
 						}
 					});
 				}
