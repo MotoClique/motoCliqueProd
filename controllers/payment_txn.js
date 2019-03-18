@@ -22,7 +22,7 @@ var success_html = '<html>'+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
 		'window.location.replace("https://motoclique.in"); '+
-'},3000); '+		
+'},6000); '+		
 '</script>'+
 '</body> '+
 '</html>';
@@ -42,7 +42,7 @@ var pending_html = '<html>'+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
 		'window.location.replace("https://motoclique.in"); '+
-'},3000); '+	
+'},6000); '+	
 '</script>'+
 '</body> '+
 '</html>';
@@ -62,13 +62,29 @@ var failed_html = '<html>'+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
 		'window.location.replace("https://motoclique.in"); '+
-'},3000); '+		
+'},6000); '+		
 '</script>'+
 '</body> '+
 '</html>';
 	
 //////////////////////////PAYMENT TRANSACTION Table////////////////////////////////
 const PaymentTxn = mongoose.model('PaymentTxn');
+
+module.exports.getPendingPaymentTxn = function(req,res){//Fetch Pending Transaction
+	var query = {};
+	query.user_id = {"$eq":req.payload.user_id};
+	query.STATUS = {"$eq": "PENDING"};
+	query.txn_requested = {"$eq": true};
+	query.checksum_verified = {"$eq": true};
+	query.txn_verified = {"$eq": false};
+	
+	PaymentTxn.find(query,function(err, result){
+		if(err)
+		   res.json({statusCode:"F", results: result, error: err});
+		else
+			res.json({statusCode:"S", results: result, error: err});
+	});
+};
 
 module.exports.getPaymentTxn = function(req,res){//Fetch
 	var query = {};
