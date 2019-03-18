@@ -18,7 +18,7 @@ var success_html = '<html>'+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
 		'window.location.replace("https://motoclique.in"); '+
-'},10000); '+		
+'},6000); '+		
 '</script>'+
 '</body> '+
 '</html>';
