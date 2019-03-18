@@ -262,6 +262,7 @@ module.exports.buySubscriptionCallback = function(req,res){//Buy Subscription
 						var checksum_result = checksum_lib.verifychecksum(post_data, PaytmConfig.key, checksumhash);
 						
 						var transaction = {};
+						transaction.ORDERID = post_data.ORDERID;
 						transaction.checksum_verified = checksum_result;
 						module.exports.updatePaymentTxn(transaction, function(status,update_err,update_res){
 							if(checksum_result){
@@ -337,6 +338,7 @@ module.exports.buySubscriptionTxnVerification = function(req,res){//Buy Subscrip
 					post_res.on('end', function(){
 						var _result = JSON.parse(response);
 						var transaction = {};
+						transaction.ORDERID = req.body.ORDERID;
 						transaction.txn_verified = (_result.STATUS == 'TXN_SUCCESS')?true:false;
 						module.exports.updatePaymentTxn(transaction, function(status,update_err,update_res){
 							if(_result.STATUS == 'TXN_SUCCESS'){
