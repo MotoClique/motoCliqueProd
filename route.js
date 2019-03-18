@@ -266,6 +266,6 @@ var ctrlPayment = require('./controllers/payment_txn');
 router.get('/paymentTxn', auth, ctrlPayment.getPaymentTxn);
 router.post('/public/node/buySubscription', auth, ctrlPayment.buySubscription);
 router.post('/paymentCallback', ctrlPayment.buySubscriptionCallback);
-
+router.get('/pendingPaymentTxn', auth, ctrlPayment.getPendingPaymentTxn);
 
 module.exports = router;
