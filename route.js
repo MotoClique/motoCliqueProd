@@ -263,7 +263,7 @@ router.post('/importFromCsv', ctrlExportImportTable.importFromCsv);
 
 //PAYMENT TRANSACTION
 var ctrlPayment = require('./controllers/payment_txn');
-router.get('/paymentTxn', ctrlPayment.getPaymentTxn);
+router.get('/paymentTxn', auth, ctrlPayment.getPaymentTxn);
 router.post('/public/node/buySubscription', auth, ctrlPayment.buySubscription);
 router.post('/paymentCallback', ctrlPayment.buySubscriptionCallback);
 
