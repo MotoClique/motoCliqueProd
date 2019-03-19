@@ -1089,11 +1089,11 @@ module.exports.getTransactions = function(req,res){//Fetch
 											
 												var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 												var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-												nextBidMsg = "Next bidding slot is on "+
+												nextBidMsg = "Next bidding slot is on <br> "+
 																months[bidSlotFrom.getMonth()]+" "+
 																bidSlotFrom.getDate()+", "+
 																bidSlotFrom.getFullYear()+" "+
-																days[bidSlotFrom.getDay()]+
+																days[bidSlotFrom.getDay()]+" <br> "+
 																" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
 												//var nextBidDate = bidSlotFrom.getDate()+"/"+(bidSlotFrom.getMonth() - (-1))+"/"+bidSlotFrom.getFullYear();
 												//nextBidMsg = "The Next bidding slot is on "+nextBidDate+" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
