@@ -671,7 +671,7 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
 																			' Please contact '+creator_profiles[0].name+
-																			' for further process of delivery and transitions. - Team MotoClique';
+																			' for further process of delivery and transaction. - Team MotoClique';
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
@@ -686,7 +686,7 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
 																			' Please contact '+creator_profiles[0].name+
-																			' for further process of delivery and transitions. - Team MotoClique';
+																			' for further process of delivery and transaction. - Team MotoClique';
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
@@ -712,7 +712,7 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																					'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
 																					', with the Final Amount Rs.'+
 																					'<span style="display:'+((doc.display_amount)?"inline;":"none;")+'">'+doc.display_amount+'</span>. '+
-																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transitions. - Team MotoClique'+
+																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transaction. - Team MotoClique'+
 																					'</div>'+
 																					'</div>'+
 																					'</div>'+
@@ -744,7 +744,7 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																					'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
 																					', with the Final Amount Rs.'+
 																					'<span style="display:'+((doc.display_amount)?"inline;":"none;")+'">'+doc.display_amount+'</span>. '+
-																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transitions. - Team MotoClique'+
+																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transaction. - Team MotoClique'+
 																					'</div>'+
 															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																					'</div>'+
@@ -837,7 +837,7 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
 																			((doc.current_bid_amount)?('Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
 																			' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+
-																			' for further process of delivery and transitions. - Team MotoClique';
+																			' for further process of delivery and transaction. - Team MotoClique';
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
@@ -894,7 +894,7 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																					((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
 																					((doc.current_bid_amount)?('Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
 																					' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+
-																					' for further process of delivery and transitions. - Team MotoClique'+
+																					' for further process of delivery and transaction. - Team MotoClique'+
 																					'</div>'+
 															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																					'</div>'+
