@@ -3,7 +3,10 @@ const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
 const PaymentTxn = mongoose.model('PaymentTxn');
-var success_html = '<html>'+
+var ctrlGlobalVar = require('../globalVar');
+
+module.exports.success_html = function(){
+var html = '<html>'+
 '<head></head> '+
 '<body style=""> '+
 '<div style="width:100%; height:100%; display:flex; flex-direction: column; justify-content:center; align-items:center;"> '+
@@ -17,11 +20,13 @@ var success_html = '<html>'+
 	'if(window.cordova) '+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
-		'window.location.replace("https://motoclique.in"); '+
+		'window.location.replace("'+ctrlGlobalVar.getGlobalVariable("hostname")+'"); '+
 '},6000); '+		
 '</script>'+
 '</body> '+
 '</html>';
+	return html;
+};
 
 //////////////////////////User Subscription Mapping Table////////////////////////////////
 const UserSubMap = mongoose.model('UserSubMap');
@@ -120,7 +125,7 @@ module.exports.addUserSubMap = function(req,res){//Add New
 							PaymentTxn.findOneAndUpdate({ORDERID: payment.ORDERID},{$set: payment},{new:true},(payment_err, payment_result)=>{
 							//res.json({statusCode: 'S', msg: 'Entry added', results: save_result});
 							res.writeHead(200, {'Content-Type': 'text/html'});
-							res.write(success_html);
+							res.write(module.exports.success_html());
 							res.end();
 							});
 						}

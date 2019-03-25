@@ -5,9 +5,11 @@ const checksum_lib = require('../checksum/checksum.js');
 const https = require('https');
 var userSubMap = require('./subscription');
 var Parameter = mongoose.model('Parameter');
+var ctrlGlobalVar = require('../globalVar');
 var prd_env = false;
 
-var success_html = '<html>'+
+module.exports.success_html = function(){
+var html = '<html>'+
 '<head></head> '+
 '<body style=""> '+
 '<div style="width:100%; height:100%; display:flex; flex-direction: column; justify-content:center; align-items:center;"> '+
@@ -21,13 +23,16 @@ var success_html = '<html>'+
 	'if(window.cordova) '+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
-		'window.location.replace("https://motoclique.in"); '+
+		'window.location.replace("'+ctrlGlobalVar.getGlobalVariable("hostname")+'"); '+
 '},6000); '+		
 '</script>'+
 '</body> '+
 '</html>';
+	return html;
+};
 
-var pending_html = '<html>'+
+module.exports.pending_html = function(){
+var html = '<html>'+
 '<head></head> '+
 '<body style=""> '+
 '<div style="width:100%; height:100%; display:flex; flex-direction: column; justify-content:center; align-items:center;"> '+
@@ -41,13 +46,16 @@ var pending_html = '<html>'+
 	'if(window.cordova) '+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
-		'window.location.replace("https://motoclique.in"); '+
+		'window.location.replace("'+ctrlGlobalVar.getGlobalVariable("hostname")+'"); '+
 '},6000); '+	
 '</script>'+
 '</body> '+
 '</html>';
+	return html;
+};
 
-var failed_html = '<html>'+
+module.exports.failed_html = function(){
+var html = '<html>'+
 '<head></head> '+
 '<body style=""> '+
 '<div style="width:100%; height:100%; display:flex; flex-direction: column; justify-content:center; align-items:center;"> '+
@@ -61,11 +69,13 @@ var failed_html = '<html>'+
 	'if(window.cordova) '+
 		'window.location.replace("file:///android_asset/www/index.html"); '+
 	'else '+
-		'window.location.replace("https://motoclique.in"); '+
+		'window.location.replace("'+ctrlGlobalVar.getGlobalVariable("hostname")+'"); '+
 '},6000); '+		
 '</script>'+
 '</body> '+
 '</html>';
+	return html;
+};
 	
 //////////////////////////PAYMENT TRANSACTION Table////////////////////////////////
 const PaymentTxn = mongoose.model('PaymentTxn');
@@ -138,6 +148,7 @@ module.exports.deletePaymentTxn = function(req,res){//Delete
 };
 
 module.exports.buySubscription = function(req,res){//Buy Subscription
+if(ctrlGlobalVar.getGlobalVariable('hostname')){
 	Parameter.find({},function(params_err, params_result){
 		if(params_result && params_result.length>0){
 			var config_params = {};
@@ -154,13 +165,17 @@ module.exports.buySubscription = function(req,res){//Buy Subscription
 				order_id += (currentDateTime.getMinutes() > 9)?(currentDateTime.getMinutes()):('0'+ currentDateTime.getMinutes());
 				order_id += (currentDateTime.getSeconds() > 9)?(currentDateTime.getSeconds()):('0'+ currentDateTime.getSeconds());
 				
+				var callback_url = '';
+				if(ctrlGlobalVar.getGlobalVariable('hostname'))
+					callback_url = ctrlGlobalVar.getGlobalVariable('hostname') + '/api/paymentCallback';
+				
 				var PaytmConfig = {
 					mid: "hmaLsf12637844253552", //config_params['mid'],
 					key: "WeF48eF#O@@Iw3F%",
 					website: "WEBSTAGING",
 					industry_type: "Retail",
 					channel: "WEB",
-					callback: "https://motoclique.in/api/paymentCallback"
+					callback: callback_url
 				}
 				
 				var order = {};
@@ -247,6 +262,10 @@ module.exports.buySubscription = function(req,res){//Buy Subscription
 			res.json({statusCode:"F", msg:"Unable to fetch configuration parameter.", results: null, error: params_err});
 		}
 	});
+	}
+	else{
+		res.json({statusCode:"F", msg:"Unable to proceed currently. Try Again.", results: null, error: null});
+	}
 };
 
 module.exports.buySubscriptionCallback = function(req,res){//Buy Subscription
@@ -263,13 +282,18 @@ module.exports.buySubscriptionCallback = function(req,res){//Buy Subscription
 						params_result.forEach(function(val,indx,arr){
 							config_params[val.parameter] = val.value;
 						});
+						
+						var callback_url = '';
+						if(ctrlGlobalVar.getGlobalVariable('hostname'))
+							callback_url = ctrlGlobalVar.getGlobalVariable('hostname') + '/api/paymentCallback';
+						
 						var PaytmConfig = {
 							mid: "hmaLsf12637844253552", //config_params['mid'],
 							key: "WeF48eF#O@@Iw3F%",
 							website: "WEBSTAGING",
 							industry_type: "Retail",
 							channel: "WEB",
-							callback: "https://motoclique.in/api/paymentCallback"
+							callback: callback_url
 						};
 
 						// verify the checksum
@@ -287,7 +311,7 @@ module.exports.buySubscriptionCallback = function(req,res){//Buy Subscription
 							}
 							else{
 								res.writeHead(200, {'Content-Type': 'text/html'});
-								res.write(failed_html);
+								res.write(module.exports.failed_html());
 								res.end();
 							}
 						});
@@ -299,7 +323,7 @@ module.exports.buySubscriptionCallback = function(req,res){//Buy Subscription
 			}
 			else{
 				res.writeHead(200, {'Content-Type': 'text/html'});
-				res.write(failed_html);
+				res.write(module.exports.failed_html());
 				res.end();
 			}
 		//}
@@ -316,13 +340,19 @@ module.exports.buySubscriptionTxnVerification = function(req,res){//Buy Subscrip
 			params_result.forEach(function(val,indx,arr){
 				config_params[val.parameter] = val.value;
 			});
+			
+			var callback_url = '';
+			if(ctrlGlobalVar.getGlobalVariable('hostname'))
+				callback_url = ctrlGlobalVar.getGlobalVariable('hostname') + '/api/paymentCallback';
+						
+			
 			var PaytmConfig = {
 							mid: "hmaLsf12637844253552", //config_params['mid'],
 							key: "WeF48eF#O@@Iw3F%",
 							website: "WEBSTAGING",
 							industry_type: "Retail",
 							channel: "WEB",
-							callback: "https://motoclique.in/api/paymentCallback"
+							callback: callback_url
 			};
 						
 			var post_data = '';
@@ -362,12 +392,12 @@ module.exports.buySubscriptionTxnVerification = function(req,res){//Buy Subscrip
 							}
 							else if(_result.STATUS == 'PENDING'){
 								res.writeHead(200, {'Content-Type': 'text/html'});
-								res.write(pending_html);
+								res.write(module.exports.pending_html());
 								res.end();
 							}
 							else{
 								res.writeHead(200, {'Content-Type': 'text/html'});
-								res.write(failed_html);
+								res.write(module.exports.failed_html());
 								res.end();
 							}
 						});												
