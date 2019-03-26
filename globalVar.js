@@ -1,8 +1,9 @@
 //Handle Global Variable
-var globalVar = {};
+var globalVar = {hostname: "https://motoclique.in"};
 
 module.exports.setGlobalVariable = function(param,val){
-	globalVar[param] = val;
+	if(!globalVar[param])
+		globalVar[param] = val;
 };
 
 module.exports.getGlobalVariable = function(param){
