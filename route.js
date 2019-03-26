@@ -17,6 +17,9 @@ router.post('/changePassword', ctrlAuth.changePassword);
 router.get('/sendOTP', ctrlAuth.sendOTP);
 router.post('/loginByOtp', ctrlAuth.loginByOtp);
 
+router.get('/sendEmailOTP', auth, ctrlAuth.sendEmailOTP);
+router.post('/verifyEmailOTP', auth, ctrlAuth.verifyEmailOTP);
+
 //Admin router
 var ctrlAdmin = require('./controllers/admin');
 // profile

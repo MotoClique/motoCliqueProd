@@ -4,9 +4,11 @@ const mongoose = require('mongoose');
 var OtpSchema = new mongoose.Schema({
 	mobile:{
 		type: String,
-		required: true,
-		index: true,
-		unique: true
+		index: true
+	},
+	email:{
+		type: String,
+		index: true
 	},
 	otp:{
 		type: String
@@ -16,5 +18,4 @@ var OtpSchema = new mongoose.Schema({
 	}
 });
 
-OtpSchema.index({ mobile: 1},{unique: true});
 mongoose.model('Otp', OtpSchema);

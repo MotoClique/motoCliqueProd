@@ -8,6 +8,7 @@ var DeviceReg = mongoose.model('DeviceReg');
 var Parameter = mongoose.model('Parameter');
 const async = require("async");
 const request = require('request');
+const googleMailAPI = require('../gmail');
 
 module.exports.register = function(req, res) {
 	var query_otp = {};
@@ -223,6 +224,78 @@ module.exports.sendOTP = function(req,res){
 	else{
 		res.json({statusCode:"F", msg:"Invalid Number."});
 	}
+};
+
+//Verification otp for Email
+module.exports.sendEmailOTP = function(req,res){	
+	var email = req.query.email;
+	if(email){
+		var randomNum = Math.floor(100000 + Math.random() * 900000);
+		var msgBody = '<html>'+
+						'<body>'+
+							'<div style="min-height: 500px; width: 100%;">'+
+							'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+							'<div style="min-height: 100px; text-align: center;">'+
+							'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+							'</div>'+
+							'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Verification</div>'+
+							'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+							'Please use the OTP '+randomNum+' to complete your email address verification.'+
+							' - Team MotoClique'+
+							'</div>'+
+	   						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
+							'</div>'+
+							'</div>'+
+						'</body>'+
+					'</html>';
+		var data = {
+					to: email,
+					subject: 'Email Verification!',
+					message: msgBody
+				};
+		googleMailAPI.sendEmail(data);
+	
+		var n = randomNum + "";
+		var t = (new Date()).toString();
+		var item = {
+					email: req.query.email,
+					otp: n,
+					time: t
+		};
+		Otp.update({email: req.query.email},item,{upsert:true}, function(update_err, update_res){
+				res.json({statusCode:"S", error: update_err});
+		});
+	}
+	else{
+		res.json({statusCode:"F", msg:"No Email ID specified."});
+	}
+};
+module.exports.verifyEmailOTP = function(req, res) {
+	var query_otp = {};
+	query_otp.email = {"$eq":req.body.email};
+	query_otp.otp = {"$eq":req.body.otp};
+	Otp.find(query_otp,function(err_otp, otps){
+		if(err_otp){
+			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":err_otp});
+		}
+		else if(otps.length>0){
+		//else if(req.body.otp === '7654'){
+			Profile.findOneAndUpdate({user_id: req.payload.user_id},{$set: {email: req.body.email}},{new: true}, function (err_profile, result_profile) {
+				if(err_profile){
+					res.json({"statusCode":"F","msg":"User not found.","user": null,"error":err_profile});
+				}
+				else if(result_profile && result_profile.length>0){
+					res.json({"statusCode":"S","msg":"Successfully Validated & Updated.","result": result_profile,"error":null});
+				}
+				else{
+					res.json({"statusCode":"F","msg":"User not found.","result": null,"error":null});
+				}
+			});
+		}
+		else{
+			res.json({"statusCode":"F","msg":"Unable to validate OTP.","error":null});
+		}
+	});
 };
 
 module.exports.loginByOtp = function(req,res){//get mobile & Otp combination
