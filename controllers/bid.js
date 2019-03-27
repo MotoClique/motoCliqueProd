@@ -90,9 +90,9 @@ module.exports.getBid = function(req,res){//Fetch
 										bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
 										bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ ((bidSlotFromDateObj.getMinutes() < 10)?('0'+bidSlotFromDateObj.getMinutes()):bidSlotFromDateObj.getMinutes());
 										if(parseInt(bidSlotFrom.split(":")[0]) > 12)
-											bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"PM";
+											bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"pm";
 										else
-											bidSlotFrom += "AM";
+											bidSlotFrom += "am";
 										var bidStartDate = bidSlotFromDateObj.getDate() +'/'+ (bidSlotFromDateObj.getMonth() - (-1)) +'/'+ bidSlotFromDateObj.getFullYear();
 										
 										var bidSlotTo = config_params['bid_slot_to'];
@@ -103,9 +103,9 @@ module.exports.getBid = function(req,res){//Fetch
 										bidSlotToDateObj.setMinutes(bidSlotToDateObj.getMinutes() - (- mins));
 										bidSlotTo = bidSlotToDateObj.getHours() +":"+ ((bidSlotToDateObj.getMinutes() < 10)?('0'+bidSlotToDateObj.getMinutes()):bidSlotToDateObj.getMinutes());
 										if(parseInt(bidSlotTo.split(":")[0]) > 12)
-											bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"PM";
+											bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"pm";
 										else
-											bidSlotTo += "AM";
+											bidSlotTo += "am";
 										currentValue.liveMsg = "Live on "+bidStartDate+" from "+bidSlotFrom+" to "+bidSlotTo+"!";
 									}
 									else{
@@ -191,9 +191,9 @@ module.exports.getBid = function(req,res){//Fetch
 								bidSlotFromDateObj.setMinutes(bidSlotFromDateObj.getMinutes() - (- mins));
 								bidSlotFrom = bidSlotFromDateObj.getHours() +":"+ ((bidSlotFromDateObj.getMinutes() < 10)?('0'+bidSlotFromDateObj.getMinutes()):bidSlotFromDateObj.getMinutes());
 								if(parseInt(bidSlotFrom.split(":")[0]) > 12)
-									bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"PM";
+									bidSlotFrom = (parseInt(bidSlotFrom.split(":")[0]) - 12) +":"+ bidSlotFrom.split(":")[1] +"pm";
 								else
-									bidSlotFrom += "AM";
+									bidSlotFrom += "am";
 								var bidStartDate = bidSlotFromDateObj.getDate() +'/'+ (bidSlotFromDateObj.getMonth() - (-1)) +'/'+ bidSlotFromDateObj.getFullYear();
 								
 								var bidSlotTo = config_params['bid_slot_to'];
@@ -204,9 +204,9 @@ module.exports.getBid = function(req,res){//Fetch
 								bidSlotToDateObj.setMinutes(bidSlotToDateObj.getMinutes() - (- mins));
 								bidSlotTo = bidSlotToDateObj.getHours() +":"+ ((bidSlotToDateObj.getMinutes() < 10)?('0'+bidSlotToDateObj.getMinutes()):bidSlotToDateObj.getMinutes());
 								if(parseInt(bidSlotTo.split(":")[0]) > 12)
-									bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"PM";
+									bidSlotTo = (parseInt(bidSlotTo.split(":")[0]) - 12) +":"+ bidSlotTo.split(":")[1] +"pm";
 								else
-									bidSlotTo += "AM";
+									bidSlotTo += "am";
 								currentValue.liveMsg = "Live on "+bidStartDate+" from "+bidSlotFrom+" to "+bidSlotTo+"!";
 							}
 							else{
@@ -305,7 +305,7 @@ module.exports.addBid = function(req,res){//Add New
 								var bidValidFrom = bidSlotFrom;
 								var bidValidTo = bidSlotTo;
 								var daysInWeeks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-								if(bidSlotTo <= (new Date())){
+								if(bidSlotFrom <= (new Date())){
 									bidValidFrom.setDate(bidValidFrom.getDate() - (-1));
 									bidValidTo.setDate(bidValidTo.getDate() - (-1));
 								}
