@@ -1098,7 +1098,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 												//var nextBidDate = bidSlotFrom.getDate()+"/"+(bidSlotFrom.getMonth() - (-1))+"/"+bidSlotFrom.getFullYear();
 												//nextBidMsg = "The Next bidding slot is on "+nextBidDate+" from "+bidSlotTimeFrom+" to "+bidSlotTimeTo+"!";
 											}
-											res.json({statusCode:"S", results: results, error: null, nextBidMsg: nextBidMsg, bidIsLive: bidIsLive, bidSlotFrom: (bidSlotFrom.toISOString()), sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
+											res.json({statusCode:"S", results: results, error: null, nextBidMsg: nextBidMsg, bidIsLive: bidIsLive, bidSlotFrom: (bidSlotFrom.getTime()), sale:{}, buy:{}, bid:rt_params, service:{}, completed:search_complete, chatCount:new_chat});
 										}
 										else{
 											res.status(401).json({statusCode:"F", results:[], error:rt_err, chatCount:new_chat});
