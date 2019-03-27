@@ -975,7 +975,7 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 						bidSlotTo = ctrlCommon.convertDateTime(bidSlotTo, params.to_ist);
 						var currentDateTimeIST = new Date();
 						currentDateTimeIST = ctrlCommon.convertDateTime(currentDateTimeIST, params.to_ist);
-						if(bidSlotTo < currentDateTimeIST){
+						if(bidSlotFrom <= currentDateTimeIST){
 							bidSlotFrom.setDate(bidSlotFrom.getDate() - (-1));
 							bidSlotTo.setDate(bidSlotTo.getDate() - (-1));
 						}					
@@ -986,14 +986,14 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 						if(bidSlotFrom > currentDateTimeIST || bidSlotTo < currentDateTimeIST){
 							var bidSlotTimeFrom = bidSlotFrom.getHours() +":"+ ((bidSlotFrom.getMinutes()<10)?('0'+bidSlotFrom.getMinutes()):bidSlotFrom.getMinutes());
 							if(parseInt(bidSlotTimeFrom.split(":")[0]) > 12)
-								bidSlotTimeFrom = (parseInt(bidSlotTimeFrom.split(":")[0]) - 12) +":"+ bidSlotTimeFrom.split(":")[1] +"PM";
+								bidSlotTimeFrom = (parseInt(bidSlotTimeFrom.split(":")[0]) - 12) +":"+ bidSlotTimeFrom.split(":")[1] +"pm";
 							else
-								bidSlotTimeFrom += "AM";
+								bidSlotTimeFrom += "am";
 							var bidSlotTimeTo = bidSlotTo.getHours() +":"+ ((bidSlotTo.getMinutes()<10)?('0'+bidSlotTo.getMinutes()):bidSlotTo.getMinutes());
 							if(parseInt(bidSlotTimeTo.split(":")[0]) > 12)
-								bidSlotTimeTo = (parseInt(bidSlotTimeTo.split(":")[0]) - 12) +":"+ bidSlotTimeTo.split(":")[1] +"PM";
+								bidSlotTimeTo = (parseInt(bidSlotTimeTo.split(":")[0]) - 12) +":"+ bidSlotTimeTo.split(":")[1] +"pm";
 							else
-								bidSlotTimeTo += "AM";
+								bidSlotTimeTo += "am";
 										
 							var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 							var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
