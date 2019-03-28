@@ -284,7 +284,7 @@ module.exports.verifyEmailOTP = function(req, res) {
 				if(err_profile){
 					res.json({"statusCode":"F","msg":"User not found.","user": null,"error":err_profile});
 				}
-				else if(result_profile && result_profile.length>0){
+				else if(result_profile){
 					res.json({"statusCode":"S","msg":"Successfully Validated & Updated.","result": result_profile,"error":null});
 				}
 				else{
