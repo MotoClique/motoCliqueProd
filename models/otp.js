@@ -15,6 +15,10 @@ var OtpSchema = new mongoose.Schema({
 	},
 	time: {
 		type: Date
+	},
+	createdAt: {
+	    type: Date,
+	    default: Date.now
 	}
 });
 
