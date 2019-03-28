@@ -196,7 +196,7 @@ module.exports.sendOTP = function(req,res){
 					},
 					function(err,httpResponse,body){
 						var n = randomNum + "";
-						var t = (new Date()).toString();
+						var t = new Date();
 						var item = {
 							mobile: req.query.mobile,
 							otp: n,
@@ -256,7 +256,7 @@ module.exports.sendEmailOTP = function(req,res){
 		googleMailAPI.sendEmail(data);
 	
 		var n = randomNum + "";
-		var t = (new Date()).toString();
+		var t = new Date();
 		var item = {
 					email: req.query.email,
 					otp: n,
