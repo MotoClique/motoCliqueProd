@@ -15,7 +15,7 @@ module.exports.scheduleBidClosedCheckJob = function(){//
 					params[params_result[p].parameter] = params_result[p].value;
 				}
 				if(params['bid_slot_to'] && params['bid_slot_days']){
-					var min = (params['bid_slot_to']).split(':')[1]; min = (min - (-5)).toString();
+					var min = (params['bid_slot_to']).split(':')[1]; min = (min - (-1)).toString();
 					var hr = (params['bid_slot_to']).split(':')[0];
 					var day = (params['bid_slot_days']).replace(/\//g,",");
 					
