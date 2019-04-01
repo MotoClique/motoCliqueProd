@@ -313,6 +313,8 @@ module.exports.updateChatInbox = function(req,callback){//Update chat inbox
 	updateDoc.changedBy = req.payload.user_id;
 	updateDoc.changedAt = d;
 	updateDoc.to_read = false;
+	updateDoc.from_deleted = false;
+	updateDoc.to_deleted = false;
 	
 	ChatInbox.update({chat_id: req.body.chat_id, from_user: req.payload.user_id}, {"$set": updateDoc, "$inc": {'to_unread_count': 1}}, {multi: true}, (toUpdateChatInbox_err, toUpdateChatInbox_res)=>{
 		delete updateDoc.to_read;
