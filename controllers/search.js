@@ -1083,7 +1083,7 @@ module.exports.getTransactions = function(req,res){//Fetch
 													bidSlotTimeFrom += "am";
 												var bidSlotTimeTo = bidSlotTo.getHours() +":"+ ((bidSlotTo.getMinutes()<10)?('0'+bidSlotTo.getMinutes()):bidSlotTo.getMinutes());
 												if(parseInt(bidSlotTimeTo.split(":")[0]) > 12)
-													bidSlotTimeTo = (parseInt(bidSlotTimeTo.split(":")[0]) - 12) +":"+ bidSlotTimeTo.split(":")[1] +"PM";
+													bidSlotTimeTo = (parseInt(bidSlotTimeTo.split(":")[0]) - 12) +":"+ bidSlotTimeTo.split(":")[1] +"pm";
 												else
 													bidSlotTimeTo += "am";
 											
