@@ -13,7 +13,8 @@ var html = '<html>'+
 '<div style="width: 110px; text-align: center; border: 2px solid #E71B03; border-radius: 60px; line-height: 110px;">'+
 '	<span style="font-size:60px; color:#E71B03;">&#10004;</span>'+
 '</div>'+
-'<div style="font-size:20px; color:#E71B03;">Transaction Successful!</div>'+
+'<div style="font-size:20px; color:#E71B03; text-align: center;">Transaction Successful!</div>'+
+'<div style="font-size:15px; color:#E71B03; text-align: center;"> Please wait while we redirect you to the merchant page...</div>'+
 '</div>	 '+
 '<script>'+
 ' setTimeout(function(){ '+
