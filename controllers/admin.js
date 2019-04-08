@@ -2149,6 +2149,12 @@ module.exports.getState = function(req,res){//Fetch
 			for(var i = 0; i<result.length; i++){
 				entries.push({state: result[i]});
 			}
+			entries.sort(function(a,b){
+				var val1 = (a.state).toLowerCase(); var val2 = (b.state).toLowerCase();
+				if(val1 < val2) { return -1; }
+				else if(val1 > val2) { return 1; }
+				else{ return 0; }
+			});
 		}		
 		res.json({results: entries, error: err});
 	});
@@ -2168,6 +2174,12 @@ module.exports.getCity = function(req,res){//Fetch
 			for(var i = 0; i<result.length; i++){
 				entries.push({city: result[i]});
 			}
+			entries.sort(function(a,b){
+				var val1 = (a.city).toLowerCase(); var val2 = (b.city).toLowerCase();
+				if(val1 < val2) { return -1; }
+				else if(val1 > val2) { return 1; }
+				else{ return 0; }
+			});
 		}		
 		res.json({results: entries, error: err});
 	});
@@ -2187,6 +2199,12 @@ module.exports.getUnqLocation = function(req,res){//Fetch
 			for(var i = 0; i<result.length; i++){
 				entries.push({location: result[i]});
 			}
+			entries.sort(function(a,b){
+				var val1 = (a.location).toLowerCase(); var val2 = (b.location).toLowerCase();
+				if(val1 < val2) { return -1; }
+				else if(val1 > val2) { return 1; }
+				else{ return 0; }
+			});
 		}		
 		res.json({results: entries, error: err});
 	});
