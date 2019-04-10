@@ -765,7 +765,8 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 	delete buy_query.current_bid_amount;
 	delete buy_query.start_from_amount;
 	var queries = req.body.queries
-	if(queries.product_type_name == queries.brand_name 
+	if(queries.product_type_name
+	   && queries.product_type_name == queries.brand_name 
 		&& queries.product_type_name == queries.model
 			&& queries.product_type_name == queries.variant){
 		var queryClone = JSON.parse(JSON.stringify(buy_query));
@@ -781,7 +782,7 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 		}
 		
 		buy_query = {'$and':[]};
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			buy_query['$or'] = [];
@@ -806,7 +807,7 @@ module.exports.fetchBuy = function(req,query,results,callback,context){//Fetch f
 		
 		var queryClone = JSON.parse(JSON.stringify(buy_query));
 		buy_query = {'$and':[]};		
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			buy_query['$or'] = [];
@@ -895,7 +896,8 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 	bid_query.bid_valid_from = {"$lte": (new Date())};
 	
 	var queries = req.body.queries
-	if(queries.product_type_name == queries.brand_name 
+	if(queries.product_type_name 
+	   && queries.product_type_name == queries.brand_name 
 		&& queries.product_type_name == queries.model
 			&& queries.product_type_name == queries.variant){
 		var queryClone = JSON.parse(JSON.stringify(bid_query));
@@ -911,7 +913,7 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 		}
 		
 		bid_query = {'$and':[]};
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			bid_query['$or'] = [];
@@ -936,7 +938,7 @@ module.exports.fetchBid = function(req,query,results,callback,context){//Fetch f
 		
 		var queryClone = JSON.parse(JSON.stringify(bid_query));
 		bid_query = {'$and':[]};		
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			bid_query['$or'] = [];
@@ -1082,7 +1084,8 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 	delete service_query.current_bid_amount;
 	delete service_query.net_price;
 	var queries = req.body.queries
-	if(queries.product_type_name == queries.brand_name 
+	if(queries.product_type_name 
+	   && queries.product_type_name == queries.brand_name 
 		&& queries.product_type_name == queries.model
 			&& queries.product_type_name == queries.variant){
 		var queryClone = JSON.parse(JSON.stringify(service_query));
@@ -1098,7 +1101,7 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 		}
 		
 		service_query = {'$and':[]};
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			service_query['$or'] = [];
@@ -1123,7 +1126,7 @@ module.exports.fetchService = function(req,query,results,callback,context){//Fet
 		
 		var queryClone = JSON.parse(JSON.stringify(service_query));
 		service_query = {'$and':[]};		
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			service_query['$or'] = [];
@@ -1208,7 +1211,8 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 	delete sell_query.current_bid_amount;
 	delete sell_query.start_from_amount;
 	var queries = req.body.queries
-	if(queries.product_type_name == queries.brand_name 
+	if(queries.product_type_name 
+	   && queries.product_type_name == queries.brand_name 
 		&& queries.product_type_name == queries.model
 			&& queries.product_type_name == queries.variant){
 		var queryClone = JSON.parse(JSON.stringify(sell_query));
@@ -1224,7 +1228,7 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 		}
 		
 		sell_query = {'$and':[]};
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			sell_query['$or'] = [];
@@ -1249,7 +1253,7 @@ module.exports.fetchSell = function(req,query,results,callback,context){//Fetch 
 		
 		var queryClone = JSON.parse(JSON.stringify(sell_query));
 		sell_query = {'$and':[]};		
-		if(req.body.location === req.body.city){
+		if(!queryClone.location && !queryClone.city && req.body.location && (req.body.location === req.body.city)){
 			delete queryClone.location;
 			delete queryClone.city;
 			sell_query['$or'] = [];
