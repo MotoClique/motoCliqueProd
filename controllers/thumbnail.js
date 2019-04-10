@@ -94,3 +94,15 @@ module.exports.deleteThumbnail = function(req,res){//Delete
 	});
 };
 
+module.exports.getThumbnailIndicator = function(req,res){//Fetch
+	var query = {};
+	if(req.query.user_id){
+		query.user_id = {"$eq":req.query.user_id};
+	}
+	if(req.query.transaction_id){
+		query.transaction_id = {"$eq":req.query.transaction_id};
+	}
+	Thumbnail.find(query,{thumbnail:0, type:0},function(err, thumbnail){
+		res.json({results: thumbnail, error: err});
+	});
+};
