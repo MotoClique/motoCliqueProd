@@ -217,6 +217,7 @@ router.get('/public/node/thumbnail', auth, ctrlThumbnail.getThumbnail);
 router.post('/public/node/thumbnail', auth, ctrlThumbnail.addThumbnail);
 router.put('/public/node/thumbnail', auth, ctrlThumbnail.updateThumbnail);
 router.delete('/public/node/thumbnail/:id', auth, ctrlThumbnail.deleteThumbnail);
+router.get('/public/node/thumbnailIndicator', auth, ctrlThumbnail.getThumbnailIndicator);
 //Service 
 var ctrlService = require('./controllers/service');
 router.get('/public/node/service', auth, ctrlService.getService);
