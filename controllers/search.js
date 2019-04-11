@@ -189,7 +189,7 @@ module.exports.search = function(req,res){//Fetch
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
-										clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+										clone.text = result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
 										clone.type = "Sale";
 										
 										var exist = false;
@@ -216,7 +216,7 @@ module.exports.search = function(req,res){//Fetch
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
-										clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+										clone.text = result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
 										clone.type = "Buy";
 										
 										var exist = false;
@@ -243,7 +243,7 @@ module.exports.search = function(req,res){//Fetch
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
-										clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+										clone.text = result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
 										clone.type = "Bid";
 										
 										var exist = false;
@@ -271,7 +271,7 @@ module.exports.search = function(req,res){//Fetch
 								.exec(function(err, result) {
 									for(var i=0; i<result.length; i++){
 										var clone = JSON.parse(JSON.stringify(result[i]));
-										clone.text = result[i].product_type_name +" "+ result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
+										clone.text = result[i].brand_name +" "+ result[i].model +" "+ result[i].variant ;
 										clone.type = "Service";
 										
 										var exist = false;
@@ -301,7 +301,7 @@ module.exports.search = function(req,res){//Fetch
 								console.log(err);
 									for(var i=0; i<sales.length; i++){
 										var clone = JSON.parse(JSON.stringify(sales[i]));
-										clone.text = sales[i].product_type_name +" "+ sales[i].brand_name +" "+ sales[i].model +" "+ sales[i].variant ;
+										clone.text = sales[i].brand_name +" "+ sales[i].model +" "+ sales[i].variant ;
 										clone.type = "Sale";
 										
 										var exist = false;
@@ -326,7 +326,7 @@ module.exports.search = function(req,res){//Fetch
 										.exec(function(err, buy) {
 											for(var i=0; i<buy.length; i++){
 												var clone = JSON.parse(JSON.stringify(buy[i]));
-												clone.text = buy[i].product_type_name +" "+ buy[i].brand_name +" "+ buy[i].model +" "+ buy[i].variant ;
+												clone.text = buy[i].brand_name +" "+ buy[i].model +" "+ buy[i].variant ;
 												clone.type = "Buy";
 												
 												var exist = false;
@@ -351,7 +351,7 @@ module.exports.search = function(req,res){//Fetch
 												.exec(function(err, bids) {
 													for(var i=0; i<bids.length; i++){
 														var clone = JSON.parse(JSON.stringify(bids[i]));
-														clone.text = bids[i].product_type_name +" "+ bids[i].brand_name +" "+ bids[i].model +" "+ bids[i].variant ;
+														clone.text = bids[i].brand_name +" "+ bids[i].model +" "+ bids[i].variant ;
 														clone.type = "Bid";
 														
 														var exist = false;
@@ -376,7 +376,7 @@ module.exports.search = function(req,res){//Fetch
 														.exec(function(err, services) {
 															for(var i=0; i<services.length; i++){
 																var clone = JSON.parse(JSON.stringify(services[i]));
-																clone.text = services[i].product_type_name +" "+ services[i].brand_name +" "+ services[i].model +" "+ services[i].variant ;
+																clone.text = services[i].brand_name +" "+ services[i].model +" "+ services[i].variant ;
 																clone.type = "Service";
 																
 																var exist = false;
