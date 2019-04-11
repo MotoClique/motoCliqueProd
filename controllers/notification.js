@@ -365,9 +365,9 @@ module.exports.sendNotification = function(doc){//Send
 																			' post of '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.display_amount)?(', priced at Rs.'+doc.display_amount):'')+
-																			((doc.year_of_reg)?(', registered on '+doc.year_of_reg):'')+
+																			((doc.year_of_reg)?(', '+doc.year_of_reg+' Model'):'')+
 																			((doc.km_done)?(', '+doc.km_done+'km runned'):'')+
-																			((doc.location)?(', located at '+doc.location):'')+
+																			((doc.location)?(', located at '+doc.location+' '+doc.city):'')+
 																			'. '+
 																			routeLink+' ';
 																			
@@ -376,9 +376,9 @@ module.exports.sendNotification = function(doc){//Send
 																				' post of '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
 																				((doc.fuel_type)?doc.fuel_type:'')+
 																				((doc.display_amount)?(', priced at less than Rs.'+doc.display_amount):'')+
-																				((doc.year_of_reg)?(', registered on or after '+doc.year_of_reg):'')+
+																				((doc.year_of_reg)?(', not less than '+doc.year_of_reg+' Model'):'')+
 																				((doc.km_done)?(', less than '+doc.km_done+'km runned'):'')+
-																				((doc.location)?(', located at '+doc.location):'')+
+																				((doc.location)?(', located at '+doc.location+' '+doc.city):'')+
 																				'. '+
 																				routeLink+' ';
 																			}
@@ -443,8 +443,8 @@ module.exports.sendNotification = function(doc){//Send
 																									'<div style="font-size: 14px; width: 200px; margin-left: auto; margin-right: auto;">'+
 																									'<div style="line-height: 28px; display:'+((doc.fuel_type)?"block;":"none;")+'">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
 																									'<div style="line-height: 28px; display:'+((doc.display_amount)?"block;":"none;")+'">Price: <span style="font-size: 15px; font-weight: 600;">'+ ((doc.transactionType == 'Buy')?'< ':'') +doc.display_amount+'</span></div>'+
-																									'<div style="line-height: 28px; display:'+((doc.location)?"block;":"none;")+'">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
-																									'<div style="line-height: 28px; display:'+((doc.year_of_reg)?"block;":"none;")+'">Year of Registration: <span style="font-size: 15px; font-weight: 600;">'+ ((doc.transactionType == 'Buy')?'> ':'') +doc.year_of_reg+'</span></div>'+
+																									'<div style="line-height: 28px; display:'+((doc.location)?"block;":"none;")+'">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+', '+doc.city+'</span></div>'+
+																									'<div style="line-height: 28px; display:'+((doc.year_of_reg)?"block;":"none;")+'">Model: <span style="font-size: 15px; font-weight: 600;">'+ ((doc.transactionType == 'Buy')?'> ':'') +doc.year_of_reg+'</span></div>'+
 																									'<div style="line-height: 28px; display:'+((doc.km_done)?"block;":"none;")+'">KM Done: <span style="font-size: 15px; font-weight: 600;">'+ ((doc.transactionType == 'Buy')?'< ':'') +doc.km_done+'</span></div>'+
 																									'</div>'+
 																									'</div>'+
@@ -683,8 +683,8 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																			', you have won the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
-																			' Please contact '+creator_profiles[0].name+
-																			' for further process of delivery and transaction. - Team MotoClique';
+																			' Please contact '+creator_profiles[0].name+' - '+creator_profiles[0].mobile+
+																			' for further process of delivery and transaction.';
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
@@ -694,12 +694,12 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 														}
 														//Send SMS (to creator)
 														if(creator_profiles[0].mobile){																			
-															var msgBody = 'Congratulation '+profiles[0].name+
-																			', you have won the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+															var msgBody = 'Congratulation '+creator_profiles[0].name+
+																			', '+profiles[0].name+' have won the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
-																			' Please contact '+creator_profiles[0].name+
-																			' for further process of delivery and transaction. - Team MotoClique';
+																			' Please contact '+profiles[0].name+' - '+profiles[0].mobile+
+																			' for further process of delivery and transaction.';
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
@@ -725,7 +725,7 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																					'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
 																					', with the Final Amount Rs.'+
 																					'<span style="display:'+((doc.display_amount)?"inline;":"none;")+'">'+doc.display_amount+'</span>. '+
-																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transaction. - Team MotoClique'+
+																					'Please contact '+creator_profiles[0].name+' - '+creator_profiles[0].mobile+' for further process of delivery and transaction. - Team MotoClique'+
 																					'</div>'+
 																					'</div>'+
 																					'</div>'+
@@ -751,13 +751,13 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																					'</div>'+
 																					'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Congratulation</div>'+
 																					'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
-																					'Congratulation '+profiles[0].name+', you have won the BID for '+
+																					'Congratulation '+creator_profiles[0].name+', '+profiles[0].name+' have won the BID for '+
 																					'<span style="display:'+((doc.brand_name)?"inline;":"none;")+'">'+doc.brand_name+'</span> '+
 																					'<span style="display:'+((doc.model)?"inline;":"none;")+'">'+doc.model+'</span> '+
 																					'<span style="display:'+((doc.variant)?"inline;":"none;")+'">'+doc.variant+'</span>'+
 																					', with the Final Amount Rs.'+
 																					'<span style="display:'+((doc.display_amount)?"inline;":"none;")+'">'+doc.display_amount+'</span>. '+
-																					'Please contact '+creator_profiles[0].name+' for further process of delivery and transaction. - Team MotoClique'+
+																					'Please contact '+profiles[0].name+' - '+profiles[0].mobile+' for further process of delivery and transaction. - Team MotoClique'+
 																					'</div>'+
 															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
 																					'</div>'+
@@ -779,6 +779,7 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 														module.exports.sendBidClosedPushNotification(doc);
 														//Send App Alert (to creator)
 														doc.to_user = creator_profiles[0].user_id;
+														doc.winner_name = profiles[0].name;
 														module.exports.sendBidClosedPushNotification(doc);
 													}
 												});
@@ -798,7 +799,7 @@ module.exports.sendBidClosedPushNotification = function(doc){//Send push notific
 					"to": "-",
 					"data": {
 						"title": alert_title,
-						"message": 'Congratulation, you have won the BID for '+ doc.brand_name +' '+ doc.model +' '+ doc.variant,
+						"message": 'Congratulation, '+((doc.winner_name)?doc.winner_name:'you')+' have won the BID for '+ doc.brand_name +' '+ doc.model +' '+ doc.variant,
 						"notId": not_id,
 						'content-available': '1'
 					}
@@ -817,6 +818,8 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 											params[params_result[p].parameter] = params_result[p].value;
 										}			
 										
+										module.exports.sendBidAllPaticipateNotification(doc.params);
+										
 										var creator_query = {};
 										creator_query.user_id = {"$eq": doc.user_id};
 										creator_query.deleted = {"$ne": true};
@@ -833,8 +836,7 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 															var msgBody = 'You have participated in the BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
-																			((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
-																			' - Team MotoClique';
+																			((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.');
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
@@ -849,8 +851,8 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
 																			((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
-																			' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+
-																			' for further process of delivery and transaction. - Team MotoClique';
+																			' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+' - '+profiles[0].mobile+
+																			' for further process of delivery and transaction.';
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
@@ -906,7 +908,7 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																					((doc.fuel_type)?doc.fuel_type:'')+
 																					((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
 																					((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
-																					' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+
+																					' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+' - '+profiles[0].mobile+
 																					' for further process of delivery and transaction. - Team MotoClique'+
 																					'</div>'+
 															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
@@ -938,6 +940,79 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 										});
 								}
 							});
+};
+
+module.exports.sendBidAllPaticipateNotification = function(doc,params){//Send Notification to all participant
+	var bidBy_query = {};
+	bidBy_query.bid_id = {"$eq": doc.bid_id};
+	bidBy_query.bid_by_user_id = {"$ne": doc.bid_by_user_id};
+	bidBy_query.deleted = {"$ne": true};
+	BidBy.find(bidBy_query).distinct('bid_by_user_id',function(bidby_err, bidby_result){
+		if(bidby_err){
+			console.log(bidby_err);
+		}
+		else if(bidby_result.length>0){
+			for(var i=0; i<bidby_result.length; i++){
+				var other_participant = bidby_result[i];
+												var query_profile = {};
+												query_profile.user_id = {"$eq": other_participant};
+												query_profile.deleted = {"$ne": true};
+												Profile.find(query_profile,function(profile_err, profiles){
+													if(profiles && profiles.length > 0){														
+														//Send SMS
+														if(profiles[0].mobile){																			
+															var msgBody = 'Another Bidder has participated in BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																			((doc.fuel_type)?doc.fuel_type:'')+
+																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
+																			((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.');
+															request.get({
+																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+															},
+															function(err_sms,httpResponse,body){
+																console.log(err_sms);
+															});
+														}
+														
+														//Send EMAIL
+														if(profiles[0].email){														
+															var msgBody = '<html>'+
+																				'<body>'+
+																					'<div style="min-height: 500px; width: 100%;">'+
+																					'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+																					'<div style="min-height: 100px; text-align: center;">'+
+																					'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+																					'</div>'+
+																					'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Confirmation</div>'+
+																					'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+																					'Another Bidder has participated in BID for '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
+																					((doc.fuel_type)?doc.fuel_type:'')+
+																					((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
+																					((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
+																					'</div>'+
+															    						'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
+																					'</div>'+
+																					'</div>'+
+																				'</body>'+
+																			'</html>';
+																			
+																			
+															var data = {
+																		to: profiles[0].email,
+																		subject: 'Confirmation!',
+																		message: msgBody
+																	};
+															googleMailAPI.sendEmail(data);
+														}
+																												
+														//Send App Alert
+														doc.to_user = profiles[0].user_id;
+														doc.msg = 'Another Bidder has participated in BID for '+ doc.brand_name +' '+ doc.model +' '+ doc.variant;
+														module.exports.sendBidParticipatePushNotification(doc);
+													}
+												});
+			}
+		}
+	});
 };
 
 module.exports.sendBidParticipatePushNotification = function(doc){//Send push notification to app for bid participation			
@@ -1033,9 +1108,9 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 															' post of '+doc.brand_name+' '+doc.model+' '+doc.variant+' '+
 															((doc.fuel_type)?doc.fuel_type:'')+
 															((doc.display_amount)?(', priced at Rs.'+doc.display_amount):'')+
-															((doc.year_of_reg)?(', registered on '+doc.year_of_reg):'')+
+															((doc.year_of_reg)?(', '+doc.year_of_reg+' Model'):'')+
 															((doc.km_done)?(', '+doc.km_done+'km runned'):'')+
-															((doc.location)?(', located at '+doc.location):'')+
+															((doc.location)?(', located at '+doc.location+' '+doc.city):'')+
 															'. '+
 												    			nextBidMsg+' '+
 															routeLink+' ';
@@ -1068,8 +1143,8 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 																		'<div style="font-size: 14px; width: 200px; margin-left: auto; margin-right: auto;">'+
 																		'<div style="line-height: 28px; display:'+((doc.fuel_type)?"block;":"none;")+'">Fuel Type: <span style="font-size: 15px; font-weight: 600;">'+doc.fuel_type+'</span></div>'+
 																		'<div style="line-height: 28px; display:'+((doc.display_amount)?"block;":"none;")+'">Price: <span style="font-size: 15px; font-weight: 600;">'+doc.display_amount+'</span></div>'+
-																		'<div style="line-height: 28px; display:'+((doc.location)?"block;":"none;")+'">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+'</span></div>'+
-																		'<div style="line-height: 28px; display:'+((doc.year_of_reg)?"block;":"none;")+'">Year of Registration: <span style="font-size: 15px; font-weight: 600;">'+doc.year_of_reg+'</span></div>'+
+																		'<div style="line-height: 28px; display:'+((doc.location)?"block;":"none;")+'">Location: <span style="font-size: 15px; font-weight: 600;">'+doc.location+', '+doc.city+'</span></div>'+
+																		'<div style="line-height: 28px; display:'+((doc.year_of_reg)?"block;":"none;")+'">Model: <span style="font-size: 15px; font-weight: 600;">'+doc.year_of_reg+'</span></div>'+
 																		'<div style="line-height: 28px; display:'+((doc.km_done)?"block;":"none;")+'">KM Done: <span style="font-size: 15px; font-weight: 600;">'+doc.km_done+'</span></div>'+
 																		'</div>'+
 																		'</div>'+
