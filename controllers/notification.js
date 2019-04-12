@@ -818,7 +818,7 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 											params[params_result[p].parameter] = params_result[p].value;
 										}			
 										
-										module.exports.sendBidAllPaticipateNotification(doc.params);
+										module.exports.sendBidAllPaticipateNotification(doc,params);
 										
 										var creator_query = {};
 										creator_query.user_id = {"$eq": doc.user_id};
