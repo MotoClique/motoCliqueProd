@@ -31,6 +31,15 @@ var ProfileSchema = new mongoose.Schema({
 	dob:{
 		type: String
 	},
+	security_deposit:{
+		type: Number
+	},
+	terms_cond_deposit:{
+		type: Boolean
+	},
+	terms_cond_app:{
+		type: Boolean
+	},
 	walletAmount:{
 		type: String
 	},
