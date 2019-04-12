@@ -6,6 +6,7 @@ const https = require('https');
 var userSubMap = require('./subscription');
 var Parameter = mongoose.model('Parameter');
 var ctrlGlobalVar = require('../globalVar');
+var ctrlNotification = require('./notification');
 var prd_env = false;
 
 module.exports.success_html = function(){
@@ -225,6 +226,12 @@ if(ctrlGlobalVar.getGlobalVariable('hostname')){
 						};
 						module.exports.addPaymentTxn(transaction, function(status,paymentTxn_err){
 							if(status){
+								var doc = {};
+								doc.user_id = req.payload.user_id;
+								doc.subscription_name = req.body.subscription_name;
+								doc.order_id = transaction.ORDERID;
+								ctrlNotification.sendPaymentNotification(doc,'buy_subscription',false);
+								
 								var txn_url = "https://securegw-stage.paytm.in/theia/processTransaction"; 	//for staging
 								if(prd_env)
 									txn_url = "https://securegw.paytm.in/theia/processTransaction"; 		//for production
