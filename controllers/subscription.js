@@ -3,6 +3,7 @@ const async = require("async");
 const request = require('request');
 var mongoose = require('mongoose');
 const PaymentTxn = mongoose.model('PaymentTxn');
+var ctrlNotification = require('./notification');
 var ctrlGlobalVar = require('../globalVar');
 
 module.exports.success_html = function(){
@@ -120,6 +121,12 @@ module.exports.addUserSubMap = function(req,res){//Add New
 							res.json({statusCode: 'F', msg: 'Failed to add Subscription.', error: save_err});
 						}
 						else{
+							var doc = {};
+							doc.user_id = save_result.user_id;
+							doc.subscription_name = save_result.subscription_name;
+							doc.order_id = save_result.ORDERID;
+							ctrlNotification.sendPaymentNotification(doc,'buy_subscription',true);
+							
 							var payment = {};
 							payment.ORDERID = save_result.ORDERID;
 							payment.sub_mapping_verified = true;
