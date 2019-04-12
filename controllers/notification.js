@@ -1179,3 +1179,88 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 		}
 	});	
 };
+
+module.exports.sendPaymentNotification = function(doc,payment_for,payment_completed){//Send Payment Notification
+	//Get API Keys
+	Parameter.find({},function(params_err, params_result){
+		var params = {};
+		if(params_result){
+			for(var p =0; p<params_result.length; p++){
+				params[params_result[p].parameter] = params_result[p].value;
+			}			
+			
+			var query_profile = {};
+			query_profile.user_id = {"$eq": doc.user_id};
+			query_profile.deleted = {"$ne": true};
+			Profile.find(query_profile,function(profile_err, profiles){
+				if(profiles.length > 0){
+					var msgText = '';
+					if(payment_for == 'buy_subscription'){
+						if(payment_completed){
+							msgText = 'Subscription '+doc.subscription_name+' is successfully activated for you.';
+						}
+						else{
+							msgText = 'You have requested to buy subscription '+
+										doc.subscription_name+
+										', please keep the transaction ID '+
+										doc.order_id+' for future reference.';
+						}
+					}
+					else if(payment_for == 'security_deposit'){
+						if(payment_completed){
+							msgText = 'Thank you for depositing the security amount Rs.'+doc.security_deposit+'.';
+						}
+						else{
+							msgText = 'You have requested to make a payment of Rs.'+
+										doc.security_deposit+
+										' as a security deposit'+
+										', please keep the transaction ID '+
+										doc.order_id+' for future reference.';
+						}
+					}
+					
+					//Send SMS
+					if(profiles[0].mobile && msgText){
+						var msgBody = msgText;
+						request.get({
+							url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
+						},
+						function(err_sms,httpResponse,body){
+							console.log(err_sms);
+						});										
+					}
+											
+					//Send EMAIL
+					if(profiles[0].email && msgText){
+						var msgBody = '<html>'+
+											'<body>'+
+												'<div style="min-height: 500px; width: 100%;">'+
+												'<div style="padding-left: 8%; padding-right: 8%; padding-top: 50px; padding-bottom: 50px;">'+
+												'<div style="min-height: 100px; text-align: center;">'+
+												'<img style="max-width: 140px;" src="https://motoclique.in/assets/motoclique.png"></img>'+
+												'</div>'+
+												'<div style="border-top:1px solid #E71B03; border-bottom:1px solid #E71B03; line-height: 50px; font-size: 30px; font-weight: bold; text-align: center; color: #E71B03; text-transform: uppercase;">Payment</div>'+
+												'<div style="line-height: 50px; text-align: center; font-size: 18px; font-weight: 700; font-family: Arial;">'+
+												'<span>'+msgText+'</span> '+
+												'</div>'+
+																		
+												'<div style="font-size:12px; color:#A4A4A4; padding:2px;">Please do not reply to this mail as this is auto generated email.</div>'+
+																							
+												'</div>'+
+												'</div>'+
+											'</body>'+
+										'</html>';
+																					
+						var data = {
+									to: profiles[0].email,
+									subject: 'Payment',
+									message: msgBody
+						};
+						googleMailAPI.sendEmail(data);
+					}
+					
+				}
+			});
+		}
+	});	
+};
