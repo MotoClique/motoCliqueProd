@@ -211,6 +211,7 @@ router.get('/public/node/userSubMap', auth, ctrlUserSubMap.getUserSubMap);
 router.post('/public/node/userSubMap', auth, ctrlUserSubMap.addUserSubMap);
 router.put('/public/node/userSubMap', auth, ctrlUserSubMap.updateUserSubMap);
 router.delete('/public/node/userSubMap/:id', auth, ctrlUserSubMap.deleteUserSubMap);
+router.get('/public/node/userSubCheck', auth, ctrlUserSubMap.getUserSubCheck);
 //Thumbnail 
 var ctrlThumbnail = require('./controllers/thumbnail');
 router.get('/public/node/thumbnail', auth, ctrlThumbnail.getThumbnail);

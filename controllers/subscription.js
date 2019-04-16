@@ -199,3 +199,34 @@ module.exports.deleteUserSubMap = function(req,res){//Delete
 	});
 };
 
+module.exports.getUserSubCheck = function(req,res){//Fetch valid subscriptions
+	var query = {};
+	if(req.query.subscription_id){
+		query.subscription_id = {"$eq":req.query.subscription_id};
+	}
+	if(req.query.user_id){
+		query.user_id = {"$eq":req.query.user_id};
+	}
+	if(req.query.deleted){
+		query.deleted = {"$eq":req.query.deleted};
+	}
+	else{
+		query.deleted = {"$ne": true};
+	}
+	UserSubMap.find(query,function(err, result_sub){
+		var result = [];
+		if(result_sub && result_sub.length){
+			for(var i=0; i<result_sub.length; i++){
+				var sub_to = (result_sub[i].valid_to).split('/');
+				var subToDateObj = new Date(sub_to[2]+'-'+sub_to[1]+'-'+sub_to[0]);
+				var currentDateObj = new Date();				
+				//Check if subscription is still valid
+				if(subToDateObj > currentDateObj){
+					result.push(result_sub[i]);
+				}
+			}
+		}
+		res.json({results: result, error: err});
+	});
+};
+
