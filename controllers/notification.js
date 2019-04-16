@@ -12,6 +12,8 @@ var Parameter = mongoose.model('Parameter');
 var DeviceReg = mongoose.model('DeviceReg');
 var ChatInbox = mongoose.model('ChatInbox');
 var BidBy = mongoose.model('BidBy');
+var ctrlCommon = require('./common');
+var AppScrFieldsRights = mongoose.model('AppScrFieldsRights');
 
 module.exports.sendNotification = function(doc){//Send
 	//Get API Keys
