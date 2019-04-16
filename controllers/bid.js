@@ -372,7 +372,7 @@ module.exports.addBid = function(req,res){//Add New
 											
 												//Trigger Notification
 												var entry = doc; entry.transactionType = "Bid"; entry.bid_id = result.bid_id;
-												ctrlNotification.sendNotification(entry);
+												ctrlNotification.sendNewBidNotification(entry);
 											}
 								});
 							}
