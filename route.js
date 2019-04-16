@@ -273,4 +273,7 @@ router.post('/public/node/buySubscription', auth, ctrlPayment.buySubscription);
 router.post('/paymentCallback', ctrlPayment.buySubscriptionCallback);
 router.get('/pendingPaymentTxn', auth, ctrlPayment.getPendingPaymentTxn);
 
+router.post('/public/node/makeDeposit', auth, ctrlPayment.makeDeposit);
+router.post('/depositCallback', ctrlPayment.depositCallback);
+
 module.exports = router;
