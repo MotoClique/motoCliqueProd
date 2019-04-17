@@ -28,8 +28,10 @@ module.exports.profileRead = function(req,res){//Fetch
 		}
 		else{
 			if(result_reg && result_reg.length>0){
-				if(req.body.device_reg_id !== result_reg[0].device_reg_id && req.body.device_reg_id !== "empty")
+				if(req.body.device_reg_id !== result_reg[0].device_reg_id && req.body.device_reg_id !== "empty"){
 					res.json({statusCode:"F", msg:"Sorry! Device is not registered.", unknown_device:true, results: null,error: null});
+					return false;
+				}
 			}
 			var query = {};
 			if(req.body.user_id){
@@ -47,7 +49,7 @@ module.exports.profileRead = function(req,res){//Fetch
 			Profile.find(query,function(profile_err, profiles){
 				if(profiles.length > 0){
 					var result = JSON.parse(JSON.stringify(profiles));
-					console.log(result);
+					//console.log(result);
 					result[0].screenAccess = [];
 					var query_sub = {}
 					query_sub.user_id = {"$eq": result[0].user_id};
