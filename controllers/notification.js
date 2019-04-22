@@ -385,12 +385,14 @@ module.exports.sendNotification = function(doc){//Send
 																				routeLink+' ';
 																			}
 																			
+																			if(!params.disable_sms_notfc && params.sms_api_key){
 																			request.get({
 																				url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 																			},
 																			function(err_sms,httpResponse,body){
 																				console.log(err_sms);
 																			});
+																			}
 																			sms_sent = true;
 																		}
 																	}
@@ -409,7 +411,7 @@ module.exports.sendNotification = function(doc){//Send
 													}
 													else{
 														var email_sent = false;
-														var mailgun = new Mailgun({apiKey: params.email_api_key, domain: params.email_api_id});
+														//var mailgun = new Mailgun({apiKey: params.email_api_key, domain: params.email_api_id});
 														for(var j = 0; j<result_userSub.length; j++){												
 															if(result_userSub[j].notification_email === 'X' && !email_sent){
 																var query_profile = {};
@@ -457,13 +459,14 @@ module.exports.sendNotification = function(doc){//Send
 																								'</body>'+
 																							'</html>';
 																			
-																			
+																			if(!params.disable_email_notfc){
 																			var data = {
 																					to: profiles[0].email,
 																					subject: doc.brand_name+' '+doc.model,
 																					message: msgBody
 																				};
 																			googleMailAPI.sendEmail(data);
+																			}
 																			email_sent = true;
 																		}
 																	}
@@ -486,7 +489,9 @@ module.exports.sendNotification = function(doc){//Send
 														for(var j = 0; j<result_userSub.length; j++){												
 															if(result_userSub[j].notification_app === 'X' && !pushNot_sent){
 																doc.to_user = entry_alert.user_id;
+																if(!params.disable_app_notfc){
 																module.exports.sendAlertPushNotification(doc);
+																}
 																pushNot_sent = true;
 															}
 														}
@@ -530,6 +535,7 @@ module.exports.sendAppPushNotification = function(msgBody,user_id){//Send push n
 					}
 					
 					msgBody.to = device_reg_id;
+					if(!params.disable_app_notfc){
 					request.post({
 							url:'https://fcm.googleapis.com/fcm/send', 
 							body: JSON.stringify(msgBody),
@@ -542,6 +548,7 @@ module.exports.sendAppPushNotification = function(msgBody,user_id){//Send push n
 							console.log(err_push);
 						}
 					);
+					}
 				}
 			});
 		}
@@ -687,12 +694,14 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
 																			' Please contact '+creator_profiles[0].name+' - '+creator_profiles[0].mobile+
 																			' for further process of delivery and transaction.';
+															if(!params.disable_sms_notfc && params.sms_api_key){
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
 															function(err_sms,httpResponse,body){
 																console.log(err_sms);
 															});
+															}
 														}
 														//Send SMS (to creator)
 														if(creator_profiles[0].mobile){																			
@@ -702,12 +711,14 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																			((doc.display_amount)?(', with the Final Amount Rs.'+doc.display_amount+'.'):'.')+
 																			' Please contact '+profiles[0].name+' - '+profiles[0].mobile+
 																			' for further process of delivery and transaction.';
+															if(!params.disable_sms_notfc && params.sms_api_key){
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
 															function(err_sms,httpResponse,body){
 																console.log(err_sms);
 															});
+															}
 														}
 														
 														//Send EMAIL (to participant)
@@ -734,13 +745,14 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																				'</body>'+
 																			'</html>';
 																			
-																			
+															if(!params.disable_email_notfc){			
 															var data = {
 																		to: profiles[0].email,
 																		subject: 'Congratulation!',
 																		message: msgBody
 																	};
 															googleMailAPI.sendEmail(data);
+															}
 														}
 														//Send EMAIL (to creator)
 														if(creator_profiles[0].email){														
@@ -767,13 +779,14 @@ module.exports.sendBidClosedNotification = function(doc){//Send
 																				'</body>'+
 																			'</html>';
 																			
-																			
+															if(!params.disable_email_notfc){		
 															var data = {
 																		to: creator_profiles[0].email,
 																		subject: 'Congratulation!',
 																		message: msgBody
 																	};
 															googleMailAPI.sendEmail(data);
+															}
 														}
 														
 														//Send App Alert (to participant)
@@ -839,12 +852,14 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
 																			((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.');
+															if(!params.disable_sms_notfc && params.sms_api_key){
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
 															function(err_sms,httpResponse,body){
 																console.log(err_sms);
 															});
+															}
 														}
 														//Send SMS (to creator)
 														if(creator_profiles[0].mobile){																			
@@ -855,12 +870,14 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																			((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.')+
 																			' If you are happy with the amount you can close the Bid and contact '+profiles[0].name+' - '+profiles[0].mobile+
 																			' for further process of delivery and transaction.';
+															if(!params.disable_sms_notfc && params.sms_api_key){
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+creator_profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
 															function(err_sms,httpResponse,body){
 																console.log(err_sms);
 															});
+															}
 														}
 														
 														//Send EMAIL (to participant)
@@ -886,13 +903,14 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																				'</body>'+
 																			'</html>';
 																			
-																			
+															if(!params.disable_email_notfc){		
 															var data = {
 																		to: profiles[0].email,
 																		subject: 'Confirmation!',
 																		message: msgBody
 																	};
 															googleMailAPI.sendEmail(data);
+															}
 														}
 														//Send EMAIL (to creator)
 														if(creator_profiles[0].email){														
@@ -919,13 +937,14 @@ module.exports.sendBidPaticipateNotification = function(doc){//Send
 																				'</body>'+
 																			'</html>';
 																			
-																			
+															if(!params.disable_email_notfc){
 															var data = {
 																		to: creator_profiles[0].email,
 																		subject: 'Confirmation!',
 																		message: msgBody
 																	};
 															googleMailAPI.sendEmail(data);
+															}
 														}
 														
 														//Send App Alert (to participant)
@@ -967,12 +986,14 @@ module.exports.sendBidAllPaticipateNotification = function(doc,params){//Send No
 																			((doc.fuel_type)?doc.fuel_type:'')+
 																			((doc.bid_hike_by)?(', with Rs.'+doc.bid_hike_by+'.'):'.')+
 																			((doc.current_bid_amount)?(' Current Bid Amount is Rs.'+doc.current_bid_amount+'.'):'.');
+															if(!params.disable_sms_notfc && params.sms_api_key){
 															request.get({
 																url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 															},
 															function(err_sms,httpResponse,body){
 																console.log(err_sms);
 															});
+															}
 														}
 														
 														//Send EMAIL
@@ -997,13 +1018,14 @@ module.exports.sendBidAllPaticipateNotification = function(doc,params){//Send No
 																				'</body>'+
 																			'</html>';
 																			
-																			
+															if(!params.disable_email_notfc){		
 															var data = {
 																		to: profiles[0].email,
 																		subject: 'Confirmation!',
 																		message: msgBody
 																	};
 															googleMailAPI.sendEmail(data);
+															}
 														}
 																												
 														//Send App Alert
@@ -1116,12 +1138,14 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 															'. '+
 												    			nextBidMsg+' '+
 															routeLink+' ';
+												if(!params.disable_sms_notfc && params.sms_api_key){
 												request.get({
 															url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 												},
 												function(err_sms,httpResponse,body){
 													console.log(err_sms);
-												});										
+												});
+												}												
 											}
 											
 											//Send EMAIL
@@ -1157,13 +1181,14 @@ module.exports.sendNewBidNotification = function(doc){//Send New Bid Notificatio
 																		'</div>'+
 																	'</body>'+
 																'</html>';
-																					
+												if(!params.disable_email_notfc){							
 												var data = {
 															to: profiles[0].email,
 															subject: doc.brand_name+' '+doc.model,
 															message: msgBody
 												};
 												googleMailAPI.sendEmail(data);
+												}
 											}
 											
 											//Send App Alert
@@ -1224,12 +1249,14 @@ module.exports.sendPaymentNotification = function(doc,payment_for,payment_comple
 					//Send SMS
 					if(profiles[0].mobile && msgText){
 						var msgBody = msgText;
+						if(!params.disable_sms_notfc && params.sms_api_key){
 						request.get({
 							url:'http://sms.fastsmsindia.com/api/sendhttp.php?authkey='+params.sms_api_key+'&mobiles='+profiles[0].mobile+'&message='+msgBody+'&sender=MOTOCQ&route=6'
 						},
 						function(err_sms,httpResponse,body){
 							console.log(err_sms);
-						});										
+						});
+						}						
 					}
 											
 					//Send EMAIL
@@ -1252,13 +1279,14 @@ module.exports.sendPaymentNotification = function(doc,payment_for,payment_comple
 												'</div>'+
 											'</body>'+
 										'</html>';
-																					
+						if(!params.disable_email_notfc){										
 						var data = {
 									to: profiles[0].email,
 									subject: 'Payment',
 									message: msgBody
 						};
 						googleMailAPI.sendEmail(data);
+						}
 					}
 					
 				}
